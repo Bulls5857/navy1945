@@ -7,6 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.json">
 <style>html,body{margin:0}[hidden]{display:none!important}</style>
 <title>네이비1945</title>
 <meta name="description" content="네 나라 중 하나를 골라 프리깃에서 전함까지 키우는 3D 해전 로그라이트. 가로 화면 권장.">
@@ -22,7 +23,6 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0B1820">
 <link rel="icon" type="image/png" href="icon.png">
-<link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Pixelify+Sans:wght@400;500;600&family=Gothic+A1:wght@400;700&display=swap">
 <style>
@@ -182,6 +182,7 @@ body{background:var(--ink)}
 .act{position:relative;width:74px;height:74px;border-radius:50%;border:2px solid var(--line);background:rgba(9,22,44,.86);color:var(--fg);font:700 12px/1.15 var(--body);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;touch-action:none;overflow:hidden}
 .act.big{width:88px;height:88px;border-color:var(--accent)}
 .act b{font:600 18px var(--num);color:var(--accent)}
+.act:disabled{font-size:11px;white-space:nowrap}
 .act .cd{position:absolute;inset:0;background:conic-gradient(rgba(4,10,20,.78) var(--p,0%),transparent 0);pointer-events:none}
 .act:disabled{opacity:.45}
 .act.ready{box-shadow:0 0 0 3px rgba(242,163,58,.35)}
@@ -961,10 +962,10 @@ function drawMini(){const c=mini,W=118,S=W/2/(R.scoutT>0?85:60),pg=player.g.posi
   for(const p of planes){if(!p.alive||p.fall)continue;const[x,y]=P(p.g.position.x,p.g.position.z);if(Math.hypot(x-W/2,y-W/2)>W/2-3)continue;c.fillStyle='#f2a33a';c.fillRect(Math.round(x-1),Math.round(y-1),2,2)}
   for(const t of torps){if(!t.alive||!t.foe)continue;const[x,y]=P(t.m.position.x,t.m.position.z);if(Math.hypot(x-W/2,y-W/2)>W/2-3)continue;c.fillStyle='#ffffff';c.fillRect(Math.round(x),Math.round(y),1,1)}
   c.save();c.translate(W/2,W/2);c.rotate(-player.g.rotation.y);c.fillStyle='#6fcb8e';c.beginPath();c.moveTo(0,-6);c.lineTo(4,5);c.lineTo(-4,5);c.closePath();c.fill();c.restore()}
-function actUpdate(){{const sb=$('scoutBtn'),ok=canScout();sb.hidden=!ok;if(ok){const sp=R.scoutCd/SC_CD;$('scoutCd').style.setProperty('--p',(sp*100)+'%');sb.classList.toggle('ready',sp<=0);sb.classList.toggle('on',R.scoutT>0)}}const tb=$('torpBtn'),rb=$('repBtn'),has=SV.up.torp>0;tb.disabled=!has;
+function actUpdate(){{const sb=$('scoutBtn'),ok=canScout();sb.hidden=false;sb.disabled=!ok;if(sb.dataset.ok!==String(ok)){sb.dataset.ok=String(ok);sb.lastChild.textContent=ok?'정찰기':'중순양함↑'}if(ok){const sp=R.scoutCd/SC_CD;$('scoutCd').style.setProperty('--p',(sp*100)+'%');sb.classList.toggle('ready',sp<=0);sb.classList.toggle('on',R.scoutT>0)}}const tb=$('torpBtn'),rb=$('repBtn'),has=SV.up.torp>0;tb.disabled=!has;
   const tp=has?R.torpT/R.st.torpInt:0;$('torpCd').style.setProperty('--p',(tp*100)+'%');tb.classList.toggle('ready',has&&tp<=0);
   const rp=R.repT/REP_CD;$('repCd').style.setProperty('--p',(rp*100)+'%');rb.classList.toggle('ready',rp<=0&&R.hp<R.st.maxHp);
-  if(tb.dataset.has!==String(has)){tb.dataset.has=String(has);tb.lastChild.textContent=has?'어뢰':'미장착'}drawMini()}
+  if(tb.dataset.has!==String(has)){tb.dataset.has=String(has);tb.lastChild.textContent=has?'어뢰':'어뢰 미장착'}drawMini()}
 function hudUpdate(){actUpdate();const r=R.hp/R.st.maxHp,b=$('hpB');b.style.width=Math.max(0,r*100)+'%';b.classList.toggle('low',r<.3);
   setT('hpT',`${Math.ceil(R.hp)} / ${Math.round(R.st.maxHp)}`);setT('coinB',fmt(R.coins));
   const bossOn=R.boss&&!R.bossDead;$('stageBox').classList.toggle('boss',!!bossOn);
