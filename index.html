@@ -187,6 +187,47 @@ body{background:var(--ink)}
 .act:disabled{opacity:.45}
 .act.ready{box-shadow:0 0 0 3px rgba(242,163,58,.35)}
 .act.on{border-color:var(--ok);box-shadow:0 0 0 3px rgba(111,203,142,.35)}
+/* ---- drydock ---- */
+#drawer{display:none!important}
+.card .dockgo{pointer-events:auto;border:1px solid var(--accent);border-radius:8px;background:rgba(9,22,44,.9);color:var(--accent);font:700 15px var(--body);padding:0 18px;min-height:54px;white-space:nowrap}
+.card .dockgo small{display:block;font:500 11px var(--num);color:var(--mute)}
+#dock{position:fixed;inset:0;pointer-events:none}
+#dock .dtop{position:fixed;left:10px;right:10px;top:calc(8px + env(safe-area-inset-top,0px));display:flex;gap:8px;align-items:center}
+#dock .back{pointer-events:auto;background:var(--chip);border:1px solid var(--line);border-radius:6px;color:var(--fg);font:700 13px var(--body);padding:0 14px;min-height:38px}
+#dock .ttl{font:600 15px var(--num);letter-spacing:.14em;color:var(--hi);background:var(--chip);border:1px solid var(--line);border-radius:6px;padding:8px 12px}
+#dkPanel{pointer-events:auto;position:fixed;left:10px;top:calc(56px + env(safe-area-inset-top,0px));bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(290px,40vw);overflow-y:auto;background:var(--chip);border:1px solid var(--line);border-radius:8px;padding:10px 12px;box-sizing:border-box;display:flex;flex-direction:column;gap:8px}
+#dkPanel h3{margin:0;font:600 18px var(--num);letter-spacing:.05em;text-transform:uppercase}
+#dkPanel .sub{font-size:11px;color:var(--mute)}
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.cats button{background:#0e1f33;border:1px solid var(--line);border-radius:6px;color:var(--mute);font:700 11px var(--body);min-height:40px;padding:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.cats button em{font:500 10px var(--num);font-style:normal;color:var(--hi)}
+.cats button.on{border-color:var(--accent);color:var(--fg);background:#1a2c44}
+.cats button i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.desc{font-size:12px;line-height:1.5;color:var(--fg);margin:0}
+.cmp{display:flex;flex-direction:column;gap:6px}
+.cmp div{font-size:11px;color:var(--mute)}
+.cmp div b{color:var(--fg);font-family:var(--num);font-weight:600}
+.cmp div b.up{color:var(--ok)}.cmp div b.dn{color:var(--bad)}
+.cmp .bar{height:6px;border-radius:3px;background:#13263a;margin-top:3px;position:relative;overflow:hidden}
+.cmp .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--hi)}
+.cmp .bar s{position:absolute;top:0;bottom:0;background:rgba(111,203,142,.55);text-decoration:none}
+.dkbuy{pointer-events:auto;border:0;border-radius:8px;background:var(--accent);color:#1A1204;font:700 14px var(--body);min-height:46px;width:100%}
+.dkbuy small{display:block;font:600 11px var(--num)}
+.dkbuy:disabled{opacity:.45}
+.evo{border:1px solid var(--line);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px;background:#0c1b2e}
+.evo .row2 button{flex:1}
+#dkTable{pointer-events:auto;position:fixed;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));left:calc(min(290px,40vw) + 20px);max-height:31vh;overflow:auto;background:var(--chip);border:1px solid var(--line);border-radius:8px;font-size:11px}
+#dkTable table{width:100%;border-collapse:collapse}
+#dkTable th{font:500 10px var(--num);letter-spacing:.08em;color:var(--hi);text-align:left;padding:5px 8px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#0b1a2e}
+#dkTable td{padding:4px 8px;border-bottom:1px solid rgba(47,93,134,.4);color:var(--fg);white-space:nowrap}
+#dkTable tr.sel td{background:rgba(242,163,58,.12)}
+#dkTable td.mut{color:var(--mute)}
+.ring{pointer-events:auto;position:fixed;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:2px dashed currentColor;background:rgba(9,22,44,.25);padding:0;cursor:pointer;animation:spin 6s linear infinite}
+.ring.on{border-style:solid;background:rgba(242,163,58,.18);width:44px;height:44px;margin:-22px 0 0 -22px}
+.ring.lock{opacity:.55}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.ring{animation:none}}
+#fade{position:fixed;inset:0;background:#06101e;opacity:0;pointer-events:none;transition:opacity .25s}
 </style>
 
 </head>
@@ -213,8 +254,15 @@ body{background:var(--ink)}
     <div class="coin"><i></i><span id="coinP">0</span></div>
   </div>
   <div id="drawer"><button type="button" class="handle" id="handle" aria-label="개장 창 접기" aria-expanded="true"><b>▶</b>개장</button><div class="panel" id="panel"></div></div>
-  <div class="card"><div class="info" id="info"></div><button type="button" class="go" id="sortie">출격<small id="sortieSub">해역 1부터</small></button></div>
+  <div class="card"><div class="info" id="info"></div><button type="button" class="dockgo" id="dockGo">개장<small>DRYDOCK</small></button><button type="button" class="go" id="sortie">출격<small id="sortieSub">해역 1부터</small></button></div>
 </div>
+<div id="dock" hidden>
+  <div class="dtop"><button type="button" class="back" id="dkBack">◀ 항구로</button><div class="ttl">SHIP YARD · DRYDOCK</div><div class="spacer"></div><div class="coin"><i></i><span id="dkCoin">0</span></div></div>
+  <div id="dkRings"></div>
+  <div id="dkPanel" aria-label="개장 패널"></div>
+  <div id="dkTable" aria-label="무장 상태"></div>
+</div>
+<div id="fade"></div>
 <div id="hud" hidden>
   <div class="bar top">
     <div class="hp"><small>선체 내구 <b id="hpT"></b></small><div class="meter"><i id="hpB"></i></div></div>
@@ -678,6 +726,20 @@ const harbor=new T.Group();scene.add(harbor);const PIER=1.7;
 })();
 const pier2=box(2.6,1.2,30,M(0x4a4844,.95,.02),-12,-1.05,6,harbor);
 
+/* ================= winter harbor ================= */
+const SNOWM=M(0xeef3f6,.95,0);
+(function(){const s=(w,l,x,y,z)=>{const b=box(w,.05,l,SNOWM,x,y,z,harbor);b.receiveShadow=true;b.castShadow=false};
+  s(4.5,47.8,PIER+2.3,.45,0);
+  harbor.traverse(o=>{if(!o.isMesh)return;const gt=o.geometry;if(gt.type==='ConeGeometry')o.material=M(0xdde5ea,.95,0);if(gt.type==='CylinderGeometry'&&gt.parameters.radialSegments===3)o.material=M(0xe4ebef,.9,0)})})();
+const SNOW_N=1400,snowGeo=new T.BufferGeometry(),snowP=new Float32Array(SNOW_N*3),snowV=new Float32Array(SNOW_N);
+for(let i=0;i<SNOW_N;i++){snowP[i*3]=(Math.random()-.5)*70;snowP[i*3+1]=Math.random()*24;snowP[i*3+2]=(Math.random()-.5)*70;snowV[i]=.6+Math.random()*.9}
+snowGeo.setAttribute('position',new T.BufferAttribute(snowP,3));
+const snow=new T.Points(snowGeo,new T.PointsMaterial({color:0xffffff,size:.13,transparent:true,opacity:.9,depthWrite:false}));snow.frustumCulled=false;snow.layers.set(1);scene.add(snow);
+function stepSnow(dt,t,c){snow.visible=mode==='port';if(!snow.visible)return;snow.position.set(c.x,0,c.z);
+  for(let i=0;i<SNOW_N;i++){let y=snowP[i*3+1]-snowV[i]*dt*1.6;if(y<0)y+=24;snowP[i*3+1]=y;snowP[i*3]+=Math.sin(t*.7+i)*dt*.25}
+  snowGeo.attributes.position.needsUpdate=true}
+function setWinter(on){SKY.setHex(on?0x9aaebf:0x5d86a6);sun.color.setHex(on?0xe4ecf4:0xfff0d6);sun.intensity=on?1.15:1.4}
+
 /* ================= save ================= */
 const KEY='navy1945_v1';
 const defSave=()=>({nat:'jp',cls:'FF',coins:300,best:0,runs:0,up:{gun:0,sec:0,aa:0,torp:0,armor:0,eng:0}});
@@ -703,12 +765,101 @@ let mode='port',player=null,neighbor=null,moor=[];
 const foes=[],planes=[],shells=[],torps=[],coins=[];
 const orbit={th:-1.0,ph:1.08,r:18,tgt:V(0,1,0),idle:0};
 function rebuildPlayer(){if(player){scene.remove(player.g)}player=buildShip(SV.nat,SV.cls,{ladder:SV.up.gun,sec:SV.up.sec,aa:SV.up.aa,torp:SV.up.torp});scene.add(player.g);
-  if(neighbor)harbor.remove(neighbor.g);const nc=SV.cls==='DD'?'CL':'DD';neighbor=buildShip(SV.nat,nc,{});harbor.add(neighbor.g);placeDock()}
+  if(neighbor)harbor.remove(neighbor.g);const nc=SV.cls==='DD'?'CL':'DD';neighbor=buildShip(SV.nat,nc,{});harbor.add(neighbor.g);placeDock();if(typeof PS!=='undefined'&&PS.dock)placeInDock()}
 function placeDock(){const x=PIER-player.B-.18;player.g.position.set(x,0,0);player.g.rotation.set(0,0,0);
   const nx=x-player.B-2.4-neighbor.B;neighbor.g.position.set(nx,0,4);neighbor.g.rotation.y=Math.PI;pier2.position.x=nx-neighbor.B-1.5;
   for(const l of moor)harbor.remove(l);moor.length=0;const L=player.L,dy=player.deckY;
   for(const[z0,z1]of[[L*.4,L*.4+1.6],[L*.18,L*.18+.4],[-L*.18,-L*.18-.4],[-L*.42,-L*.42-1.6]])moor.push(rod(V(x+player.B*.9,dy(z0)+.1,z0),V(PIER+.25,.75,z1),.015,M(0xd8ccb0,.9,0),harbor));
-  orbit.tgt.set(x,1,0);orbit.r=Math.min(46,Math.max(11,player.L*.95+6))}
+  if(typeof PS!=='undefined'&&PS.dock)return;orbit.tgt.set(x,1,0);orbit.r=Math.min(46,Math.max(11,player.L*.95+6))}
+
+/* ================= drydock ================= */
+const DX=PIER+24,WB=4.2,LB=17.5,FLOOR=.1,QUAY=2;
+(function(){const conc=M(0x6a6863,.95,.02),concD=M(0x4e4c48,.95,.02),steel=M(0x3a434a,.6,.4),wood=M(0x5a3f2a,.9,0),yel=M(0xd9a43a,.7,.3);
+  box(9.4,1.95,60,conc,PIER+9.3,-1.5,0,harbor);box(16,1.95,60,conc,DX+WB+14,-1.5,0,harbor);
+  box(2*WB,1.2,2*LB,concD,DX,-1.1,0,harbor);
+  for(const sx of[-1,1]){box(6,3.5,2*LB+12,conc,DX+sx*(WB+3),-1.5,0,harbor);box(6,.06,2*LB+12,SNOWM,DX+sx*(WB+3),QUAY,0,harbor);
+    box(.6,.9,2*LB,concD,DX+sx*(WB-.3),FLOOR,0,harbor);box(.6,.45,2*LB,concD,DX+sx*(WB-.9),FLOOR,0,harbor);
+    box(.6,.04,2*LB,SNOWM,DX+sx*(WB-.3),FLOOR+.9,0,harbor);box(.6,.04,2*LB,SNOWM,DX+sx*(WB-.9),FLOOR+.45,0,harbor);
+    for(let z=-LB+3;z<LB;z+=7){cyl(.05,.05,2.6,steel,DX+sx*(WB+5),QUAY,z,harbor,6);box(.5,.12,.2,M(0xfff1c8,.4,0),DX+sx*(WB+4.85),QUAY+2.5,z,harbor)}}
+  for(const sz of[-1,1]){box(2*WB+12,3.5,6,conc,DX,-1.5,sz*(LB+3),harbor);box(2*WB+12,.06,6,SNOWM,DX,QUAY,sz*(LB+3),harbor)}
+  box(2*WB,1.9,.5,steel,DX,FLOOR,LB-.25,harbor);
+  for(let z=-LB+2;z<=LB-2;z+=1.4)box(.5,.35,.6,wood,DX,FLOOR,z,harbor);
+  for(const z of[-9,7]){const c=new T.Group();c.position.set(DX+WB+2.2,QUAY,z);harbor.add(c);box(.7,6.5,.7,yel,0,0,0,c);box(1.6,.9,1.6,yel,0,6.5,0,c);box(1.1,.7,1.2,M(0x3b4b55,.6,.3),.3,7.4,0,c);
+    box(9,.3,.4,yel,-3.6,7.2,0,c);box(1.6,.06,1.6,SNOWM,0,7.4,0,c);rod(V(DX+WB+2.2-7.4,QUAY+7.2,z),V(DX+WB+2.2-7.4,QUAY+3.4,z),.03,steel,harbor)}})();
+const dockProps=[];
+function dockShipY(){return FLOOR+.35+SIZE[SV.cls].D*1.03}
+function placeInDock(){const g=player.g;g.position.set(DX,dockShipY(),0);g.rotation.set(0,0,0);for(const p of dockProps)harbor.remove(p);dockProps.length=0;
+  const y=dockShipY(),D=SIZE[SV.cls].D,B=player.B,L=player.L,st=M(0x2c2f31,.8,.3);
+  for(const z of[-L*.34,-L*.12,L*.1,L*.3])for(const sx of[-1,1])dockProps.push(rod(V(DX+sx*(WB-.9),FLOOR+.45,z),V(DX+sx*B*.92,y-D*.45,z),.045,st,harbor))}
+
+const PS={dock:false,t:1,dir:0,cat:'gun',ghost:null,save:null};
+const CATS={gun:{name:'주포',col:'#f2a33a',desc:'적 함선을 직접 공격하는 주 무기예요. 구경이 커질수록 한 발이 강해지고 더 멀리 쏘지만, 장전은 조금 느려져요.'},
+  sec:{name:'부포',col:'#7fb2e0',desc:'함교 옆에 붙는 작은 포예요. 가까이 붙은 구축함을 빠르게 쏴서 쫓아내요. 경순양함부터 달 수 있어요.'},
+  aa:{name:'대공포',col:'#6fcb8e',desc:'날아오는 적 뇌격기를 떨어뜨려요. 레벨이 오를수록 더 자주 쏴서 어뢰를 맞기 전에 격추해요.'},
+  torp:{name:'어뢰',col:'#e2593f',desc:'왼쪽 어뢰 버튼으로 쏘는 한 방 무기예요. 발사관을 늘리면 한 번에 더 많이, 더 자주 쏠 수 있어요.'},
+  armor:{name:'장갑',col:'#c9cdd1',desc:'선체를 두껍게 해서 버티는 힘을 올려요. 최대 내구도가 늘고 받는 피해가 줄어요.'},
+  eng:{name:'기관',col:'#d98fe0',desc:'보일러와 터빈을 강화해요. 배가 빨라지고 방향 전환도 빨라져서 어뢰를 피하기 쉬워져요.'}};
+const lockedK=k=>!!(UPG[k].need&&clsIdx(SV.cls)<clsIdx(UPG[k].need));
+function statRows(k,a,b){const kn=SPEC[SV.nat][SV.cls][3],f=(x,d=0)=>x.toFixed(d);
+  switch(k){case'gun':return[['구경','mm',a.cal,b.cal,0,460],['한 발 피해','',a.dmg,b.dmg,1,21],['장전 시간','초',a.reload,b.reload,2,3.2,1],['사거리','',a.range,b.range,1,45]];
+    case'sec':return[['부포 수','기',SV.up.sec*2,Math.min(UPG.sec.max,SV.up.sec+1)*2,0,6]];
+    case'aa':return[['대공 사격','배',a.aaRate,b.aaRate,2,3.2]];
+    case'torp':return[['일제 발수','발',SV.up.torp?a.torpN:0,b.torpN,0,5],['장전 시간','초',a.torpInt,b.torpInt,1,7.5,1],['어뢰 한 발','',a.torpDmg,b.torpDmg,0,60]];
+    case'armor':return[['최대 내구','',a.maxHp,b.maxHp,0,a.maxHp*2],['받는 피해','%',100-a.red*100,100-b.red*100,0,100,1]];
+    case'eng':return[['최고 속도','kn',kn*(1+.07*SV.up.eng),kn*(1+.07*Math.min(UPG.eng.max,SV.up.eng+1)),1,kn*1.4],['선회력','',a.turn*10,b.turn*10,1,a.turn*14]]}}
+function nextStats(k){const u=SV.up[k];SV.up[k]=Math.min(UPG[k].max,u+1);const s=stats();SV.up[k]=u;return s}
+function doUpgrade(k){const cost=upCost(k);if(lockedK(k)||SV.coins<cost||SV.up[k]>=UPG[k].max)return false;SV.coins-=cost;SV.up[k]++;save();rebuildPlayer();renderPort();flashT=.6;SFX.upg();return true}
+function doEvolve(){const cost=EVOLVE[SV.cls];if(!CLS[clsIdx(SV.cls)+1]||SV.coins<cost)return false;SV.coins-=cost;SV.cls=CLS[clsIdx(SV.cls)+1];save();clearGhost();rebuildPlayer();renderPort();flashT=1.2;SFX.evolve();return true}
+function renderDock(){if(!PS.dock)return;const k=PS.cat,u=UPG[k],lv=SV.up[k],lock=lockedK(k),max=lv>=u.max,cost=upCost(k),a=stats(),b=nextStats(k),sp=SPEC[SV.nat][SV.cls],i=clsIdx(SV.cls),nx=CLS[i+1];
+  const rows=statRows(k,a,b).map(([l,unit,x,y,d,mx,inv])=>{const better=inv?y<x:y>x,ch=!max&&!lock&&Math.abs(y-x)>1e-6;
+    return`<div>${l} <b>${x.toFixed(d)}${unit}</b>${ch?` → <b class="${better?'up':'dn'}">${y.toFixed(d)}${unit}</b>`:''}<div class="bar"><i style="width:${Math.min(100,(inv?(mx-x)/mx:x/mx)*100)}%"></i>${ch?`<s style="left:${Math.min(100,(inv?(mx-x)/mx:x/mx)*100)}%;width:${Math.max(0,Math.min(100,((inv?(x-y):(y-x))/mx)*100))}%"></s>`:''}</div></div>`}).join('');
+  $('dkPanel').innerHTML=`<div><h3>${sp[0]}</h3><span class="sub">${NAT[SV.nat].name} · ${CLSNAME[SV.cls]} ${SV.cls} · ${NAT[SV.nat].c[SV.cls].n}</span></div>
+    <div class="cats" role="tablist">${Object.keys(CATS).map(c=>`<button type="button" role="tab" aria-selected="${c===k}" class="${c===k?'on':''}" data-cat="${c}"><span><i style="background:${CATS[c].col}"></i> ${CATS[c].name}</span><em>${lockedK(c)?'잠김':'Lv.'+SV.up[c]+'/'+UPG[c].max}</em></button>`).join('')}</div>
+    <p class="desc"><b style="color:${CATS[k].col}">${CATS[k].name}</b> · ${CATS[k].desc}</p>
+    <div class="cmp">${rows}</div>
+    ${lock?`<button type="button" class="dkbuy" disabled>경순양함부터 장착 가능</button>`:max?`<button type="button" class="dkbuy" disabled>최대 레벨</button>`:`<button type="button" class="dkbuy" id="dkUp" ${SV.coins<cost?'disabled':''}>${u.name} 개장 Lv.${lv+1}<small>${fmt(cost)} 코인${SV.coins<cost?` · ${fmt(cost-SV.coins)} 부족`:''}</small></button>`}
+    <div class="evo"><div class="sub">함급 개장 · 지금 ${CLSNAME[SV.cls]}</div>${pips(i+1,6)}
+      ${nx?`<div class="desc">다음: <b>${CLSNAME[nx]}</b> · ${NAT[SV.nat].c[nx].n}<br><span class="sub">배가 커지고 큰 주포·내구도를 얻어요. 장비 레벨은 그대로예요.</span></div>
+      <div class="row2"><button type="button" class="mini" id="dkGhost" aria-pressed="${!!PS.ghost}">${PS.ghost?'미리보기 끄기':'다음 함급 미리보기'}</button><button type="button" class="dkbuy" id="dkEvo" ${SV.coins<EVOLVE[SV.cls]?'disabled':''} style="min-height:40px">${fmt(EVOLVE[SV.cls])}</button></div>`:'<div class="desc">최고 함급이에요.</div>'}</div>`;
+  const st=a,sec=SV.up.sec,rowsT=[['gun','주포',`${calTxt(st.cal)} ${NUM[(NAT[SV.nat].c[SV.cls].foreG||[NAT[SV.nat].c[SV.cls].gun])[0][1]]}`,`피해 ${st.dmg.toFixed(1)} · 장전 ${st.reload.toFixed(1)}초 · 사거리 ${st.range.toFixed(0)}`],
+    ['sec','부포',lockedK('sec')?'—':sec?`양현 ${sec*2}기`:'미장착',lockedK('sec')?'경순양함부터':sec?'근접 자동 사격':'개장으로 장착'],
+    ['aa','대공포',`${player.aaCount}문`,`대공 사격 ×${st.aaRate.toFixed(2)}`],
+    ['torp','어뢰',SV.up.torp?`${st.torpN}연장`:'미장착',SV.up.torp?`한 발 ${st.torpDmg.toFixed(0)} · 장전 ${st.torpInt.toFixed(1)}초`:'개장으로 장착'],
+    ['armor','장갑',`Lv.${SV.up.armor}`,`내구 ${fmt(st.maxHp)} · 피해 -${(st.red*100).toFixed(0)}%`],
+    ['eng','기관',`Lv.${SV.up.eng}`,`${(SPEC[SV.nat][SV.cls][3]*(1+.07*SV.up.eng)).toFixed(1)}kn · 선회 ${(st.turn*10).toFixed(1)}`]];
+  $('dkTable').innerHTML=`<table><thead><tr><th>장비</th><th>사양</th><th>레벨</th><th>상태</th></tr></thead><tbody>${rowsT.map(([c,n,s1,s2])=>`<tr class="${c===k?'sel':''}" data-cat="${c}"><td><i style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${CATS[c].col};margin-right:5px"></i>${n}</td><td>${s1}</td><td class="mut">${lockedK(c)?'잠김':SV.up[c]+'/'+UPG[c].max}</td><td class="mut">${s2}</td></tr>`).join('')}</tbody></table>`;
+  $('dkCoin').textContent=fmt(SV.coins);buildRings()}
+const ringBox=()=>$('dkRings');let rings=[];
+function anchorsFor(c){const g=player.g;g.updateMatrixWorld(true);const L=player.L,B=player.B,dy=player.deckY,out=[];
+  if(c==='gun')player.mounts.filter(m=>m.main).forEach(m=>out.push(m.obj.position.clone().setY(m.obj.position.y+.5)));
+  else if(c==='sec'){const s=player.mounts.filter(m=>!m.main);if(s.length)s.slice(0,2).forEach(m=>out.push(m.obj.position.clone().setY(m.obj.position.y+.3)));else out.push(V(-B*.75,dy(L*.08)+.2,L*.08))}
+  else if(c==='aa')out.push(V(-B*.8,dy(-L*.06)+.2,-L*.06));
+  else if(c==='torp')out.push(V(-B*.65,dy(-L*.16)+.15,-L*.16));
+  else if(c==='eng'){const f=player.funnels[0];out.push(f?f.o.position.clone().setY(f.o.position.y+f.top*.6):V(0,dy(0)+1,0))}
+  else if(c==='armor')out.push(V(-B*1.02,dy(L*.25)*.35,L*.25));
+  return out.map(v=>g.localToWorld(v))}
+function buildRings(){const box=ringBox();box.innerHTML='';rings=[];
+  for(const c of Object.keys(CATS))for(const p of anchorsFor(c)){const b=document.createElement('button');b.type='button';b.className='ring'+(c===PS.cat?' on':'')+(lockedK(c)?' lock':'');b.style.color=CATS[c].col;b.dataset.cat=c;b.setAttribute('aria-label',CATS[c].name);box.appendChild(b);rings.push({el:b,p})}}
+function stepRings(){if(!PS.dock||PS.t<1)return;const v=new T.Vector3();for(const r of rings){v.copy(r.p).project(camera);const vis=v.z<1&&Math.abs(v.x)<1.05&&Math.abs(v.y)<1.05;r.el.hidden=!vis;if(vis){r.el.style.left=((v.x+1)/2*innerWidth)+'px';r.el.style.top=((1-v.y)/2*innerHeight)+'px'}}}
+function selectCat(c){PS.cat=c;const a=anchorsFor(c)[0];if(a){PS.focus=a.clone();PS.focusR=Math.max(7,player.L*.42)}renderDock()}
+function clearGhost(){if(PS.ghost){harbor.remove(PS.ghost);PS.ghost=null}}
+function toggleGhost(){if(PS.ghost){clearGhost();renderDock();return}const nx=CLS[clsIdx(SV.cls)+1];if(!nx)return;const gs=buildShip(SV.nat,nx,{});
+  const mat=new T.MeshBasicMaterial({color:0xbfe4ff,transparent:true,opacity:.32,depthWrite:false});gs.g.traverse(o=>{if(o.isMesh){o.material=mat;o.castShadow=false}});
+  gs.g.position.set(DX,FLOOR+.35+SIZE[nx].D*1.03,0);harbor.add(gs.g);PS.ghost=gs.g;PS.focus=V(DX,1.5,0);PS.focusR=Math.max(14,gs.L*.95+5);renderDock()}
+function dockView(){const pw=$('dkPanel').offsetWidth+20,th=$('dkTable').offsetHeight+10;camera.setViewOffset(innerWidth,innerHeight,-pw/2,th/2,innerWidth,innerHeight)}
+function enterDock(){if(PS.dock||mode!=='port')return;PS.save={th:orbit.th,ph:orbit.ph,r:orbit.r,tgt:orbit.tgt.clone()};PS.dock=true;PS.t=0;PS.swapped=false;
+  $('fade').style.opacity=1;setTimeout(()=>{placeInDock();orbit.tgt.set(DX,1.4,0);orbit.th=-.85;orbit.ph=1.05;orbit.r=Math.min(32,player.L*.72+5);PS.focus=null;
+    $('port').hidden=true;$('dock').hidden=false;renderDock();dockView();PS.t=1;$('fade').style.opacity=0},260);SFX.upg()}
+function leaveDock(){if(!PS.dock)return;$('fade').style.opacity=1;setTimeout(()=>{PS.dock=false;clearGhost();for(const p of dockProps)harbor.remove(p);dockProps.length=0;
+  $('dock').hidden=true;$('port').hidden=false;placeDock();if(PS.save){orbit.th=PS.save.th;orbit.ph=PS.save.ph}camera.clearViewOffset();renderPort();$('fade').style.opacity=0},260)}
+$('dockGo').onclick=()=>{auInit();enterDock()};$('dkBack').onclick=leaveDock;
+$('dkPanel').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;
+  if(b.dataset.cat)return selectCat(b.dataset.cat);if(b.id==='dkUp'){if(doUpgrade(PS.cat)){placeInDock();renderDock()}}
+  else if(b.id==='dkEvo'){if(doEvolve()){placeInDock();orbit.r=Math.min(32,player.L*.72+5);PS.focus=null;orbit.tgt.set(DX,1.4,0);renderDock()}}else if(b.id==='dkGhost')toggleGhost()});
+$('dkTable').addEventListener('click',e=>{const r=e.target.closest('tr[data-cat]');if(r)selectCat(r.dataset.cat)});
+$('dkRings').addEventListener('click',e=>{const b=e.target.closest('.ring');if(b)selectCat(b.dataset.cat)});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&PS.dock)leaveDock()});
+function stepDock(dt){if(!PS.dock)return;if(PS.focus){orbit.tgt.lerp(PS.focus,Math.min(1,dt*3));orbit.r+=(PS.focusR-orbit.r)*Math.min(1,dt*3)}stepRings()}
 
 /* ================= port UI ================= */
 const pips=(n,m)=>'<div class="pips">'+Array.from({length:m},(_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')+'</div>';
@@ -731,7 +882,7 @@ function renderPort(){const st=stats(),c=NAT[SV.nat].c[SV.cls],i=clsIdx(SV.cls),
     <span class="ko">${c.n} · ${NAT[SV.nat].bonus}</span>`;
   $('sortieSub').textContent=`해역 1부터 · 출항 ${SV.runs}회`}
 let flashT=0;const drawer=$('drawer');let drawerMin=false;try{drawerMin=localStorage.getItem('navy1945_drawer')==='1'}catch(e){}
-function viewOffset(){if(mode==='port'&&!drawerMin){const pw=drawer.offsetWidth+10;camera.setViewOffset(innerWidth,innerHeight,pw/2,0,innerWidth,innerHeight)}else camera.clearViewOffset()}
+function viewOffset(){if(PS.dock){dockView();return}if(false){const pw=drawer.offsetWidth+10;camera.setViewOffset(innerWidth,innerHeight,pw/2,0,innerWidth,innerHeight)}else camera.clearViewOffset()}
 function setDrawer(m){drawerMin=m;drawer.classList.toggle('min',m);$('port').classList.toggle('wide',m);$('handle').setAttribute('aria-expanded',String(!m));$('handle').setAttribute('aria-label',m?'개장 창 펼치기':'개장 창 접기');try{localStorage.setItem('navy1945_drawer',m?'1':'0')}catch(e){}viewOffset()}
 $('handle').onclick=()=>setDrawer(!drawerMin);
 {let sx=null,sy=0;drawer.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY});drawer.addEventListener('pointerup',e=>{if(sx==null)return;const dx=e.clientX-sx,dy=Math.abs(e.clientY-sy);if(dy<40){if(dx>45&&!drawerMin)setDrawer(true);else if(dx<-45&&drawerMin)setDrawer(false)}sx=null});drawer.addEventListener('pointercancel',()=>{sx=null})}
@@ -917,7 +1068,7 @@ function stageClear(){if(mode!=='sea'||R.over)return;const bonus=Math.round(144*
 let bannerT=null;function banner(t){const b=$('banner');b.textContent=t;b.style.opacity=1;clearTimeout(bannerT);bannerT=setTimeout(()=>b.style.opacity=0,2200)}
 const quota=s=>5+2*s;
 function clearBattle(){clearFX();for(const f of foes.slice())releaseFoe(f);for(const p of planes){p.alive=false;p.g.visible=false}for(const a of[shells,torps,coins])for(const q of a){q.alive=false;q.m.visible=false}}
-function startRun(){mode='sea';renderer.toneMappingExposure=.9;scene.fog.near=WU.uNear.value=95;scene.fog.far=WU.uFar.value=280;Object.assign(sun.shadow.camera,{left:-40,right:40,top:40,bottom:-40,far:150});sun.shadow.camera.updateProjectionMatrix();SV.runs++;save();$('port').hidden=true;$('hud').hidden=false;$('result').hidden=true;$('hint').hidden=false;harbor.visible=false;WU.uAmp.value=1;clearBattle();camera.clearViewOffset();
+function startRun(){if(PS.dock)return;mode='sea';setWinter(false);renderer.toneMappingExposure=.9;scene.fog.near=WU.uNear.value=95;scene.fog.far=WU.uFar.value=280;Object.assign(sun.shadow.camera,{left:-40,right:40,top:40,bottom:-40,far:150});sun.shadow.camera.updateProjectionMatrix();SV.runs++;save();$('port').hidden=true;$('hud').hidden=false;$('result').hidden=true;$('hint').hidden=false;harbor.visible=false;WU.uAmp.value=1;clearBattle();camera.clearViewOffset();
   const st=stats();Object.assign(R,{st,t:0,hp:st.maxHp,lastHit:-9,stage:1,stageKills:0,kills:0,coins:0,earned:0,spawnT:1.5,planeT:16,boss:null,bossDead:false,over:false,shake:0,
     vx:0,vz:0,throttle:0,yawRate:0,aaT:0,torpT:0,repT:8,scoutT:0,scoutCd:0,zoom:1,wakeT:0,sunk:{DD:0,CL:0,CA:0,BB:0},planes:0,bosses:0});
   player.g.position.set(0,0,0);player.g.rotation.set(0,0,0);player.hullMat.emissive.setHex(0xff4a20);for(const m of player.mounts){m.obj.rotation.y=m.rest;m.cd=.5+Math.random()}
@@ -929,7 +1080,7 @@ function endRun(win){if(R.over)return;R.over=true;const pf=PF(),ri0=rankIdx(pf.x
     <div class="r">도달 해역<b>${R.stage}</b></div><div class="r">격침·격추<b>${R.kills}</b></div><div class="r">획득 코인<b>+${fmt(R.coins)}</b></div>${rb?`<div class="r">계급 보너스<b>+${fmt(rb)}</b></div>`:''}<div class="r">공적<b>+${fmt(xp)}</b></div>${promo?`<div class="up">진급! ${RANKS[ri1][0]} ${esc(pname())}</div>`:''}${ON.ok&&!OS.id?'<p class="note" style="text-align:center">프로필에서 이름을 등록하면 랭킹에 올라가요</p>':''}<div class="r">보유 코인<b>${fmt(SV.coins)}</b></div>
     <button type="button" class="go" id="toPort">항구로 · 개장하기</button></div>`;
   setTimeout(()=>{r.hidden=false;$('toPort').onclick=toPort},win?100:1400)}
-function toPort(){mode='port';renderer.toneMappingExposure=1;if(AU.eng)AU.eng.eg.gain.value=0;scene.fog.near=WU.uNear.value=55;scene.fog.far=WU.uFar.value=180;Object.assign(sun.shadow.camera,{left:-24,right:24,top:24,bottom:-24,far:110});sun.shadow.camera.updateProjectionMatrix();$('result').hidden=true;$('hud').hidden=true;$('port').hidden=false;harbor.visible=true;WU.uAmp.value=.35;clearBattle();
+function toPort(){mode='port';setWinter(true);renderer.toneMappingExposure=1;if(AU.eng)AU.eng.eg.gain.value=0;scene.fog.near=WU.uNear.value=55;scene.fog.far=WU.uFar.value=180;Object.assign(sun.shadow.camera,{left:-24,right:24,top:24,bottom:-24,far:110});sun.shadow.camera.updateProjectionMatrix();$('result').hidden=true;$('hud').hidden=true;$('port').hidden=false;harbor.visible=true;WU.uAmp.value=.35;clearBattle();
   joy.on=false;$('joy').hidden=true;$('torpBtn').blur();player.hullMat.emissiveIntensity=0;placeDock();renderPort();viewOffset()}
 $('sortie').onclick=startRun;$('home').onclick=()=>endRun(true);
 const hc={};const setT=(id,v)=>{if(hc[id]!==v){hc[id]=v;$(id).textContent=v}};
@@ -1061,15 +1212,16 @@ function frame(now){const dt=Math.min(.04,(now-last)/1000);last=now;const t=now/
     neighbor.mounts.forEach((m,i)=>{m.obj.rotation.y=m.rest+Math.sin(t*.3+i*2)*.4});
     if(flashT>0){flashT-=dt;player.hullMat.emissive.setHex(0xffd27a);player.hullMat.emissiveIntensity=Math.max(0,Math.sin(flashT*12))*.25}else player.hullMat.emissiveIntensity=0;
     const{th,ph,r,tgt}=orbit;camera.position.set(tgt.x+r*Math.sin(ph)*Math.sin(th),tgt.y+r*Math.cos(ph),tgt.z+r*Math.sin(ph)*Math.cos(th));camera.lookAt(tgt);
-    pg.position.y=Math.sin(t*.8)*.02;pg.rotation.z=Math.sin(t*.6)*.006;focus=V(tgt.x,0,0)}
+    if(!PS.dock){pg.position.y=Math.sin(t*.8)*.02;pg.rotation.z=Math.sin(t*.6)*.006}stepDock(dt);focus=V(tgt.x,0,tgt.z)}
   else focus=seaStep(dt,t);
+  stepSnow(dt,t,orbit.tgt);
   smokeT-=dt;if(smokeT<=0){smokeT=mode==='port'?.25:.12;for(const f of player.funnels){f.o.localToWorld(tmp.set(0,f.top+.1,0));fx('smoke',tmp.clone(),{life:3.5,s0:.4,s1:2,a:mode==='port'?.22:.35,v:V(.2,.7,.3),drag:.8})}}
   stepFX(dt);
   water.position.set(Math.round(focus.x/4)*4,0,Math.round(focus.z/4)*4);
   sun.position.copy(focus).addScaledVector(SUNDIR,mode==='sea'?80:55);sun.target.position.copy(focus);
   if(player.g.userData.flag)player.g.userData.flag.rotation.y=Math.PI/2+Math.sin(t*3.1)*.18;
   drawFrame();requestAnimationFrame(frame)}
-rebuildPlayer();renderPort();renderChip();setMute(AU.muted);setPix(PIX);if(ON.ok&&OS.id)sync(null);requestAnimationFrame(frame);
+setWinter(true);rebuildPlayer();renderPort();renderChip();setMute(AU.muted);setPix(PIX);if(ON.ok&&OS.id)sync(null);requestAnimationFrame(frame);
 window.__dbg={get player(){return player},camera,renderer,scene,AU,SV,R,startRun,joy,rebuildPlayer,renderPort};
 })();
 </script>
