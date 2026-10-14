@@ -21,6 +21,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0B1820">
+<link rel="icon" type="image/png" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Pixelify+Sans:wght@400;500;600&family=Gothic+A1:wght@400;700&display=swap">
 <style>
@@ -183,6 +184,7 @@ body{background:var(--ink)}
 .act .cd{position:absolute;inset:0;background:conic-gradient(rgba(4,10,20,.78) var(--p,0%),transparent 0);pointer-events:none}
 .act:disabled{opacity:.45}
 .act.ready{box-shadow:0 0 0 3px rgba(242,163,58,.35)}
+.act.on{border-color:var(--ok);box-shadow:0 0 0 3px rgba(111,203,142,.35)}
 </style>
 
 </head>
@@ -226,6 +228,7 @@ body{background:var(--ink)}
   <div class="acts">
     <button type="button" class="act big" id="torpBtn" aria-label="어뢰 발사"><span class="cd" id="torpCd"></span><b>▲</b>어뢰</button>
     <button type="button" class="act" id="repBtn" aria-label="응급 수리"><span class="cd" id="repCd"></span><b>+</b>수리</button>
+    <button type="button" class="act" id="scoutBtn" aria-label="정찰기 발진" hidden><span class="cd" id="scoutCd"></span><b>✈</b>정찰기</button>
   </div>
   <div class="hint" id="hint">오른쪽 조이스틱으로 조함 · 포는 자동 · 어뢰와 수리는 버튼</div>
   <div id="joy" hidden><i id="knob"></i></div>
@@ -738,7 +741,7 @@ $('panel').onclick=e=>{const b=e.target.closest('button');if(!b||b.disabled)retu
 /* ================= battle ================= */
 const R={};
 /* ================= online (Supabase) ================= */
-const CFG={url:'',key:''};
+const CFG={url:'https://fixmleqieofcoizdrafh.supabase.co',key:'sb_publishable_QZsXP-nOcg_101U2YguPdA_AgdGX6h_'};
 const ON={ok:!!(CFG.url&&CFG.key),status:'idle'};
 const OKEY='navy1945_online';let OS;try{OS=JSON.parse(localStorage.getItem(OKEY))}catch(e){}OS=OS||{};
 const osave=()=>{try{localStorage.setItem(OKEY,JSON.stringify(OS))}catch(e){}};
@@ -914,7 +917,7 @@ const quota=s=>5+2*s;
 function clearBattle(){clearFX();for(const f of foes.slice())releaseFoe(f);for(const p of planes){p.alive=false;p.g.visible=false}for(const a of[shells,torps,coins])for(const q of a){q.alive=false;q.m.visible=false}}
 function startRun(){mode='sea';renderer.toneMappingExposure=.9;scene.fog.near=WU.uNear.value=95;scene.fog.far=WU.uFar.value=280;Object.assign(sun.shadow.camera,{left:-40,right:40,top:40,bottom:-40,far:150});sun.shadow.camera.updateProjectionMatrix();SV.runs++;save();$('port').hidden=true;$('hud').hidden=false;$('result').hidden=true;$('hint').hidden=false;harbor.visible=false;WU.uAmp.value=1;clearBattle();camera.clearViewOffset();
   const st=stats();Object.assign(R,{st,t:0,hp:st.maxHp,lastHit:-9,stage:1,stageKills:0,kills:0,coins:0,earned:0,spawnT:1.5,planeT:16,boss:null,bossDead:false,over:false,shake:0,
-    vx:0,vz:0,throttle:0,yawRate:0,aaT:0,torpT:0,repT:8,wakeT:0,sunk:{DD:0,CL:0,CA:0,BB:0},planes:0,bosses:0});
+    vx:0,vz:0,throttle:0,yawRate:0,aaT:0,torpT:0,repT:8,scoutT:0,scoutCd:0,zoom:1,wakeT:0,sunk:{DD:0,CL:0,CA:0,BB:0},planes:0,bosses:0});
   player.g.position.set(0,0,0);player.g.rotation.set(0,0,0);player.hullMat.emissive.setHex(0xff4a20);for(const m of player.mounts){m.obj.rotation.y=m.rest;m.cd=.5+Math.random()}
   banner('해역 1 · 적 함대 접근');$('joy').hidden=false;joyRest();hudUpdate()}
 function endRun(win){if(R.over)return;R.over=true;const pf=PF(),ri0=rankIdx(pf.xp),rb=Math.round(R.coins*rankBonus(ri0));R.coins+=rb;SV.coins+=R.coins;SV.best=Math.max(SV.best,R.stage-1+(R.bossDead?1:0));
@@ -937,15 +940,27 @@ function doRepair(){if(mode!=='sea'||R.over||R.repT>0||R.hp>=R.st.maxHp)return;R
   fx('glow',player.g.position.clone().setY(1.2),{life:.6,s0:1,s1:3})}
 {const tb=$('torpBtn'),rb=$('repBtn');const go=(el,fn)=>el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();auInit();fn()});go(tb,fireTorps);go(rb,doRepair);
   tb.addEventListener('click',e=>{if(e.detail===0)fireTorps()});rb.addEventListener('click',e=>{if(e.detail===0)doRepair()})}
+/* scout plane: CA, BC, BB launch a floatplane — longer gun range and a wider view while it is up */
+const SC_CD=45,SC_DUR=20,SC_RANGE=1.35,canScout=()=>['CA','BC','BB'].includes(SV.cls);
+const scoutG=new T.Group();{const m=new T.MeshBasicMaterial({color:0xdfe8ec}),d=new T.MeshBasicMaterial({color:0x56646c});box(.16,.14,1.1,m,0,0,0,scoutG);box(1.5,.04,.32,m,0,.08,.05,scoutG);box(.55,.03,.18,m,0,.06,-.48,scoutG);box(.03,.22,.18,m,0,.06,-.48,scoutG);
+  for(const sx of[-.32,.32]){box(.08,.06,.6,d,sx,-.32,.05,scoutG)}scoutG.traverse(o=>{if(o.isMesh){o.castShadow=false;o.layers.set(1)}})}
+scoutG.visible=false;scene.add(scoutG);let scA=0;
+function launchScout(){if(mode!=='sea'||R.over||!canScout()||R.scoutCd>0)return;R.scoutT=SC_DUR;R.scoutCd=SC_CD;scA=player.g.rotation.y;scoutG.visible=true;
+  scoutG.position.copy(player.g.position).setY(1.5);banner('정찰기 발진 · 사거리·시야 확대');SFX.torp(player.g.position)}
+function stepScout(dt){if(R.scoutT<=0){scoutG.visible=false;return}const pg=player.g.position,ahead=player.g.rotation.y;scA+=dt*.9;
+  const cx=pg.x+Math.sin(ahead)*9,cz=pg.z+Math.cos(ahead)*9,tx=cx+Math.sin(scA)*8,tz=cz+Math.cos(scA)*8,up=Math.min(6,1.5+(SC_DUR-R.scoutT)*3);
+  const p=scoutG.position,dx=tx-p.x,dz=tz-p.z;p.x+=dx*Math.min(1,dt*2.5);p.z+=dz*Math.min(1,dt*2.5);p.y=up;scoutG.rotation.y=Math.atan2(dx,dz);scoutG.rotation.z=-.35;
+  if(R.scoutT<1.5)p.y=up*R.scoutT/1.5}
+{const sb=$('scoutBtn');sb.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();auInit();launchScout()});sb.addEventListener('click',e=>{if(e.detail===0)launchScout()})}
 const mini=$('mini').getContext('2d');
-function drawMini(){const c=mini,W=118,S=W/2/60,pg=player.g.position;c.clearRect(0,0,W,W);
-  c.strokeStyle='rgba(127,178,224,.28)';c.lineWidth=1;c.beginPath();c.arc(W/2,W/2,R.st.range*S,0,TAU);c.stroke();c.beginPath();c.arc(W/2,W/2,W/2-1,0,TAU);c.stroke();
+function drawMini(){const c=mini,W=118,S=W/2/(R.scoutT>0?85:60),pg=player.g.position;c.clearRect(0,0,W,W);
+  c.strokeStyle='rgba(127,178,224,.28)';c.lineWidth=1;c.beginPath();c.arc(W/2,W/2,R.st.range*(R.scoutT>0?SC_RANGE:1)*S,0,TAU);c.stroke();c.beginPath();c.arc(W/2,W/2,W/2-1,0,TAU);c.stroke();
   const P=(x,z)=>[W/2+(x-pg.x)*S*-1,W/2+(z-pg.z)*S*-1];
   for(const f of foes){if(f.sink)continue;const[x,y]=P(f.g.position.x,f.g.position.z);if(Math.hypot(x-W/2,y-W/2)>W/2-3)continue;c.fillStyle=f.boss?'#ff5a3a':'#e2593f';const s=f.boss?6:f.type==='DD'?3:4;c.fillRect(Math.round(x-s/2),Math.round(y-s/2),s,s)}
   for(const p of planes){if(!p.alive||p.fall)continue;const[x,y]=P(p.g.position.x,p.g.position.z);if(Math.hypot(x-W/2,y-W/2)>W/2-3)continue;c.fillStyle='#f2a33a';c.fillRect(Math.round(x-1),Math.round(y-1),2,2)}
   for(const t of torps){if(!t.alive||!t.foe)continue;const[x,y]=P(t.m.position.x,t.m.position.z);if(Math.hypot(x-W/2,y-W/2)>W/2-3)continue;c.fillStyle='#ffffff';c.fillRect(Math.round(x),Math.round(y),1,1)}
   c.save();c.translate(W/2,W/2);c.rotate(-player.g.rotation.y);c.fillStyle='#6fcb8e';c.beginPath();c.moveTo(0,-6);c.lineTo(4,5);c.lineTo(-4,5);c.closePath();c.fill();c.restore()}
-function actUpdate(){const tb=$('torpBtn'),rb=$('repBtn'),has=SV.up.torp>0;tb.disabled=!has;
+function actUpdate(){{const sb=$('scoutBtn'),ok=canScout();sb.hidden=!ok;if(ok){const sp=R.scoutCd/SC_CD;$('scoutCd').style.setProperty('--p',(sp*100)+'%');sb.classList.toggle('ready',sp<=0);sb.classList.toggle('on',R.scoutT>0)}}const tb=$('torpBtn'),rb=$('repBtn'),has=SV.up.torp>0;tb.disabled=!has;
   const tp=has?R.torpT/R.st.torpInt:0;$('torpCd').style.setProperty('--p',(tp*100)+'%');tb.classList.toggle('ready',has&&tp<=0);
   const rp=R.repT/REP_CD;$('repCd').style.setProperty('--p',(rp*100)+'%');rb.classList.toggle('ready',rp<=0&&R.hp<R.st.maxHp);
   if(tb.dataset.has!==String(has)){tb.dataset.has=String(has);tb.lastChild.textContent=has?'어뢰':'미장착'}drawMini()}
@@ -985,11 +1000,11 @@ function seaStep(dt,t){const P=player,pg=P.g,st=R.st;R.t+=dt;
   if(R.over&&R.hp<=0){pg.position.y-=dt*.3;pg.rotation.z+=dt*.15}
   player.hullMat.emissiveIntensity=Math.max(0,player.hullMat.emissiveIntensity-dt*3);
   if(R.t-R.lastHit>2.5&&R.hp<st.maxHp&&!R.over)R.hp=Math.min(st.maxHp,R.hp+st.maxHp*.02*st.repair*dt);
-  if(!R.over){runMounts(P,dt,foes,{range:st.range,sp:22,lead:1,trav:1.7,reload:st.reload,secReload:1.1,dmg:st.dmg,secDmg:st.secDmg,spread:.8,foe:false});
+  if(!R.over){runMounts(P,dt,foes,{range:st.range*(R.scoutT>0?SC_RANGE:1),sp:22,lead:1,trav:1.7,reload:st.reload,secReload:1.1,dmg:st.dmg,secDmg:st.secDmg,spread:.8,foe:false});
     R.aaT-=dt;if(R.aaT<=0){let best=null,bd=17*17;for(const p of planes){if(!p.alive||p.fall)continue;const d2=(p.g.position.x-pg.position.x)**2+(p.g.position.z-pg.position.z)**2;if(d2<bd){bd=d2;best=p}}
       if(best){R.aaT=.35/(st.aaRate*(1+P.aaCount*.08));const from=V(pg.position.x+(Math.random()-.5)*P.B,1.2,pg.position.z+(Math.random()-.5)*P.L*.4),dir=best.g.position.clone().sub(from);
         fx('glow',from,{life:.22,s0:.28,s1:.18,v:dir.multiplyScalar(4.5)});SFX.aa();if(Math.random()<.4){best.hp-=1;fx('fire',best.g.position.clone(),{life:.2,s0:.4,s1:.8});if(best.hp<=0){best.fall=.01;R.kills++;R.planes++;dropCoin(best.g.position,7.2*(1+.2*(R.stage-1)))}}}else R.aaT=.1}
-    R.torpT=Math.max(0,R.torpT-dt);R.repT=Math.max(0,R.repT-dt);if(keys[' ']){keys[' ']=false;fireTorps()}if(keys.r){keys.r=false;doRepair()}}
+    R.torpT=Math.max(0,R.torpT-dt);R.repT=Math.max(0,R.repT-dt);R.scoutCd=Math.max(0,R.scoutCd-dt);R.scoutT=Math.max(0,R.scoutT-dt);stepScout(dt);if(keys.e){keys.e=false;launchScout()}if(keys[' ']){keys[' ']=false;fireTorps()}if(keys.r){keys.r=false;doRepair()}}
   if(!R.over){const alive=foes.filter(f=>!f.sink).length;
     if(R.stageKills>=quota(R.stage)&&!R.boss){const bt=R.stage<=1?'CL':R.stage<=3?'CA':'BB';R.boss=spawnFoe(bt,true);banner(`적 기함 출현 · ${R.boss.c.n}`);SFX.alarm()}
     else if(!R.boss){R.spawnT-=dt;if(R.spawnT<=0&&alive<Math.min(2+R.stage,7)){R.spawnT=Math.max(1.6,4.2-R.stage*.3);const r=Math.random(),s=R.stage;
@@ -1035,7 +1050,7 @@ function seaStep(dt,t){const P=player,pg=P.g,st=R.st;R.t+=dt;
       if(R.throttle>.2)fx('foam',V(pg.position.x+s*bw+c*side*.25,.08,pg.position.z+c*bw-s*side*.25),{life:2.2,s0:.35,s1:1.4*P.B+.4,a:.5*amt,v:V(c*side*1.6,0,-s*side*1.6),drag:.5})}
     for(const f of foes){if(f.sink)continue;const fh=f.g.rotation.y;fx('foam',V(f.g.position.x-Math.sin(fh)*f.L*.47,.08,f.g.position.z-Math.cos(fh)*f.L*.47),{life:3.5,s0:.4,s1:1.8,a:.45})}}
   R.shake=Math.max(0,R.shake-dt);
-  const ch=40+P.L*1.1,sx=(Math.random()-.5)*R.shake,sz=(Math.random()-.5)*R.shake;
+  R.zoom+=((R.scoutT>0?1.3:1)-R.zoom)*Math.min(1,dt*1.5);const ch=(40+P.L*1.1)*R.zoom,sx=(Math.random()-.5)*R.shake,sz=(Math.random()-.5)*R.shake;
   camera.position.set(pg.position.x+sx,ch*.86,pg.position.z-ch*.7+sz);camera.lookAt(pg.position.x,0,pg.position.z+2);
   hudUpdate();return V(pg.position.x,0,pg.position.z+3)}
 function frame(now){const dt=Math.min(.04,(now-last)/1000);last=now;const t=now/1000;WU.uTime.value=t;let focus;
