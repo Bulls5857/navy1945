@@ -176,7 +176,7 @@ body{background:var(--ink)}
 #hud .home{position:static;min-height:38px}
 #mini{position:fixed;right:10px;top:calc(58px + env(safe-area-inset-top,0px));width:118px;height:118px;border-radius:50%;border:1px solid var(--line);background:rgba(6,18,38,.72);box-shadow:inset 0 0 0 1px rgba(127,178,224,.15);pointer-events:none;image-rendering:pixelated}
 #joy{opacity:.55;transition:opacity .15s}#joy.on{opacity:1}
-.acts{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:12px;align-items:flex-end}
+.acts{position:fixed;left:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:12px;align-items:flex-end}
 .act{position:relative;width:74px;height:74px;border-radius:50%;border:2px solid var(--line);background:rgba(9,22,44,.86);color:var(--fg);font:700 12px/1.15 var(--body);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;touch-action:none;overflow:hidden}
 .act.big{width:88px;height:88px;border-color:var(--accent)}
 .act b{font:600 18px var(--num);color:var(--accent)}
@@ -200,7 +200,7 @@ body{background:var(--ink)}
   <div class="bar top">
     <div class="brand">NAVY<span>1945</span></div>
     <button type="button" class="pchip" id="pchip" aria-label="함장 프로필"></button>
-    <button type="button" class="rk" id="rkBtn" hidden>랭킹</button>
+    <button type="button" class="rk" id="rkBtn">랭킹</button>
     <div class="seg" role="group" aria-label="국가" id="natSeg"></div>
     <div class="spacer"></div>
     <button type="button" class="pixbtn" aria-pressed="true">도트 ON</button>
@@ -224,10 +224,10 @@ body{background:var(--ink)}
   </div>
   <canvas id="mini" width="118" height="118" aria-label="미니맵"></canvas>
   <div class="acts">
-    <button type="button" class="act" id="repBtn" aria-label="응급 수리"><span class="cd" id="repCd"></span><b>+</b>수리</button>
     <button type="button" class="act big" id="torpBtn" aria-label="어뢰 발사"><span class="cd" id="torpCd"></span><b>▲</b>어뢰</button>
+    <button type="button" class="act" id="repBtn" aria-label="응급 수리"><span class="cd" id="repCd"></span><b>+</b>수리</button>
   </div>
-  <div class="hint" id="hint">왼쪽 조이스틱으로 조함 · 포는 자동 · 어뢰와 수리는 버튼</div>
+  <div class="hint" id="hint">오른쪽 조이스틱으로 조함 · 포는 자동 · 어뢰와 수리는 버튼</div>
   <div id="joy" hidden><i id="knob"></i></div>
   <div id="banner"></div>
 </div>
@@ -763,6 +763,12 @@ function applySave(o){SV=o;save();location.reload()}
 const LBT=[['xp','공적·계급'],['best_stage','최고 해역'],['sunk','총 격침'],['recent','최근 전투']];let lbTab='xp';
 function openRank(){$('rank').hidden=false;drawRank()}
 async function drawRank(){const sh=$('rkSheet');
+  if(!ON.ok){const pf=PF(),ri=rankIdx(pf.xp),sk=pf.sunk;
+    sh.innerHTML=`<header><h2 id="rkTitle">함장 랭킹<small>친구 랭킹은 온라인 서버 연결 후 열려요</small></h2><button type="button" class="x" id="rkX" aria-label="닫기">✕</button></header>
+    <div class="lb"><div class="me"><span class="n">-</span><span class="ins">${RANKS[ri][2]}</span><span class="who">${RANKS[ri][0]} ${esc(pname())}<small>${NAT[SV.nat].name} · ${CLSNAME[SV.cls]} · 출항 ${fmt(SV.runs)}</small></span><span class="v">${fmt(pf.xp)}</span></div></div>
+    <div class="grid"><div>최고 해역<b>${SV.best||0}</b></div><div>총 격침<b>${fmt(sk.DD+sk.CL+sk.CA+sk.BB)}</b></div><div>기함 격침<b>${fmt(pf.bosses)}</b></div></div>
+    <p class="note">지금은 내 기록만 보여요. 서버가 연결되면 친구들 순위가 여기에 함께 나와요. 그 전까지는 프로필의 기록 카드로 단톡방에서 겨뤄보세요.</p>`;
+    $('rkX').onclick=()=>$('rank').hidden=true;return}
   sh.innerHTML=`<header><h2 id="rkTitle">함장 랭킹<small>친구들과 같은 서버에 기록돼요</small></h2><button type="button" class="x" id="rkX" aria-label="닫기">✕</button></header>
   <div class="tabs" role="tablist">${LBT.map(([k,l])=>`<button type="button" role="tab" aria-selected="${k===lbTab}" class="${k===lbTab?'on':''}" data-tab="${k}">${l}</button>`).join('')}</div>
   <div class="lb" id="lbList"><p class="note">불러오는 중…</p></div>${OS.id?'':'<p class="note">아직 랭킹에 없어요. 프로필에서 이름을 등록하면 올라가요.</p>'}`;
@@ -778,7 +784,7 @@ async function drawRank(){const sh=$('rkSheet');
 function ago(t){const m=(Date.now()-new Date(t))/60000;return m<1?'방금':m<60?`${m|0}분 전`:m<1440?`${m/60|0}시간 전`:`${m/1440|0}일 전`}
 $('rank').addEventListener('click',e=>{if(e.target.id==='rank')$('rank').hidden=true});
 addEventListener('keydown',e=>{if(e.key==='Escape')$('rank').hidden=true});
-$('rkBtn').onclick=openRank;$('rkBtn').hidden=!ON.ok;
+$('rkBtn').onclick=openRank;
 
 /* ================= profile & rank ================= */
 const RANKS=[['수습생도',0,'—'],['소위',150,'1'],['중위',400,'2'],['대위',900,'3'],['소령',1800,'◆'],['중령',3200,'◆◆'],['대령',5500,'◆◆◆'],['준장',9000,'★'],['소장',14000,'★★'],['중장',21000,'★★★'],['대장',32000,'★★★★'],['원수',50000,'★★★★★']];
@@ -940,13 +946,13 @@ function hudUpdate(){actUpdate();const r=R.hp/R.st.maxHp,b=$('hpB');b.style.widt
 /* ================= input ================= */
 const ptrs=new Map();let pinch0=0;const joy={on:false,ox:0,oy:0,dx:0,dy:0,id:null};const keys={};
 canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});orbit.idle=0;
-  if(mode==='sea'&&!joy.on&&e.clientX<innerWidth*.62){joy.on=true;joy.id=e.pointerId;joy.ox=e.clientX;joy.oy=e.clientY;joy.dx=joy.dy=0;const j=$('joy');j.classList.add('on');j.style.left=e.clientX+'px';j.style.top=e.clientY+'px';$('knob').style.transform='';$('hint').hidden=true}
+  if(mode==='sea'&&!joy.on&&e.clientX>innerWidth*.38){joy.on=true;joy.id=e.pointerId;joy.ox=e.clientX;joy.oy=e.clientY;joy.dx=joy.dy=0;const j=$('joy');j.classList.add('on');j.style.left=e.clientX+'px';j.style.top=e.clientY+'px';$('knob').style.transform='';$('hint').hidden=true}
   if(ptrs.size===2){const[a,b]=[...ptrs.values()];pinch0=Math.hypot(a.x-b.x,a.y-b.y)}});
 canvas.addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);if(!p)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;orbit.idle=0;
   if(mode==='port'){if(ptrs.size===1){orbit.th-=dx*.006;orbit.ph=Math.min(1.45,Math.max(.3,orbit.ph-dy*.005))}
     else if(ptrs.size===2){const[a,b]=[...ptrs.values()],d=Math.hypot(a.x-b.x,a.y-b.y);if(pinch0)orbit.r=Math.min(60,Math.max(6,orbit.r*pinch0/d));pinch0=d}}
   else if(joy.on&&e.pointerId===joy.id){let jx=e.clientX-joy.ox,jy=e.clientY-joy.oy;const l=Math.hypot(jx,jy),mx=50;if(l>mx){jx*=mx/l;jy*=mx/l}joy.dx=jx/mx;joy.dy=jy/mx;$('knob').style.transform=`translate(${jx}px,${jy}px)`}});
-function joyRest(){const j=$('joy');j.classList.remove('on');j.style.left=(96+(window.visualViewport?0:0))+'px';j.style.top=(innerHeight-96)+'px';$('knob').style.transform=''}
+function joyRest(){const j=$('joy');j.classList.remove('on');j.style.left=(innerWidth-96)+'px';j.style.top=(innerHeight-96)+'px';$('knob').style.transform=''}
 const up=e=>{ptrs.delete(e.pointerId);pinch0=0;if(joy.on&&e.pointerId===joy.id){joy.on=false;joy.dx=joy.dy=0;joyRest()}};
 canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',up);
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode==='port')orbit.r=Math.min(60,Math.max(6,orbit.r*(1+e.deltaY*.001)))},{passive:false});
