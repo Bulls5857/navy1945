@@ -228,6 +228,14 @@ body{background:var(--ink)}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.ring{animation:none}}
 #fade{position:fixed;inset:0;background:#06101e;opacity:0;pointer-events:none;transition:opacity .25s}
+#tip{position:fixed;inset:0;z-index:28;display:flex;align-items:center;justify-content:center;background:rgba(4,10,20,.55);padding:16px}
+#tip .sheet{width:min(440px,100%);gap:10px}
+#tip h2{margin:0;font-size:18px;color:var(--accent)}
+#tip p{margin:0;font-size:13px;line-height:1.6;color:var(--fg)}
+.act.strike{border-color:#e2593f}
+.act.strike .cd{background:conic-gradient(rgba(226,89,63,.35) var(--p,0%),transparent 0)}
+.act.strike.ready{box-shadow:0 0 0 3px rgba(226,89,63,.5);animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(226,89,63,.15)}}
 </style>
 
 </head>
@@ -263,6 +271,7 @@ body{background:var(--ink)}
   <div id="dkTable" aria-label="무장 상태"></div>
 </div>
 <div id="fade"></div>
+<div id="tip" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="tipT"><h2 id="tipT"></h2><p id="tipB"></p><button type="button" class="go" id="tipOk">알겠어요</button></div></div>
 <div id="hud" hidden>
   <div class="bar top">
     <div class="hp"><small>선체 내구 <b id="hpT"></b></small><div class="meter"><i id="hpB"></i></div></div>
@@ -277,6 +286,8 @@ body{background:var(--ink)}
   <canvas id="mini" width="118" height="118" aria-label="미니맵"></canvas>
   <div class="acts">
     <button type="button" class="act big" id="torpBtn" aria-label="어뢰 발사"><span class="cd" id="torpCd"></span><b>▲</b>어뢰</button>
+    <button type="button" class="act big strike" id="strikeBtn" aria-label="공습 요청"><span class="cd" id="strikeCd"></span><b>💣</b>공습</button>
+    <button type="button" class="act" id="ftBtn" aria-label="전투기 발진"><span class="cd" id="ftCd"></span><b>✈</b>전투기</button>
     <button type="button" class="act" id="repBtn" aria-label="응급 수리"><span class="cd" id="repCd"></span><b>+</b>수리</button>
     <button type="button" class="act" id="scoutBtn" aria-label="정찰기 발진" hidden><span class="cd" id="scoutCd"></span><b>✈</b>정찰기</button>
   </div>
@@ -1039,7 +1050,7 @@ function fireShell(from,to,foe,dmg,big){const dx=to.x-from.x,dz=to.z-from.z,dh=M
   s.alive=true;s.foe=foe;s.dmg=dmg;s.big=big;s.m.material=foe?shellMatF:shellMatA;s.m.scale.setScalar(big?1.6:foe?1.3:1);s.m.visible=true;s.m.position.copy(from);
   s.v=V(dx/t,(0-from.y+.5*gr*t*t)/t,dz/t);s.glowT=0}
 function launchTorp(x,z,heading,foe,dmg,sp){let t=torps.find(q=>!q.alive);if(!t){t={m:new T.Mesh(torpGeo,torpMatA),alive:false};t.m.castShadow=false;scene.add(t.m);torps.push(t)}
-  SFX.torp({x,z});t.alive=true;t.foe=foe;t.dmg=dmg;t.m.material=foe?torpMatF:torpMatA;t.m.scale.setScalar(1.5);t.m.visible=true;t.m.position.set(x,-.01,z);t.m.rotation.set(0,heading,0);t.vx=Math.sin(heading)*sp;t.vz=Math.cos(heading)*sp;t.life=45/sp;t.wk=0}
+  SFX.torp({x,z});t.alive=true;t.foe=foe;t.dmg=dmg;t.dist=0;t.m.material=foe?torpMatF:torpMatA;t.m.scale.setScalar(1.5);t.m.visible=true;t.m.position.set(x,-.01,z);t.m.rotation.set(0,heading,0);t.vx=Math.sin(heading)*sp;t.vz=Math.cos(heading)*sp;t.life=45/sp;t.wk=0}
 function dropCoin(p,v){const n=Math.min(6,Math.max(1,Math.round(v/15)));for(let i=0;i<n;i++){let c=coins.find(q=>!q.alive);if(!c){c={m:new T.Mesh(coinGeo,coinMat),alive:false};scene.add(c.m);coins.push(c)}
   c.alive=true;c.m.visible=true;c.v=v/n;c.m.scale.setScalar(1.5);c.m.position.set(p.x,1,p.z);const a=Math.random()*TAU,sp=2+Math.random()*3;c.vel=V(Math.cos(a)*sp,7+Math.random()*3,Math.sin(a)*sp);c.t=-i*.06;c.tr=0}}
 const tmp=V(0,0,0);
@@ -1059,7 +1070,7 @@ function hitShip(sh,p,pad){const dx=p.x-sh.g.position.x,dz=p.z-sh.g.position.z,h
   return Math.abs(lx)<sh.B+(pad||.15)&&Math.abs(lz)<sh.L/2}
 function damagePlayer(d,p,big){if(R.over)return;SFX.hit();const dd=d*(1-R.st.red);R.hp-=dd;R.lastHit=R.t;boom(V(p.x,.9,p.z),big?1.6:.9);R.shake=Math.max(R.shake,big?.5:.2);player.hullMat.emissiveIntensity=.5;
   if(R.hp<=0){R.hp=0;boom(player.g.position.clone().setY(1),4);endRun(false)}}
-function killFoe(f){f.sink=.01;const p=f.g.position.clone();R.kills++;if(!f.boss)R.stageKills++;R.sunk[f.type]++;if(f.boss)R.bosses++;
+function killFoe(f){f.sink=.01;R.strike=Math.min(1,(R.strike||0)+(f.boss?.35:{DD:.12,CL:.16,CA:.2,BB:.3}[f.type]));const p=f.g.position.clone();R.kills++;if(!f.boss)R.stageKills++;R.sunk[f.type]++;if(f.boss)R.bosses++;
   const val={DD:22,CL:50,CA:102,BB:264}[f.type]*(1+.22*(R.stage-1))*(f.boss?2:1);dropCoin(p,val);
   boom(V(p.x,1,p.z),f.L*.14+1);for(let i=0;i<3;i++)setTimeout(()=>{if(mode==='sea')boom(V(p.x+(Math.random()-.5)*f.L*.5,1,p.z+(Math.random()-.5)*2),2)},200+i*260);
   if(f.boss){R.bossDead=true;setTimeout(stageClear,1600)}}
@@ -1067,12 +1078,12 @@ function stageClear(){if(mode!=='sea'||R.over)return;const bonus=Math.round(144*
   banner(`해역 ${R.stage} 확보 · 보너스 ${fmt(bonus)}`);SFX.clear();R.stage++;R.stageKills=0;R.boss=null;R.bossDead=false;R.spawnT=3;R.planeT=10}
 let bannerT=null;function banner(t){const b=$('banner');b.textContent=t;b.style.opacity=1;clearTimeout(bannerT);bannerT=setTimeout(()=>b.style.opacity=0,2200)}
 const quota=s=>5+2*s;
-function clearBattle(){clearFX();for(const f of foes.slice())releaseFoe(f);for(const p of planes){p.alive=false;p.g.visible=false}for(const a of[shells,torps,coins])for(const q of a){q.alive=false;q.m.visible=false}}
-function startRun(){if(PS.dock)return;mode='sea';setWinter(false);renderer.toneMappingExposure=.9;scene.fog.near=WU.uNear.value=95;scene.fog.far=WU.uFar.value=280;Object.assign(sun.shadow.camera,{left:-40,right:40,top:40,bottom:-40,far:150});sun.shadow.camera.updateProjectionMatrix();SV.runs++;save();$('port').hidden=true;$('hud').hidden=false;$('result').hidden=true;$('hint').hidden=false;harbor.visible=false;WU.uAmp.value=1;clearBattle();camera.clearViewOffset();
+function clearBattle(){for(const a of allies){a.alive=false;a.g.visible=false}bombs.length=0;clearFX();for(const f of foes.slice())releaseFoe(f);for(const p of planes){p.alive=false;p.g.visible=false}for(const a of[shells,torps,coins])for(const q of a){q.alive=false;q.m.visible=false}}
+function startRun(){if(PS.dock)return;mode='sea';setWinter(false);renderer.toneMappingExposure=.9;scene.fog.near=WU.uNear.value=95;scene.fog.far=WU.uFar.value=280;Object.assign(sun.shadow.camera,{left:-40,right:40,top:40,bottom:-40,far:150});sun.shadow.camera.updateProjectionMatrix();SV.runs++;save();$('port').hidden=true;$('hud').hidden=false;$('result').hidden=true;$('hint').hidden=true;harbor.visible=false;WU.uAmp.value=1;clearBattle();camera.clearViewOffset();
   const st=stats();Object.assign(R,{st,t:0,hp:st.maxHp,lastHit:-9,stage:1,stageKills:0,kills:0,coins:0,earned:0,spawnT:1.5,planeT:16,boss:null,bossDead:false,over:false,shake:0,
-    vx:0,vz:0,throttle:0,yawRate:0,aaT:0,torpT:0,repT:8,scoutT:0,scoutCd:0,zoom:1,wakeT:0,sunk:{DD:0,CL:0,CA:0,BB:0},planes:0,bosses:0});
+    vx:0,vz:0,throttle:0,yawRate:0,aaT:0,torpT:0,repT:8,scoutT:0,scoutCd:0,zoom:1,ftCd:0,strike:0,paused:false,wakeT:0,sunk:{DD:0,CL:0,CA:0,BB:0},planes:0,bosses:0});
   player.g.position.set(0,0,0);player.g.rotation.set(0,0,0);player.hullMat.emissive.setHex(0xff4a20);for(const m of player.mounts){m.obj.rotation.y=m.rest;m.cd=.5+Math.random()}
-  banner('해역 1 · 적 함대 접근');$('joy').hidden=false;joyRest();hudUpdate()}
+  banner('해역 1 · 적 함대 접근');setTimeout(()=>{if(mode==='sea')tip('basics')},600);$('joy').hidden=false;joyRest();hudUpdate()}
 function endRun(win){if(R.over)return;R.over=true;const pf=PF(),ri0=rankIdx(pf.xp),rb=Math.round(R.coins*rankBonus(ri0));R.coins+=rb;SV.coins+=R.coins;SV.best=Math.max(SV.best,R.stage-1+(R.bossDead?1:0));
   let xp=R.planes*2+R.bosses*60+(R.stage-1)*35;for(const k in R.sunk){xp+=R.sunk[k]*XPV[k];pf.sunk[k]+=R.sunk[k]}xp=Math.round(xp);pf.xp+=xp;pf.planes+=R.planes;pf.bosses+=R.bosses;pf.coinsTotal+=R.coins;pf.bestKills=Math.max(pf.bestKills,R.kills);pf.time+=R.t;save();
   const ri1=rankIdx(pf.xp),promo=ri1>ri0;sync({stage:R.stage,kills:R.kills,coins:Math.round(R.coins),xp,nat:SV.nat,cls:SV.cls,sec:Math.round(R.t),win:!!win});if(promo)setTimeout(()=>SFX.evolve(),win?300:1600);renderChip();
@@ -1105,6 +1116,56 @@ function stepScout(dt){if(R.scoutT<=0){scoutG.visible=false;return}const pg=play
   const p=scoutG.position,dx=tx-p.x,dz=tz-p.z;p.x+=dx*Math.min(1,dt*2.5);p.z+=dz*Math.min(1,dt*2.5);p.y=up;scoutG.rotation.y=Math.atan2(dx,dz);scoutG.rotation.z=-.35;
   if(R.scoutT<1.5)p.y=up*R.scoutT/1.5}
 {const sb=$('scoutBtn');sb.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();auInit();launchScout()});sb.addEventListener('click',e=>{if(e.detail===0)launchScout()})}
+/* ================= friendly air: fighter cover + carrier air strike ================= */
+const FT_CD=40,FT_DUR=25,ARM_FOE=7.5,ARM_OWN=3;
+function buildFriendly(kind){const g=new T.Group(),m=new T.MeshBasicMaterial({color:kind==='bomb'?0x50627a:0xa9c6dc}),d=new T.MeshBasicMaterial({color:0x26313c}),s=kind==='bomb'?1.25:1;
+  box(.16*s,.15*s,1*s,m,0,0,0,g);box(1.4*s,.03,.3*s,m,0,.05,.05,g);box(.5*s,.03,.15*s,m,0,.06,-.42*s,g);box(.03,.17*s,.15*s,m,0,.08,-.44*s,g);
+  cyl(.09*s,.09*s,.05,d,0,0,.52*s,g,8).rotation.x=Math.PI/2;
+  for(const sx of[-.5,.5]){const st=box(.12*s,.02,.12*s,new T.MeshBasicMaterial({color:kind==='bomb'?0xffffff:0xffffff}),sx*s,.07,.05,g)}
+  g.traverse(o=>{if(o.isMesh){o.castShadow=false;o.layers.set(1)}});g.visible=false;scene.add(g);return g}
+const allies=[];
+function ally(kind){let a=allies.find(q=>!q.alive&&q.kind===kind);if(!a){a={g:buildFriendly(kind),kind};allies.push(a)}a.alive=true;a.g.visible=true;a.tgt=null;a.t=0;a.state='in';a.fire=0;return a}
+function launchFighters(){if(mode!=='sea'||R.over||R.ftCd>0)return;R.ftCd=FT_CD;const pg=player.g.position;
+  for(let i=0;i<2;i++){const a=ally('fight');a.life=FT_DUR;a.ang=i*Math.PI;a.g.position.set(pg.x-30+i*3,5,pg.z-30);}
+  banner('전투기 발진 · 뇌격기 요격');SFX.torp(pg);tip('fighter')}
+function airStrike(){if(mode!=='sea'||R.over||R.strike<1)return;const pg=player.g.position;
+  const tg=foes.filter(f=>!f.sink&&f.g.position.distanceTo(pg)<70).sort((a,b)=>(b.boss?1:0)-(a.boss?1:0)||a.g.position.distanceTo(pg)-b.g.position.distanceTo(pg)).slice(0,4);
+  if(!tg.length){banner('공습할 적 함선이 없어요');return}
+  R.strike=0;const from=Math.random()*TAU;
+  tg.forEach((f,i)=>{const a=ally('bomb');a.tgt=f;a.state='in';a.g.position.set(pg.x+Math.cos(from)*42+i*2,9,pg.z+Math.sin(from)*42+i*2);a.delay=i*.45});
+  banner('공습 요청 · 급강하폭격기 접근');SFX.alarm()}
+const bombs=[];
+function dropBomb(a){const f=a.tgt;bombs.push({x:a.g.position.x,y:a.g.position.y,z:a.g.position.z,tx:f.g.position.x+f.vx*.6,tz:f.g.position.z+f.vz*.6,t:0,f})}
+function stepAir(dt,t){const pg=player.g.position;
+  for(const a of allies){if(!a.alive)continue;const g=a.g;let sp=8,want=null;
+    if(a.kind==='fight'){a.life-=dt;
+      if(a.life<=0){a.state='out'}
+      if(a.state!=='out'){if(!a.tgt||!a.tgt.alive||a.tgt.fall){a.tgt=null;let bd=24*24;for(const p of planes){if(!p.alive||p.fall)continue;const d2=(p.g.position.x-pg.x)**2+(p.g.position.z-pg.z)**2;if(d2<bd&&!allies.some(o=>o!==a&&o.tgt===p)){bd=d2;a.tgt=p}}}
+        if(a.tgt){want=a.tgt.g.position;sp=11;const d=g.position.distanceTo(a.tgt.g.position);if(d<3){a.fire+=dt;if(Math.random()<dt*14)fx('glow',g.position.clone(),{life:.15,s0:.25,s1:.15,v:a.tgt.g.position.clone().sub(g.position).multiplyScalar(5)});
+          if(a.fire>.6){downPlane(a.tgt);a.tgt=null;a.fire=0}}}
+        else{a.ang+=dt*.9;want=V(pg.x+Math.cos(a.ang)*7,5,pg.z+Math.sin(a.ang)*7)}}
+      else want=V(g.position.x+Math.sin(g.rotation.y)*10,6,g.position.z+Math.cos(g.rotation.y)*10)}
+    else{if(a.delay>0){a.delay-=dt;continue}const f=a.tgt;
+      if(a.state==='in'){if(!f||f.sink){a.state='out'}else{want=V(f.g.position.x,9,f.g.position.z);sp=10;const hd=Math.hypot(f.g.position.x-g.position.x,f.g.position.z-g.position.z);if(hd<6)a.state='dive'}}
+      if(a.state==='dive'){sp=12;want=V(f.g.position.x,1.6,f.g.position.z);g.position.y-=dt*7;if(g.position.y<3.2){dropBomb(a);a.state='out';SFX.torp(g.position)}}
+      if(a.state==='out')want=V(g.position.x+Math.sin(g.rotation.y)*10,10,g.position.z+Math.cos(g.rotation.y)*10)}
+    if(want){const dx=want.x-g.position.x,dz=want.z-g.position.z,h=Math.atan2(dx,dz),dd=wrap(h-g.rotation.y);g.rotation.y+=Math.max(-dt*3,Math.min(dt*3,dd));
+      g.position.x+=Math.sin(g.rotation.y)*sp*dt;g.position.z+=Math.cos(g.rotation.y)*sp*dt;if(a.state!=='dive')g.position.y+=(want.y-g.position.y)*Math.min(1,dt*1.5);g.rotation.z=-dd*.6;g.rotation.x=a.state==='dive'?.7:0}
+    if(a.state==='out'&&g.position.distanceTo(pg)>60){a.alive=false;g.visible=false}}
+  for(let i=bombs.length-1;i>=0;i--){const b=bombs[i];b.t+=dt;const k=Math.min(1,b.t/.7);const x=b.x+(b.tx-b.x)*k,z=b.z+(b.tz-b.z)*k,y=b.y*(1-k*k);fx('red',V(x,y,z),{life:.12,s0:.35,s1:.2});
+    if(k>=1){bombs.splice(i,1);boom(V(b.tx,1,b.tz),3);splash(V(b.tx,0,b.tz),true);const dmg=70*(1+.25*(R.stage-1));
+      for(const f of foes){if(f.sink)continue;if(Math.hypot(f.g.position.x-b.tx,f.g.position.z-b.tz)<f.L*.55+1.2){f.hp-=f===b.f?dmg:dmg*.4;f.hullMat.emissiveIntensity=.8;if(f.hp<=0)killFoe(f)}}}}}
+function downPlane(p){if(!p||p.fall)return;p.fall=.01;R.kills++;R.planes++;R.strike=Math.min(1,R.strike+.04);dropCoin(p.g.position,7.2*(1+.2*(R.stage-1)))}
+/* first-time explanations */
+const TIPS={
+  basics:['전투 기본','<b>오른쪽 조이스틱</b>으로 배를 움직여요. 주포·부포·대공포는 알아서 쏴요.<br>왼쪽 버튼은 직접 쓰는 기술이에요: <b>어뢰</b> · <b>공습</b> · <b>전투기</b> · <b>수리</b> · <b>정찰기</b>.'],
+  planes:['적 뇌격기 출현','뇌격기는 <b>멀리서</b> 어뢰를 떨어뜨리고 돌아가요. 하얀 물줄기를 보고 옆으로 피하세요.<br>어뢰는 <b>너무 가까이서 쏘면 신관이 작동하지 않아 불발</b>돼요.<br>왼쪽 <b>✈ 전투기</b> 버튼을 누르면 아군 전투기 2기가 25초 동안 배 위를 돌며 뇌격기를 떨어뜨려요.'],
+  strike:['공습 준비 완료','적을 격침할수록 <b>공습 게이지</b>가 차요. 가득 차면 <b>💣 공습</b> 버튼을 눌러보세요.<br>근처 아군 항모에서 <b>급강하폭격기 4기</b>가 날아와 가까운 적 함선(기함 우선)에 폭탄을 떨어뜨려요.'],
+  fighter:null};
+function tip(k){if(!TIPS[k])return;SV.tips=SV.tips||{};if(SV.tips[k])return;SV.tips[k]=1;save();R.paused=true;const[t,b]=TIPS[k];
+  $('tipT').textContent=t;$('tipB').innerHTML=b;$('tip').hidden=false;setTimeout(()=>$('tipOk').focus(),50)}
+$('tipOk').onclick=()=>{$('tip').hidden=true;R.paused=false};
+{const go=(id,fn)=>{const el=$(id);el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();auInit();fn()});el.addEventListener('click',e=>{if(e.detail===0)fn()})};go('ftBtn',launchFighters);go('strikeBtn',airStrike)}
 const mini=$('mini').getContext('2d');
 function drawMini(){const c=mini,W=118,S=W/2/(R.scoutT>0?85:60),pg=player.g.position;c.clearRect(0,0,W,W);
   c.strokeStyle='rgba(127,178,224,.28)';c.lineWidth=1;c.beginPath();c.arc(W/2,W/2,R.st.range*(R.scoutT>0?SC_RANGE:1)*S,0,TAU);c.stroke();c.beginPath();c.arc(W/2,W/2,W/2-1,0,TAU);c.stroke();
@@ -1112,8 +1173,9 @@ function drawMini(){const c=mini,W=118,S=W/2/(R.scoutT>0?85:60),pg=player.g.posi
   for(const f of foes){if(f.sink)continue;const[x,y]=P(f.g.position.x,f.g.position.z);if(Math.hypot(x-W/2,y-W/2)>W/2-3)continue;c.fillStyle=f.boss?'#ff5a3a':'#e2593f';const s=f.boss?6:f.type==='DD'?3:4;c.fillRect(Math.round(x-s/2),Math.round(y-s/2),s,s)}
   for(const p of planes){if(!p.alive||p.fall)continue;const[x,y]=P(p.g.position.x,p.g.position.z);if(Math.hypot(x-W/2,y-W/2)>W/2-3)continue;c.fillStyle='#f2a33a';c.fillRect(Math.round(x-1),Math.round(y-1),2,2)}
   for(const t of torps){if(!t.alive||!t.foe)continue;const[x,y]=P(t.m.position.x,t.m.position.z);if(Math.hypot(x-W/2,y-W/2)>W/2-3)continue;c.fillStyle='#ffffff';c.fillRect(Math.round(x),Math.round(y),1,1)}
+  for(const a of allies){if(!a.alive)continue;const[x,y]=P(a.g.position.x,a.g.position.z);if(Math.hypot(x-W/2,y-W/2)>W/2-3)continue;c.fillStyle='#9fd2ff';c.fillRect(Math.round(x-1),Math.round(y-1),3,3)}
   c.save();c.translate(W/2,W/2);c.rotate(-player.g.rotation.y);c.fillStyle='#6fcb8e';c.beginPath();c.moveTo(0,-6);c.lineTo(4,5);c.lineTo(-4,5);c.closePath();c.fill();c.restore()}
-function actUpdate(){{const sb=$('scoutBtn'),ok=canScout();sb.hidden=false;sb.disabled=!ok;if(sb.dataset.ok!==String(ok)){sb.dataset.ok=String(ok);sb.lastChild.textContent=ok?'정찰기':'중순양함↑'}if(ok){const sp=R.scoutCd/SC_CD;$('scoutCd').style.setProperty('--p',(sp*100)+'%');sb.classList.toggle('ready',sp<=0);sb.classList.toggle('on',R.scoutT>0)}}const tb=$('torpBtn'),rb=$('repBtn'),has=SV.up.torp>0;tb.disabled=!has;
+function actUpdate(){{const fp=R.ftCd/FT_CD;$('ftCd').style.setProperty('--p',(fp*100)+'%');$('ftBtn').classList.toggle('ready',fp<=0);const sp=Math.min(1,R.strike);$('strikeCd').style.setProperty('--p',(sp*100)+'%');$('strikeBtn').classList.toggle('ready',sp>=1);$('strikeBtn').lastChild.textContent=sp>=1?'공습':`공습 ${Math.floor(sp*100)}%`}{const sb=$('scoutBtn'),ok=canScout();sb.hidden=false;sb.disabled=!ok;if(sb.dataset.ok!==String(ok)){sb.dataset.ok=String(ok);sb.lastChild.textContent=ok?'정찰기':'중순양함↑'}if(ok){const sp=R.scoutCd/SC_CD;$('scoutCd').style.setProperty('--p',(sp*100)+'%');sb.classList.toggle('ready',sp<=0);sb.classList.toggle('on',R.scoutT>0)}}const tb=$('torpBtn'),rb=$('repBtn'),has=SV.up.torp>0;tb.disabled=!has;
   const tp=has?R.torpT/R.st.torpInt:0;$('torpCd').style.setProperty('--p',(tp*100)+'%');tb.classList.toggle('ready',has&&tp<=0);
   const rp=R.repT/REP_CD;$('repCd').style.setProperty('--p',(rp*100)+'%');rb.classList.toggle('ready',rp<=0&&R.hp<R.st.maxHp);
   if(tb.dataset.has!==String(has)){tb.dataset.has=String(has);tb.lastChild.textContent=has?'어뢰':'어뢰 미장착'}drawMini()}
@@ -1156,20 +1218,20 @@ function seaStep(dt,t){const P=player,pg=P.g,st=R.st;R.t+=dt;
   if(!R.over){runMounts(P,dt,foes,{range:st.range*(R.scoutT>0?SC_RANGE:1),sp:22,lead:1,trav:1.7,reload:st.reload,secReload:1.1,dmg:st.dmg,secDmg:st.secDmg,spread:.8,foe:false});
     R.aaT-=dt;if(R.aaT<=0){let best=null,bd=17*17;for(const p of planes){if(!p.alive||p.fall)continue;const d2=(p.g.position.x-pg.position.x)**2+(p.g.position.z-pg.position.z)**2;if(d2<bd){bd=d2;best=p}}
       if(best){R.aaT=.35/(st.aaRate*(1+P.aaCount*.08));const from=V(pg.position.x+(Math.random()-.5)*P.B,1.2,pg.position.z+(Math.random()-.5)*P.L*.4),dir=best.g.position.clone().sub(from);
-        fx('glow',from,{life:.22,s0:.28,s1:.18,v:dir.multiplyScalar(4.5)});SFX.aa();if(Math.random()<.4){best.hp-=1;fx('fire',best.g.position.clone(),{life:.2,s0:.4,s1:.8});if(best.hp<=0){best.fall=.01;R.kills++;R.planes++;dropCoin(best.g.position,7.2*(1+.2*(R.stage-1)))}}}else R.aaT=.1}
-    R.torpT=Math.max(0,R.torpT-dt);R.repT=Math.max(0,R.repT-dt);R.scoutCd=Math.max(0,R.scoutCd-dt);R.scoutT=Math.max(0,R.scoutT-dt);stepScout(dt);if(keys.e){keys.e=false;launchScout()}if(keys[' ']){keys[' ']=false;fireTorps()}if(keys.r){keys.r=false;doRepair()}}
+        fx('glow',from,{life:.22,s0:.28,s1:.18,v:dir.multiplyScalar(4.5)});SFX.aa();if(Math.random()<.4){best.hp-=1;fx('fire',best.g.position.clone(),{life:.2,s0:.4,s1:.8});if(best.hp<=0)downPlane(best)}}else R.aaT=.1}
+    R.torpT=Math.max(0,R.torpT-dt);R.repT=Math.max(0,R.repT-dt);R.scoutCd=Math.max(0,R.scoutCd-dt);R.ftCd=Math.max(0,R.ftCd-dt);stepAir(dt,t);if(R.strike>=1)tip('strike');if(keys.f){keys.f=false;launchFighters()}if(keys.q){keys.q=false;airStrike()}R.scoutT=Math.max(0,R.scoutT-dt);stepScout(dt);if(keys.e){keys.e=false;launchScout()}if(keys[' ']){keys[' ']=false;fireTorps()}if(keys.r){keys.r=false;doRepair()}}
   if(!R.over){const alive=foes.filter(f=>!f.sink).length;
     if(R.stageKills>=quota(R.stage)&&!R.boss){const bt=R.stage<=1?'CL':R.stage<=3?'CA':'BB';R.boss=spawnFoe(bt,true);banner(`적 기함 출현 · ${R.boss.c.n}`);SFX.alarm()}
     else if(!R.boss){R.spawnT-=dt;if(R.spawnT<=0&&alive<Math.min(2+R.stage,7)){R.spawnT=Math.max(1.6,4.2-R.stage*.3);const r=Math.random(),s=R.stage;
       spawnFoe(s>=4&&r<.15?'CA':s>=2&&r<.45?'CL':'DD',false)}}
-    if(R.stage>=2){R.planeT-=dt;if(R.planeT<=0){R.planeT=Math.max(9,18-R.stage);spawnPlanes(Math.min(5,2+Math.floor(R.stage/2)))}}}
+    if(R.stage>=2){R.planeT-=dt;if(R.planeT<=0){R.planeT=Math.max(9,18-R.stage);tip('planes');spawnPlanes(Math.min(5,2+Math.floor(R.stage/2)))}}}
   for(const f of foes.slice()){if(f.sink){f.sink+=dt;f.g.position.y-=dt*.4;f.g.rotation.z+=dt*.2;if(f.sink>4.5)releaseFoe(f);continue}
     const fp=f.g.position,ox=fp.x,oz=fp.z;f.orb+=f.orbDir*dt*(f.spd/f.range)*.6;
     const tx=pg.position.x+Math.cos(f.orb)*f.range,tz=pg.position.z+Math.sin(f.orb)*f.range,want=Math.atan2(tx-fp.x,tz-fp.z),d=wrap(want-f.g.rotation.y);
     f.g.rotation.y+=Math.max(-f.turn*dt,Math.min(f.turn*dt,d));fp.x+=Math.sin(f.g.rotation.y)*f.spd*dt;fp.z+=Math.cos(f.g.rotation.y)*f.spd*dt;f.vx=(fp.x-ox)/dt;f.vz=(fp.z-oz)/dt;
     const ed={DD:2.4,CL:3.5,CA:5,BB:8}[f.type]*(1+.13*(R.stage-1));
     if(!R.over)runMounts(f,dt,[P],{range:f.range+8,sp:15,lead:.8,trav:1.1,reload:{DD:3.6,CL:4,CA:4.4,BB:4.6}[f.type],secReload:2.4,dmg:ed,secDmg:ed*.5,spread:2.6,foe:true});
-    if(f.type==='DD'&&!R.over){f.tcd-=dt;const dd=fp.distanceTo(pg.position);if(f.tcd<=0&&dd<26){f.tcd=8+Math.random()*3;const tt=dd/4.6,hb=Math.atan2(pg.position.x+R.vx*tt-fp.x,pg.position.z+R.vz*tt-fp.z);
+    if(f.type==='DD'&&!R.over){f.tcd-=dt;const dd=fp.distanceTo(pg.position);if(f.tcd<=0&&dd<30&&dd>14){f.tcd=8+Math.random()*3;const tt=dd/4.6,hb=Math.atan2(pg.position.x+R.vx*tt-fp.x,pg.position.z+R.vz*tt-fp.z);
       for(const o of[-.12,0,.12])launchTorp(fp.x,fp.z,hb+o,true,12*(1+.13*(R.stage-1)),4.6)}}
     if(f.hp<f.max*.5&&Math.random()<dt*5)fx('smoke',V(fp.x,.8,fp.z),{life:2.4,s0:.5,s1:1.8,a:.7,v:V(0,.8,-.6),drag:.7});
     f.hullMat.emissiveIntensity=Math.max(0,f.hullMat.emissiveIntensity-dt*3);
@@ -1177,14 +1239,15 @@ function seaStep(dt,t){const P=player,pg=P.g,st=R.st;R.t+=dt;
   for(const p of planes){if(!p.alive)continue;const g=p.g;
     if(p.fall){p.fall+=dt;g.position.y-=dt*3;g.rotation.z+=dt*4;if(Math.random()<dt*20)fx('smoke',g.position.clone(),{life:1.2,s0:.3,s1:1,a:.7});if(g.position.y<0){splash(g.position,false);p.alive=false;g.visible=false}continue}
     const dx=pg.position.x-g.position.x,dz=pg.position.z-g.position.z,d=Math.hypot(dx,dz);
-    if(!p.dropped){g.rotation.y=Math.atan2(dx,dz);if(d<13&&!R.over){p.dropped=true;g.userData.torp.visible=false;const tt=d/4.8,hb=Math.atan2(dx+R.vx*tt,dz+R.vz*tt);launchTorp(g.position.x,g.position.z,hb,true,10*(1+.13*(R.stage-1)),4.8)}}
+    if(!p.dropped){g.rotation.y=Math.atan2(dx,dz);if(d<24&&!R.over){p.away=Math.atan2(-dx,-dz)+(Math.random()<.5?1.2:-1.2);p.dropped=true;g.userData.torp.visible=false;const tt=d/4.8,hb=Math.atan2(dx+R.vx*tt,dz+R.vz*tt);launchTorp(g.position.x,g.position.z,hb,true,10*(1+.13*(R.stage-1)),4.8)}}
+    if(p.dropped){g.rotation.y+=Math.max(-dt*1.6,Math.min(dt*1.6,wrap(p.away-g.rotation.y)))}
     g.position.x+=Math.sin(g.rotation.y)*6*dt;g.position.z+=Math.cos(g.rotation.y)*6*dt;g.rotation.z=Math.sin(t*2+g.position.x)*.08;
     if(p.dropped&&d>60){p.alive=false;g.visible=false}}
   for(const q of torps){if(!q.alive)continue;q.m.position.x+=q.vx*dt;q.m.position.z+=q.vz*dt;q.life-=dt;q.wk-=dt;
     if(q.wk<=0){q.wk=q.foe?.025:.04;const tp=q.m.position,sx=-q.vz,sz=q.vx,sl=Math.hypot(sx,sz)||1;fx('foam',V(tp.x,.07,tp.z),{life:q.foe?4:2.6,s0:q.foe?.7:.45,s1:q.foe?2:1.2,a:1});if(q.foe){for(const sd of[-1,1])fx('foam',V(tp.x+sx/sl*sd*.25,.06,tp.z+sz/sl*sd*.25),{life:3,s0:.35,s1:1.2,a:.8,v:V(sx/sl*sd*.35,0,sz/sl*sd*.35),drag:.6});fx('foam',V(tp.x+q.vx*.12,.1,tp.z+q.vz*.12),{life:.5,s0:.9,s1:.5,a:.95})}}
-    const p=q.m.position;let hit=false;
-    if(q.foe){if(!R.over&&hitShip(P,p,.1)){damagePlayer(q.dmg,p,true);splash(p,true);hit=true}}
-    else for(const f of foes){if(f.sink)continue;if(hitShip(f,p,.1)){f.hp-=q.dmg;f.hullMat.emissiveIntensity=.6;boom(V(p.x,.8,p.z),1.6);splash(p,true);if(f.hp<=0)killFoe(f);hit=true;break}}
+    const p=q.m.position;let hit=false;q.dist=(q.dist||0)+Math.hypot(q.vx,q.vz)*dt;const armed=q.dist>=(q.foe?ARM_FOE:ARM_OWN);
+    if(q.foe){if(!R.over&&hitShip(P,p,.1)){if(armed){damagePlayer(q.dmg,p,true);splash(p,true)}else{splash(p,false);fx('foam',V(p.x,.2,p.z),{life:.8,s0:.6,s1:1.4,a:.9});if(!R.dudT||R.t-R.dudT>3){R.dudT=R.t;banner('어뢰 불발!')}}hit=true}}
+    else for(const f of foes){if(f.sink)continue;if(hitShip(f,p,.1)){if(!armed){splash(p,false);hit=true;break}f.hp-=q.dmg;f.hullMat.emissiveIntensity=.6;boom(V(p.x,.8,p.z),1.6);splash(p,true);if(f.hp<=0)killFoe(f);hit=true;break}}
     if(hit||q.life<=0){q.alive=false;q.m.visible=false}}
   for(const s of shells){if(!s.alive)continue;s.v.y-=9.8*dt;s.m.position.addScaledVector(s.v,dt);s.glowT-=dt;
     if(s.glowT<=0){s.glowT=.03;fx(s.foe?'red':'glow',s.m.position.clone(),{life:.18,s0:s.big?.5:s.foe?.45:.35,s1:.2,a:.85})}
@@ -1213,7 +1276,7 @@ function frame(now){const dt=Math.min(.04,(now-last)/1000);last=now;const t=now/
     if(flashT>0){flashT-=dt;player.hullMat.emissive.setHex(0xffd27a);player.hullMat.emissiveIntensity=Math.max(0,Math.sin(flashT*12))*.25}else player.hullMat.emissiveIntensity=0;
     const{th,ph,r,tgt}=orbit;camera.position.set(tgt.x+r*Math.sin(ph)*Math.sin(th),tgt.y+r*Math.cos(ph),tgt.z+r*Math.sin(ph)*Math.cos(th));camera.lookAt(tgt);
     if(!PS.dock){pg.position.y=Math.sin(t*.8)*.02;pg.rotation.z=Math.sin(t*.6)*.006}stepDock(dt);focus=V(tgt.x,0,tgt.z)}
-  else focus=seaStep(dt,t);
+  else focus=(R.paused?player.g.position.clone():seaStep(dt,t));
   stepSnow(dt,t,orbit.tgt);
   smokeT-=dt;if(smokeT<=0){smokeT=mode==='port'?.25:.12;for(const f of player.funnels){f.o.localToWorld(tmp.set(0,f.top+.1,0));fx('smoke',tmp.clone(),{life:3.5,s0:.4,s1:2,a:mode==='port'?.22:.35,v:V(.2,.7,.3),drag:.8})}}
   stepFX(dt);
