@@ -407,7 +407,7 @@ function flagTex(nat){if(FLAGS[nat])return FLAGS[nat];const c=document.createEle
 /* ================= nations, hull classes, upgrade ladders ================= */
 const CLS=['FF','DD','CL','CA','BC','BB'];
 const CLSNAME={FF:'프리깃',DD:'구축함',CL:'경순양함',CA:'중순양함',BC:'순양전함',BB:'전함'};
-const SIZE={FF:{H:.34,D:.3,aa:2},DD:{H:.4,D:.38,aa:2},CL:{H:.5,D:.56,aa:3},CA:{H:.58,D:.62,aa:4},BC:{H:.68,D:.85,aa:5},BB:{H:.8,D:1.05,aa:6}};
+const SIZE={FF:{H:.34,D:.3,aa:2},DD:{H:.4,D:.38,aa:2},CL:{H:.5,D:.56,aa:3},CA:{H:.58,D:.62,aa:4},BC:{H:.68,D:.85,aa:5},BB:{H:1.02,D:1.05,aa:6}};
 const LAD={FF:[76,88,102,105,120],DD:[102,113,120,127,130],CL:[127,140,150,152,155],CA:[155,180,190,203,210],BC:[254,283,305,330,356],BB:[356,380,381,406,460]};
 const BASE={FF:{hp:150,spd:3.7,mul:1},DD:{hp:190,spd:3.9,mul:1.6},CL:{hp:330,spd:3.4,mul:2.6},CA:{hp:470,spd:3.25,mul:4},BC:{hp:660,spd:3.4,mul:6},BB:{hp:920,spd:2.9,mul:9}};
 const EVOLVE={FF:900,DD:2600,CL:6500,CA:14000,BC:30000};
@@ -470,14 +470,14 @@ function buildShip(nat,cls,up){const N=nat==='foe'?FOE:NAT[nat],c=N.c[cls],P=N.p
   const sheer=t=>H*(1+(t>.66?N.sheer*Math.pow((t-.66)/.34,2):0));
   const deckY=z=>sheer(Math.min(1,Math.max(0,(z+L/2)/L)));
   const hbAt=z=>halfB(Math.min(1,Math.max(0,(z+L/2)/L)));
-  const baltic=nat==='de'&&cls==='BB',N2=Math.round(baltic?L*10:40+L*2),sec=[[1,1],[1,.4],[.998,.2],[.996,.17],[.985,.05],[.97,-.05],[.88,-.45],[.62,-.85],[.25,-1],[0,-1.02]],ring=sec.length*2-1;
+  const baltic=nat==='de'&&cls==='BB',N2=Math.round(baltic?L*10:40+L*2),sec=baltic?[[1,1],[1,.85],[1,.7],[1,.6],[1,.57],[.999,.43],[.998,.3],[.998,.2]]:[[1,1],[1,.4],[.998,.2],[.996,.17],[.985,.05],[.97,-.05],[.88,-.45],[.62,-.85],[.25,-1],[0,-1.02]],ring=sec.length*2-1;
   const pos=[],col=[],idx=[],cG=new T.Color(P.hull),cB=new T.Color(0x18191b),cR=new T.Color(0x9a2a22).convertSRGBToLinear(),cW=new T.Color(0xe6eaea),cK=new T.Color(0x2a2e30),cD1=new T.Color(0x52636e),cD2=new T.Color(0xcfdce2);
-  const cDk=new T.Color(0x3a3f42),cBk=new T.Color(0x060708),cWh=new T.Color(0xf4f6f6),bz=[(.80-.5)*L,(.19-.5)*L];
+  const cDk=new T.Color(0x1c1f21),cBk=new T.Color(0x060708),cWh=new T.Color(0xf4f6f6),cLt=new T.Color(0x7c8b97),bz=[(.625-.5)*L,(.405-.5)*L];
   const paint=(x,y,z,t)=>{if(y<=H*.2)return cR;
     if(baltic){/* Baltic scheme (1941): black/white bands fore and aft, dark bow and stern ends, false white bow wave */
-      if(t>.9&&y<H*(.2+.6*(t-.9)/.1))return cWh;if(t>.955||t<.03)return cDk;
-      for(const c of bz){const d=Math.abs(z-c);if(d<1.575)return d<.225?cWh:d<1.125?cBk:cWh}
-      return cG}
+      if(y<=H*.58)return cR;if(t>.948||t<.04)return cDk;if(t>.912)return cWh;
+      const zs=z;for(const c of bz){const d=Math.abs(zs-c);if(d<1.2)return d<.72?cBk:cWh}
+      return cLt}
     if(N.camo==='splinter'&&(t<.13||t>.86))return(Math.floor((z+y*1.2)*1.6)%2+2)%2?cW:cK;
     if(N.camo==='dazzle'){const v=Math.sin(z*.9+y*3)+Math.sin(z*.37+1.7);return v>1.1?cD1:v<-1.1?cD2:cG}
     return cG};
@@ -561,7 +561,8 @@ const REAL={
   blocks:[[.40,.635,.62,.55,0],[.545,.63,.48,.5,.55],[.565,.615,.36,.45,1.05],[.395,.455,.44,.5,.55]],
   ct:[.64,.28,.5,.55],tower:{t:'oct',f:.585,base:1.5,h:1.0,r:.34},
   fun:[[.495,.52,1.45,.55,'cap',-.06]],mast:[[.555,2.3,2.0],[.43,2.0,1.05]],dome:[[.42,1.05,.27,1.1],[.6,2.5,.3,1.3]],
-  sec:{cal:150,n:2,at:[[.60,.76,0],[.535,.76,0],[.465,.76,0]]},ha:[[.50,.5,.55],[.455,.5,.55],[.415,.5,.55]],cat:[.475,1.05,1],aa:[.4,.62]},
+  sec:{cal:150,n:2,at:[[.60,.76,0],[.535,.76,0],[.465,.76,0]]},ha:[[.50,.5,.55],[.455,.5,.55],[.415,.5,.55]],cat:[.475,1.05,1],aa:[.4,.62],
+  tubs:[[.605,.3,1.05],[.575,.34,1.05],[.598,.22,1.5],[.53,.36,.55],[.445,.3,1.05],[.415,.28,1.05],[.53,0,1.6],[.465,.2,.55]]},
  us_BB:{deck:'wood',tw:.43,tur:[[.718,0],[.655,1],[.30,0]],
   blocks:[[.40,.625,.6,.5,0],[.48,.615,.5,.45,.5],[.545,.61,.36,.5,.95],[.555,.60,.26,.5,1.45],[.40,.46,.42,.45,.5]],
   ct:[.617,.3,.6,.5],tower:{t:'dir',f:.578,base:1.95,r:.3},
@@ -588,10 +589,13 @@ function realTop(X){const{g,nat,cls,c,P,L,B,deckY,hbAt,up,ms,ml,md,mk,white}=X,z
   for(const[f0,f1,wf,h,base]of bp.blocks){const z0=zf(f0),z1=zf(f1),zc=(z0+z1)/2,l=z1-z0,w=Math.min(W*wf,hbAt(zc)*1.9),y=deckY(zc)+base;
     box(w,h,l,base>0?ms:md,0,y,zc,g);box(w*1.01,.04,l*1.01,ml,0,y+h-.02,zc,g);
     if(base>0){box(w*.9,.05,.02,mk,0,y+h*.55,z1+.005,g);for(const sx of[-1,1])box(.02,.05,l*.8,mk,sx*(w/2+.005),y+h*.55,zc,g)}}
+  if(bp.tubs)for(const[f,xf,yb]of bp.tubs)for(const sx of xf?[-1,1]:[0]){const z=zf(f),x=sx*xf*W/2,y=deckY(z)+yb*HF;
+    cyl(.2,.17,.13,ms,x,y,z,g,12);cyl(.21,.21,.03,ml,x,y+.12,z,g,12);
+    for(const dx of[-.045,.045]){const b=box(.022,.022,.3,mk,x+dx,y+.16,z+.1,g);b.rotation.x=-.5}}
   if(nat==='de'&&cls==='BB'){/* Baltic stripes carried up the deckhouse sides */
     const bw=M(0xf2f4f4,.7,0),bk=M(0x0b0c0d,.8,0),[f0,f1,wf,h]=bp.blocks[0];
-    for(const fc of[.613,.418]){const zc=zf(fc),w=Math.min(W*wf,hbAt(zc)*1.9),y=deckY(zc);let z=zc-.46;
-      for(const[len,m]of[[.12,bw],[.28,bk],[.12,bw],[.28,bk],[.12,bw]]){for(const sx of[-1,1])box(.012,h*.96,len,m,sx*(w/2+.007),y,z+len/2,g);z+=len}}}
+    for(const fc of[.618,.415]){const zc=zf(fc),w=Math.min(W*wf,hbAt(zc)*1.9),y=deckY(zc);let z=zc-.66;
+      for(const[len,m]of[[.22,bw],[.88,bk],[.22,bw]]){for(const sx of[-1,1])box(.012,h*.96,len,m,sx*(w/2+.007),y,z+len/2,g);z+=len}}}
   // main turrets
   gunsF.forEach((gp,i)=>{const t=bp.tur[i];if(!t)return;const k=tparam(lad||gp[0],gp[1]),s=W*bp.tw/k.w;k.w*=s;k.l*=s;k.h*=s*.9;k.sp*=s;k.bar*=s;
     const z=zf(t[0]),y=deckY(z),raise=t[1]?k.h*1.15:0,rest=t[0]>.5?0:Math.PI;
