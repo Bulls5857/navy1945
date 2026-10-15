@@ -317,7 +317,7 @@ scene.add(new T.HemisphereLight(0xdcebff,0x2c3a48,.6));
 const sun=new T.DirectionalLight(0xfff0d6,1.4);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
 Object.assign(sun.shadow.camera,{left:-24,right:24,top:24,bottom:-24,near:1,far:110});sun.shadow.bias=-.0005;sun.shadow.normalBias=.02;
 scene.add(sun,sun.target);
-const SUNDIR=new T.Vector3(-.5,.78,.38).normalize();
+const SUNDIR=new T.Vector3(-.5,.78,.38).normalize(),SUNSEA=new T.Vector3(-.45,.8,-.42).normalize();
 const wrap=a=>{a=(a+Math.PI)%TAU;if(a<0)a+=TAU;return a-Math.PI};
 const V=(x,y,z)=>new T.Vector3(x,y,z);
 const fmt=n=>Math.floor(n).toLocaleString('ko-KR');
@@ -342,7 +342,7 @@ const pq=new T.Mesh(new T.PlaneGeometry(2,2),new T.ShaderMaterial({uniforms:{tD:
     float lv=12.;c=floor(clamp(c,0.,1.)*lv+.5+bay(px)*.2)/lv;
     gl_FragColor=vec4(c,1.);}`}));
 const pScene=new T.Scene(),pCam=new T.OrthographicCamera(-1,1,1,-1,0,1);pq.frustumCulled=false;pScene.add(pq);
-function pixSize(){const rows=mode==='sea'?300:270;return Math.max(1,innerHeight/rows)}
+function pixSize(){const rows=mode==='sea'?360:270;return Math.max(1,innerHeight/rows)}
 function drawFrame(){if(!PIX){camera.layers.mask=3;renderer.setRenderTarget(null);renderer.render(scene,camera);return}
   camera.layers.mask=1;
   const k=pixSize(),w=Math.max(2,Math.round(innerWidth/k)),h=Math.max(2,Math.round(innerHeight/k));
@@ -407,7 +407,7 @@ function flagTex(nat){if(FLAGS[nat])return FLAGS[nat];const c=document.createEle
 /* ================= nations, hull classes, upgrade ladders ================= */
 const CLS=['FF','DD','CL','CA','BC','BB'];
 const CLSNAME={FF:'프리깃',DD:'구축함',CL:'경순양함',CA:'중순양함',BC:'순양전함',BB:'전함'};
-const SIZE={FF:{H:.34,D:.3,aa:2},DD:{H:.4,D:.38,aa:2},CL:{H:.5,D:.56,aa:3},CA:{H:.58,D:.62,aa:4},BC:{H:.68,D:.85,aa:5},BB:{H:1.02,D:1.05,aa:6}};
+const SIZE={FF:{H:.42,D:.3,aa:2},DD:{H:.5,D:.38,aa:2},CL:{H:.62,D:.56,aa:3},CA:{H:.72,D:.62,aa:4},BC:{H:.86,D:.85,aa:5},BB:{H:1.2,D:1.05,aa:6}};
 const LAD={FF:[76,88,102,105,120],DD:[102,113,120,127,130],CL:[127,140,150,152,155],CA:[155,180,190,203,210],BC:[254,283,305,330,356],BB:[356,380,381,406,460]};
 const BASE={FF:{hp:150,spd:3.7,mul:1},DD:{hp:190,spd:3.9,mul:1.6},CL:{hp:330,spd:3.4,mul:2.6},CA:{hp:470,spd:3.25,mul:4},BC:{hp:660,spd:3.4,mul:6},BB:{hp:920,spd:2.9,mul:9}};
 const EVOLVE={FF:900,DD:2600,CL:6500,CA:14000,BC:30000};
@@ -470,12 +470,12 @@ function buildShip(nat,cls,up){const N=nat==='foe'?FOE:NAT[nat],c=N.c[cls],P=N.p
   const sheer=t=>H*(1+(t>.66?N.sheer*Math.pow((t-.66)/.34,2):0));
   const deckY=z=>sheer(Math.min(1,Math.max(0,(z+L/2)/L)));
   const hbAt=z=>halfB(Math.min(1,Math.max(0,(z+L/2)/L)));
-  const baltic=nat==='de'&&cls==='BB',N2=Math.round(baltic?L*10:40+L*2),sec=baltic?[[1,1],[1,.85],[1,.7],[1,.6],[1,.57],[.999,.43],[.998,.3],[.998,.2]]:[[1,1],[1,.4],[.998,.2],[.996,.17],[.985,.05],[.97,-.05],[.88,-.45],[.62,-.85],[.25,-1],[0,-1.02]],ring=sec.length*2-1;
+  const baltic=nat==='de'&&cls==='BB',N2=Math.round(baltic?L*10:40+L*2),sec=baltic?[[1,1],[1,.85],[1,.7],[1,.55],[1,.4],[.999,.36],[.998,.2],[.996,.17],[.985,.05],[.97,-.05],[.88,-.45],[.62,-.85],[.25,-1],[0,-1.02]]:[[1,1],[1,.4],[.999,.35],[.998,.2],[.996,.17],[.985,.05],[.97,-.05],[.88,-.45],[.62,-.85],[.25,-1],[0,-1.02]],ring=sec.length*2-1;
   const pos=[],col=[],idx=[],cG=new T.Color(P.hull),cB=new T.Color(0x18191b),cR=new T.Color(0x9a2a22).convertSRGBToLinear(),cW=new T.Color(0xe6eaea),cK=new T.Color(0x2a2e30),cD1=new T.Color(0x52636e),cD2=new T.Color(0xcfdce2);
   const cDk=new T.Color(0x1c1f21),cBk=new T.Color(0x060708),cWh=new T.Color(0xf4f6f6),cLt=new T.Color(0x7c8b97),bz=[(.625-.5)*L,(.405-.5)*L];
-  const paint=(x,y,z,t)=>{if(y<=H*.2)return cR;
+  const paint=(x,y,z,t)=>{if(y<=H*.36)return cR;
     if(baltic){/* Baltic scheme (1941): black/white bands fore and aft, dark bow and stern ends, false white bow wave */
-      if(y<=H*.58)return cR;if(t>.948||t<.04)return cDk;if(t>.912)return cWh;
+      if(y<=H*.37)return cR;if(t>.948||t<.04)return cDk;if(t>.912)return cWh;
       const zs=z;for(const c of bz){const d=Math.abs(zs-c);if(d<1.2)return d<.72?cBk:cWh}
       return cLt}
     if(N.camo==='splinter'&&(t<.13||t>.86))return(Math.floor((z+y*1.2)*1.6)%2+2)%2?cW:cK;
@@ -579,6 +579,30 @@ const REAL={
   ct:[.6,.3,.5,.55],tower:{t:'pagoda',f:.55,base:1.05},
   fun:[[.485,.46,1.5,.55,'rake',-.3]],mast:[[.43,1.8,1.05]],dome:[[.40,1.05,.24,1.0]],
   sec:{cal:155,n:3,at:[[.597,0,1.15],[.365,0,.6]]},ha:[[.54,.55,.55],[.50,.55,.55],[.46,.55,.55]],cat:[.07,0,2],aa:[.36,.62]}};
+/* extra fittings for Bismarck: chains, breakwater, bollards, portholes, searchlights, boat cranes, boats, radar, light AA */
+function bismarckDetail({g,zf,deckY,hbAt,W,HF,ms,ml,md,mk}){const ch=M(0x17191a,.6,.6),wh=M(0xdfe3e4,.6,.1),bt=M(0x8f989c,.6,.2);
+  for(const sx of[-1,1]){const z0=zf(.955),z1=zf(.855),x0=sx*hbAt(z0)*.5,x1=sx*.32;
+    for(let i=0;i<16;i++){const k=i/15,z=z0+(z1-z0)*k;box(.05,.03,.1,ch,x0+(x1-x0)*k,deckY(z),z,g)}
+    cyl(.13,.15,.08,md,x1,deckY(z1),z1,g,10);cyl(.07,.07,.1,mk,x1,deckY(z1)+.08,z1,g,8)}
+  {const z=zf(.785);for(const sx of[-1,1]){const w=hbAt(z)*.95,b=box(w,.16,.05,ms,sx*w*.45,deckY(z),z-.18,g);b.rotation.y=-sx*.38}}
+  for(const f of[.92,.86,.8,.19,.13,.07])for(const sx of[-1,1]){const z=zf(f),x=sx*hbAt(z)*.84;for(const dz of[-.06,.06])cyl(.035,.04,.08,mk,x,deckY(z),z+dz,g,6)}
+  for(const[a,b]of[[.69,.93],[.06,.25]])for(let f=a;f<b;f+=.011){const z=zf(f);for(const sx of[-1,1])box(.012,.04,.04,mk,sx*(hbAt(z)+.003),deckY(z)-.2,z,g)}
+  const top0=.55*HF;
+  for(const[f,sx]of[[.525,-1],[.525,1],[.468,-1],[.468,1]]){const z=zf(f),x=sx*.72,y=deckY(z)+top0;cyl(.05,.06,1.05,md,x,y,z,g,6);
+    cyl(.19,.19,.04,ms,x,y+1.05,z,g,12);cyl(.075,.085,.12,ml,x,y+1.09,z,g,10);box(.03,.05,.02,mk,x,y+1.13,z+.08,g)}
+  for(const sx of[-1,1]){const z=zf(.505),x=sx*1.02,y=deckY(z)+top0;cyl(.06,.07,.95,md,x,y,z,g,8);rod(V(x,y+.9,z),V(x*.62,y+1.25,z-.75),.03,md,g);rod(V(x*.62,y+1.25,z-.75),V(x*.62,y+.6,z-.75),.006,mk,g)}
+  for(const sx of[-1,1])for(const[f,len]of[[.437,.62],[.412,.5]]){const z=zf(f),x=sx*.45,y=deckY(z)+1.52;
+    const hb=mesh(new T.CylinderGeometry(.11,.08,len,8),bt,x,y+.1,z,g);hb.rotation.x=Math.PI/2;
+    box(.16,.03,len*.8,wh,x,y+.2,z,g)}
+  {const z=zf(.6),y=deckY(z)+2.5*HF;box(.56,.28,.03,mk,0,y+.05,z+.36,g);box(.6,.02,.05,ml,0,y+.34,z+.36,g)}
+  {const z=zf(.42),y=deckY(z)+1.05*HF;box(.5,.24,.03,mk,0,y+.05,z-.32,g)}
+  {const z=zf(.64),y=deckY(z)+.95;box(.42,.2,.03,mk,0,y+.6,z+.32,g)}
+  const quad=(x,y,z,rot)=>{cyl(.12,.13,.07,md,x,y,z,g,10);const q=new T.Group();q.position.set(x,y+.08,z);q.rotation.y=rot;g.add(q);box(.14,.1,.1,ms,0,0,0,q);
+    for(const dx of[-.04,.04])for(const dy of[.02,.08])box(.015,.015,.26,mk,dx,dy,.12,q)};
+  for(const[f,xf,yb]of[[.648,.62,0],[.385,.6,0],[.355,.55,0],[.66,.0,1.2],[.31,0,1.15],[.59,.55,1.52],[.43,.0,2.2]])
+    for(const sx of xf?[-1,1]:[0])quad(sx*xf*W/2*.85,deckY(zf(f))+yb,zf(f),sx*.9);
+  for(const f of[.74,.27])for(const sx of[-1,1]){const z=zf(f);box(.16,.12,.22,ms,sx*hbAt(z)*.55,deckY(z),z,g);box(.12,.03,.18,mk,sx*hbAt(z)*.55,deckY(z)+.12,z,g)}
+}
 function realTop(X){const{g,nat,cls,c,P,L,B,deckY,hbAt,up,ms,ml,md,mk,white}=X,zf=f=>(f-.5)*L,W=B*2,HF=1.45,MF=1.35;
   const b0=X.bp,bp={...b0,blocks:b0.blocks.map(([a,b,w,h,y])=>[a,b,w,h*HF,y*HF]),ct:b0.ct&&[b0.ct[0],b0.ct[1],b0.ct[2]*HF,b0.ct[3]*HF],tower:{...b0.tower,base:b0.tower.base*HF,h:(b0.tower.h||0)*HF},
     fun:b0.fun.map(([f,r,h,y,k,rk])=>[f,r,h*HF,y*HF,k,rk]),mast:b0.mast.map(([f,h,y,r])=>[f,h*HF*MF,y*HF,r]),dome:b0.dome.map(([f,y,r,a,x])=>[f,y*HF,r,a,x]),
@@ -640,6 +664,7 @@ function realTop(X){const{g,nat,cls,c,P,L,B,deckY,hbAt,up,ms,ml,md,mk,white}=X,z
   const[cf,cb,cn]=bp.cat;for(let i=0;i<cn;i++){const z=zf(cf),sx=cn>1?(i?1:-1):0,cg=new T.Group();cg.position.set(sx*hbAt(z)*.5,deckY(z)+cb,z);cg.rotation.y=cn>1?sx*.25:Math.PI/2;g.add(cg);box(.12,.08,1.6,mk,0,0,0,cg);
     const pl=new T.Group();pl.position.set(0,.14,.1);cg.add(pl);const pm=M(0xc2c8c9,.6,.2);box(.07,.07,.55,pm,0,0,0,pl);box(.75,.02,.13,pm,0,.05,.05,pl);box(.25,.02,.07,pm,0,.05,-.22,pl)}
   // torpedo tubes are not fitted on battleships in this game
+  if(nat==='de'&&cls==='BB')bismarckDetail({g,zf,deckY,hbAt,W,HF,ms,ml,md,mk});
   return{mounts,funnels,aaCount,tubes:0}}
 
 function buildBridge(g,N,cls,bc,bw,bl,H0,hk,m){const{ms,ml,md,mk}=m,big=cls==='CA'||cls==='BC'||cls==='BB',small=cls==='FF'||cls==='DD';
@@ -1279,8 +1304,8 @@ function seaStep(dt,t){const P=player,pg=P.g,st=R.st;R.t+=dt;
       if(R.throttle>.2)fx('foam',V(pg.position.x+s*bw+c*side*.25,.08,pg.position.z+c*bw-s*side*.25),{life:2.2,s0:.35,s1:1.4*P.B+.4,a:.5*amt,v:V(c*side*1.6,0,-s*side*1.6),drag:.5})}
     for(const f of foes){if(f.sink)continue;const fh=f.g.rotation.y;fx('foam',V(f.g.position.x-Math.sin(fh)*f.L*.47,.08,f.g.position.z-Math.cos(fh)*f.L*.47),{life:3.5,s0:.4,s1:1.8,a:.45})}}
   R.shake=Math.max(0,R.shake-dt);
-  R.zoom+=((R.scoutT>0?1.3:1)-R.zoom)*Math.min(1,dt*1.5);const ch=(40+P.L*1.1)*R.zoom,sx=(Math.random()-.5)*R.shake,sz=(Math.random()-.5)*R.shake;
-  camera.position.set(pg.position.x+sx,ch*.86,pg.position.z-ch*.7+sz);camera.lookAt(pg.position.x,0,pg.position.z+2);
+  R.zoom+=((R.scoutT>0?1.3:1)-R.zoom)*Math.min(1,dt*1.5);const ch=(30+P.L*.9)*R.zoom,sx=(Math.random()-.5)*R.shake,sz=(Math.random()-.5)*R.shake;
+  camera.position.set(pg.position.x+sx,ch*.6,pg.position.z-ch*.95+sz);camera.lookAt(pg.position.x,0,pg.position.z+3);
   hudUpdate();return V(pg.position.x,0,pg.position.z+3)}
 function frame(now){const dt=Math.min(.04,(now-last)/1000);last=now;const t=now/1000;WU.uTime.value=t;let focus;
   if(mode==='port'){const pg=player.g;orbit.idle+=dt;if(orbit.idle>4)orbit.th+=dt*.06;
@@ -1294,7 +1319,7 @@ function frame(now){const dt=Math.min(.04,(now-last)/1000);last=now;const t=now/
   smokeT-=dt;if(smokeT<=0){smokeT=mode==='port'?.25:.12;for(const f of player.funnels){f.o.localToWorld(tmp.set(0,f.top+.1,0));fx('smoke',tmp.clone(),{life:3.5,s0:.4,s1:2,a:mode==='port'?.22:.35,v:V(.2,.7,.3),drag:.8})}}
   stepFX(dt);
   water.position.set(Math.round(focus.x/4)*4,0,Math.round(focus.z/4)*4);
-  sun.position.copy(focus).addScaledVector(SUNDIR,mode==='sea'?80:55);sun.target.position.copy(focus);
+  sun.position.copy(focus).addScaledVector(mode==='sea'?SUNSEA:SUNDIR,mode==='sea'?80:55);sun.target.position.copy(focus);
   if(player.g.userData.flag)player.g.userData.flag.rotation.y=Math.PI/2+Math.sin(t*3.1)*.18;
   drawFrame();requestAnimationFrame(frame)}
 setWinter(true);rebuildPlayer();renderPort();renderChip();setMute(AU.muted);setPix(PIX);if(ON.ok&&OS.id)sync(null);requestAnimationFrame(frame);
