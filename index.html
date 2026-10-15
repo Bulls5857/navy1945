@@ -470,9 +470,14 @@ function buildShip(nat,cls,up){const N=nat==='foe'?FOE:NAT[nat],c=N.c[cls],P=N.p
   const sheer=t=>H*(1+(t>.66?N.sheer*Math.pow((t-.66)/.34,2):0));
   const deckY=z=>sheer(Math.min(1,Math.max(0,(z+L/2)/L)));
   const hbAt=z=>halfB(Math.min(1,Math.max(0,(z+L/2)/L)));
-  const N2=Math.round(40+L*2),sec=[[1,1],[1,.4],[.998,.2],[.996,.17],[.985,.05],[.97,-.05],[.88,-.45],[.62,-.85],[.25,-1],[0,-1.02]],ring=sec.length*2-1;
+  const baltic=nat==='de'&&cls==='BB',N2=Math.round(baltic?L*10:40+L*2),sec=[[1,1],[1,.4],[.998,.2],[.996,.17],[.985,.05],[.97,-.05],[.88,-.45],[.62,-.85],[.25,-1],[0,-1.02]],ring=sec.length*2-1;
   const pos=[],col=[],idx=[],cG=new T.Color(P.hull),cB=new T.Color(0x18191b),cR=new T.Color(0x9a2a22).convertSRGBToLinear(),cW=new T.Color(0xe6eaea),cK=new T.Color(0x2a2e30),cD1=new T.Color(0x52636e),cD2=new T.Color(0xcfdce2);
+  const cDk=new T.Color(0x3a3f42),cBk=new T.Color(0x060708),cWh=new T.Color(0xf4f6f6),bz=[(.80-.5)*L,(.19-.5)*L];
   const paint=(x,y,z,t)=>{if(y<=H*.2)return cR;
+    if(baltic){/* Baltic scheme (1941): black/white bands fore and aft, dark bow and stern ends, false white bow wave */
+      if(t>.9&&y<H*(.2+.6*(t-.9)/.1))return cWh;if(t>.955||t<.03)return cDk;
+      for(const c of bz){const d=Math.abs(z-c);if(d<1.575)return d<.225?cWh:d<1.125?cBk:cWh}
+      return cG}
     if(N.camo==='splinter'&&(t<.13||t>.86))return(Math.floor((z+y*1.2)*1.6)%2+2)%2?cW:cK;
     if(N.camo==='dazzle'){const v=Math.sin(z*.9+y*3)+Math.sin(z*.37+1.7);return v>1.1?cD1:v<-1.1?cD2:cG}
     return cG};
@@ -583,6 +588,10 @@ function realTop(X){const{g,nat,cls,c,P,L,B,deckY,hbAt,up,ms,ml,md,mk,white}=X,z
   for(const[f0,f1,wf,h,base]of bp.blocks){const z0=zf(f0),z1=zf(f1),zc=(z0+z1)/2,l=z1-z0,w=Math.min(W*wf,hbAt(zc)*1.9),y=deckY(zc)+base;
     box(w,h,l,base>0?ms:md,0,y,zc,g);box(w*1.01,.04,l*1.01,ml,0,y+h-.02,zc,g);
     if(base>0){box(w*.9,.05,.02,mk,0,y+h*.55,z1+.005,g);for(const sx of[-1,1])box(.02,.05,l*.8,mk,sx*(w/2+.005),y+h*.55,zc,g)}}
+  if(nat==='de'&&cls==='BB'){/* Baltic stripes carried up the deckhouse sides */
+    const bw=M(0xf2f4f4,.7,0),bk=M(0x0b0c0d,.8,0),[f0,f1,wf,h]=bp.blocks[0];
+    for(const fc of[.613,.418]){const zc=zf(fc),w=Math.min(W*wf,hbAt(zc)*1.9),y=deckY(zc);let z=zc-.46;
+      for(const[len,m]of[[.12,bw],[.28,bk],[.12,bw],[.28,bk],[.12,bw]]){for(const sx of[-1,1])box(.012,h*.96,len,m,sx*(w/2+.007),y,z+len/2,g);z+=len}}}
   // main turrets
   gunsF.forEach((gp,i)=>{const t=bp.tur[i];if(!t)return;const k=tparam(lad||gp[0],gp[1]),s=W*bp.tw/k.w;k.w*=s;k.l*=s;k.h*=s*.9;k.sp*=s;k.bar*=s;
     const z=zf(t[0]),y=deckY(z),raise=t[1]?k.h*1.15:0,rest=t[0]>.5?0:Math.PI;
