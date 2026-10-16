@@ -158,7 +158,23 @@ body.titled #port{opacity:0;pointer-events:none}
 .lb .who small{display:block;font-size:11px;color:var(--mute)}
 .lb .v{font:700 16px var(--num)}
 .rk.nt{position:relative;color:var(--fg)}.rk.nt i{position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:#e2593f;box-shadow:0 0 0 2px var(--ink)}
-#ntList{display:flex;flex-direction:column;gap:12px}
+#ntList,#idList{display:flex;flex-direction:column;gap:12px}
+#notice .sheet{width:min(680px,100%)}
+.ntc.pin{border-color:#4b8fb8;background:rgba(30,70,96,.45)}.ntc h3 .pn{font-style:normal;font-size:10px;color:#0b1820;background:#7fb6e8;border-radius:4px;padding:1px 6px}
+.ntc ol{margin:4px 0 0;padding-left:20px;font-size:13px;line-height:1.65}.ntc .os{border-top:1px dashed var(--line);padding-top:8px;margin-top:8px}.ntc .os:first-of-type{border:0;margin:0;padding:0}
+.ntc .os h4{margin:0;font-size:13px;color:#fff;display:flex;gap:6px;align-items:center}.ntc .os.me h4::after{content:'내 기기';font-size:10px;color:#0b1820;background:var(--accent);border-radius:4px;padding:1px 6px}
+.ntc .ok{color:var(--ok);font-weight:800;font-size:13px;margin:0}.ntc .go{min-height:44px;margin-top:8px}
+.idw{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);border-radius:8px;padding:12px;background:rgba(16,34,44,.6)}
+.idw textarea{width:100%;box-sizing:border-box;min-height:76px;resize:vertical;background:#10222c;border:1px solid var(--line);border-radius:6px;color:var(--fg);font:400 14px/1.5 var(--body);padding:8px 10px}
+.idw .rowb{display:flex;gap:8px;align-items:center}.idw .rowb .go{width:auto;min-height:42px;margin-left:auto;padding:0 20px}.idw .cnt{font:700 11px var(--num);color:var(--mute)}
+.icats{display:flex;gap:4px;flex-wrap:wrap}.icats button{background:none;border:1px solid var(--line);border-radius:14px;color:var(--mute);font:700 12px var(--body);padding:0 12px;min-height:34px}.icats button.on{color:#0b1820;background:var(--c);border-color:var(--c)}
+.idc{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:6px 10px}
+.idc .meta{font-size:11px;color:var(--mute);display:flex;gap:6px;align-items:center;flex-wrap:wrap}.idc .meta em{font-style:normal;font-weight:800;color:#0b1820;background:var(--c);border-radius:4px;padding:0 6px}.idc .meta b{color:var(--fg)}
+.idc p{margin:0;grid-column:1;font-size:14px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.idc .lk{grid-column:2;grid-row:1/span 2;align-self:center;background:none;border:1px solid var(--line);border-radius:8px;color:var(--mute);font:700 13px var(--num);min-width:52px;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.idc .lk[aria-pressed=true]{color:#0b1820;background:var(--accent);border-color:var(--accent)}
+.idc .rp{grid-column:1/-1;margin:2px 0 0;font-size:13px;border-left:3px solid var(--accent);padding:4px 10px;background:rgba(242,163,58,.08);border-radius:0 6px 6px 0}.idc .rp b{color:var(--accent);font-size:11px;display:block}
+.idc .del{background:none;border:0;color:var(--mute);font-size:11px;text-decoration:underline;padding:0 2px;min-height:24px}.idc .del.sure{color:var(--bad);font-weight:800}
 .ntc{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:rgba(16,34,44,.6)}.ntc.new{border-color:var(--accent)}
 .ntc h3{margin:0 0 6px;font-size:14px;display:flex;align-items:center;gap:8px}.ntc h3 time{font:700 11px var(--num);color:#0b1820;background:var(--accent);border-radius:4px;padding:1px 7px}.ntc h3 em{font-style:normal;font-size:10px;color:#fff;background:#e2593f;border-radius:4px;padding:1px 6px}
 .ntc ul{margin:0;padding-left:18px;font-size:13px;line-height:1.65;color:var(--fg)}.ntc li b{color:var(--accent)}
@@ -345,7 +361,7 @@ body{background:var(--ink)}
   <div id="flash"></div>
 </div>
 <div id="result" hidden></div>
-<div class="modal" id="notice" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ntTitle"><header><h2 id="ntTitle" style="margin:0">📢 공지사항 · 업데이트 내역</h2><button type="button" class="x" id="ntX" aria-label="닫기">✕</button></header><div id="ntList"></div></div></div>
+<div class="modal" id="notice" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ntTitle"><header><h2 id="ntTitle" style="margin:0">📢 공지사항</h2><button type="button" class="x" id="ntX" aria-label="닫기">✕</button></header><div class="tabs" role="tablist" id="ntTabs"><button type="button" role="tab" data-nt="news">공지 · 업데이트</button><button type="button" role="tab" data-nt="idea">💡 아이디어 게시판</button></div><div id="ntList"></div><div id="idBox" hidden></div></div></div>
 <div class="modal" id="rank" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rkTitle" id="rkSheet"></div></div>
 <div class="modal" id="profile" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pfTitle" id="pfSheet"></div></div>
 
@@ -1114,16 +1130,73 @@ addEventListener('keydown',e=>{if(e.key==='Escape')$('rank').hidden=true});
 $('rkBtn').onclick=openRank;
 /* in-game notices: newest first; the red dot shows until the latest one is opened */
 const NOTICES=[
+ ['2026-10-17b','아이디어 게시판 · 설치 안내',['공지 안에 <b>💡 아이디어 게시판</b>이 생겼어요. 개선 아이디어나 버그를 올리고, 마음에 드는 글에 <b>추천</b>을 눌러주세요. 개발자 답변도 달려요.','공지 맨 위에 <b>홈 화면 설치 방법</b>을 고정해 뒀어요. 설치하면 전체 화면으로 더 넓게 즐길 수 있어요.']],
  ['2026-10-17','효과음 대개편 · 콤보 보너스 · 해역 저장',['<b>함포 소리</b>가 구경마다 달라요. 작은 포는 날카롭게, 전함 주포는 천둥처럼 길게 울려요. 먼 포성은 작고 먹먹하게 들려요.','<b>침몰 소리</b>가 함급마다 달라요. 큰 배일수록 길게 삐걱이고, 전함은 탄약고 폭발과 증기·물보라 소리까지 나요.','포탄이 장갑에 맞으면 <b>금속성 타격음</b>이 나요.','<b>콤보 보너스</b>: 3콤보 코인 ×1.2 → 5콤보 장전 ×1.5 → 8콤보 코인 ×2·화력 +15% → 12콤보 광란!','<b>해역 저장</b>: 귀항하면 그 해역부터, 침몰하면 3해역 전부터 다시 시작해요.','항구에 <b>공지 버튼</b>이 생겼어요.']],
  ['2026-10-16','융단폭격 · 전투태세 · 업그레이드 대확장',['새 필살기 <b>융단폭격</b>: 적이 가장 많이 모인 곳을 중폭격기 편대가 쓸어버려요.','새 기술 <b>전투태세</b>: 잠깐 동안 화력이 오르고 장전이 빨라져요.','업그레이드 한계 확장(주포 Lv.9·장갑 Lv.12 등), <b>방뇌구획</b> 신설.','어뢰·전투기·정찰기·공습을 <b>최대 3회 저장</b>할 수 있어요.','공습 폭격기가 주황색으로 커지고 폭발이 더 커졌어요. 전투기가 뇌격기를 더 멀리서 잡아요.','처음 보는 적·기술마다 <b>그림 안내 카드</b>가 떠요. 드라이도크에 <b>도트 아이콘</b>이 생겼어요.']],
  ['2026-10-15','네이비필드식 시점 · 전투기 · 공습',['전투 화면이 <b>비스듬히 옆에서 보는 시점</b>으로 바뀌었어요.','비스마르크에 <b>발트 위장</b>과 디테일을 더했어요.','뇌격기·구축함 어뢰 너프, 너무 가까이서 맞은 어뢰는 <b>불발</b>.','<b>전투기</b>와 <b>공습 요청</b>이 추가됐어요.']],
  ['2026-10-14','드라이도크 · 겨울 항구 · 온라인 랭킹',['내 배를 보며 업그레이드하는 <b>드라이도크</b> 개장 화면.','눈 내리는 <b>겨울 항구</b>.','중순양함부터 <b>정찰기</b> 사용 가능.','온라인 <b>랭킹·프로필</b>, 미니맵, 조이스틱, 홈 화면 설치.']]];
 function noticeNew(){return (SV.noticeSeen||'')<NOTICES[0][0]}
-function openNotice(){const seen=SV.noticeSeen||'';$('ntList').innerHTML=NOTICES.map(([d,t,items])=>`<section class="ntc${d>seen?' new':''}"><h3><time datetime="${d}">${d.slice(5).replace('-','/')}</time>${t}${d>seen?'<em>NEW</em>':''}</h3><ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul></section>`).join('');
-  $('notice').hidden=false;SV.noticeSeen=NOTICES[0][0];save();$('ntDot').hidden=true;setTimeout(()=>$('ntX').focus(),50)}
-$('ntBtn').onclick=openNotice;$('ntX').onclick=()=>{$('notice').hidden=true};$('notice').addEventListener('click',e=>{if(e.target.id==='notice')$('notice').hidden=true});
+/* install guide pinned above the notices */
+let BIP=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();BIP=e;if(!$('notice').hidden&&ntTab==='news')drawNews()});
+addEventListener('appinstalled',()=>{BIP=null;toast('설치됐어요! 홈 화면에서 네이비1945를 열어보세요.')});
+const UA=navigator.userAgent,isIOS=/iPhone|iPad|iPod/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),isAnd=/Android/.test(UA),inApp=/KAKAOTALK|Instagram|FBAN|FBAV|NAVER|Line\//i.test(UA);
+const installed=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+function installCard(){const os=(k,t,steps)=>`<div class="os${k?' me':''}"><h4>${t}</h4><ol>${steps.map(x=>`<li>${x}</li>`).join('')}</ol></div>`;
+  const body=installed()?`<p class="ok">✓ 지금 홈 화면 앱으로 실행 중이에요. 설치 완료!</p>`
+   :(BIP?`<button type="button" class="go" id="instBtn">📲 지금 바로 설치하기</button>`:'')+
+    (inApp?os(1,'💬 카카오톡·인스타 안에서 열었다면',['오른쪽 위 <b>⋮</b> 또는 <b>공유</b> 버튼을 눌러요.','<b>다른 브라우저로 열기</b>(크롬·사파리)를 고른 뒤 아래 방법대로 설치해요.']):'')+
+    os(isAnd&&!inApp,'🤖 안드로이드 (크롬·삼성 인터넷)',['주소창 오른쪽 <b>⋮</b>(삼성 인터넷은 아래 <b>≡</b>) 메뉴를 눌러요.','<b>홈 화면에 추가</b> 또는 <b>앱 설치</b>를 눌러요.','<b>설치</b>를 누르면 홈 화면에 아이콘이 생겨요.'])+
+    os(isIOS&&!inApp,'🍎 아이폰·아이패드 (사파리)',['<b>사파리</b>로 이 페이지를 열어요.','아래쪽 <b>공유 버튼(□↑)</b>을 눌러요.','<b>홈 화면에 추가</b> → 오른쪽 위 <b>추가</b>를 눌러요.'])+
+    os(!isIOS&&!isAnd,'💻 PC (크롬·엣지)',['주소창 오른쪽 끝의 <b>설치 아이콘(⊕)</b>을 눌러요.','<b>설치</b>를 누르면 바탕화면 앱처럼 열려요.']);
+  return`<section class="ntc pin"><h3><em class="pn">📌 고정</em>홈 화면에 설치하는 방법</h3><p class="note" style="margin-bottom:8px">설치하면 주소창 없이 <b style="color:var(--accent)">전체 화면·가로 화면</b>으로 더 넓게 즐길 수 있어요. 기록은 그대로 이어져요.</p>${body}</section>`}
+let ntTab='news';
+function drawNews(){const seen=NTSEEN;$('ntList').innerHTML=installCard()+NOTICES.map(([d,t,items])=>`<section class="ntc${d>seen?' new':''}"><h3><time datetime="${d.slice(0,10)}">${d.slice(5,10).replace('-','/')}</time>${t}${d>seen?'<em>NEW</em>':''}</h3><ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul></section>`).join('');
+  const ib=$('instBtn');if(ib)ib.onclick=async()=>{const p=BIP;if(!p)return;BIP=null;p.prompt();try{await p.userChoice}catch(e){}drawNews()}}
+let NTSEEN='';
+function setNtTab(t){ntTab=t;for(const b of $('ntTabs').children){const on=b.dataset.nt===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)}
+  $('ntList').hidden=t!=='news';$('idBox').hidden=t!=='idea';if(t==='news')drawNews();else drawIdeas()}
+function openNotice(tab){NTSEEN=SV.noticeSeen||'';$('notice').hidden=false;setNtTab(tab||'news');SV.noticeSeen=NOTICES[0][0];save();$('ntDot').hidden=true;setTimeout(()=>$('ntX').focus(),50)}
+$('ntTabs').onclick=e=>{const b=e.target.closest('[data-nt]');if(b)setNtTab(b.dataset.nt)};
+$('ntBtn').onclick=()=>openNotice();$('ntX').onclick=()=>{$('notice').hidden=true};$('notice').addEventListener('click',e=>{if(e.target.id==='notice')$('notice').hidden=true});
 addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('notice').hidden)$('notice').hidden=true});
 $('ntDot').hidden=!noticeNew();
+/* idea board: players post suggestions and upvote each other's; replies are written by the developer on the server */
+const ICAT={bal:['밸런스','#ffd84a'],new:['새 기능','#6fcb8e'],bug:['버그','#ff7a5c'],etc:['기타','#7fb6e8']};
+const ID={cat:'new',sort:'new',draft:'',rows:[],mine:new Set(),busy:false};
+Object.assign(ERR,{bad_body:'5자 이상 300자 이하로 써주세요.',too_many:'조금 쉬었다 써주세요. (10분에 3개 · 하루 10개까지)'});
+function drawIdeas(){const bx=$('idBox');
+  if(!ON.ok){bx.innerHTML='<p class="note">아이디어 게시판은 온라인 서버에 연결되면 열려요.</p>';return}
+  const w=OS.id?`<div class="idw"><div class="icats" id="idCats">${Object.entries(ICAT).map(([k,[l,c]])=>`<button type="button" data-cat="${k}" style="--c:${c}" class="${k===ID.cat?'on':''}" aria-pressed="${k===ID.cat}">${l}</button>`).join('')}</div>
+    <textarea id="idTxt" maxlength="300" placeholder="이런 게 있으면 좋겠어요, 여기가 불편해요, 이런 버그가 있어요… 자유롭게 적어주세요!" aria-label="아이디어 내용">${esc(ID.draft)}</textarea>
+    <div class="rowb"><span class="cnt" id="idCnt">${ID.draft.length}/300</span><p class="err" id="idErr" hidden></p><button type="button" class="go" id="idPost">올리기</button></div></div>`
+   :`<div class="idw"><p class="note">글을 쓰고 추천하려면 <b style="color:var(--accent)">함장 이름 등록</b>이 필요해요. 등록하면 랭킹에도 올라가요.</p><button type="button" class="mini" id="idReg">프로필에서 이름 등록하기</button></div>`;
+  bx.innerHTML=w+`<div class="tabs" id="idSort" style="margin-top:4px"><button type="button" data-s="new" class="${ID.sort==='new'?'on':''}">최신순</button><button type="button" data-s="top" class="${ID.sort==='top'?'on':''}">추천순</button></div><div id="idList"><p class="note">불러오는 중…</p></div>`;
+  if(OS.id){const ta=$('idTxt');ta.oninput=()=>{ID.draft=ta.value;$('idCnt').textContent=ta.value.length+'/300'};
+    $('idCats').onclick=e=>{const b=e.target.closest('[data-cat]');if(!b)return;ID.cat=b.dataset.cat;for(const x of $('idCats').children){const on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on)}};
+    $('idPost').onclick=postIdea}
+  else $('idReg').onclick=()=>{$('notice').hidden=true;openProfile()};
+  $('idSort').onclick=e=>{const b=e.target.closest('[data-s]');if(b&&b.dataset.s!==ID.sort){ID.sort=b.dataset.s;drawIdeas()}};
+  loadIdeas()}
+async function loadIdeas(){try{const ord=ID.sort==='top'?'likes.desc,created_at.desc':'created_at.desc';
+    const[rows,mv]=await Promise.all([q(`idea_board?select=*&order=${ord}&limit=60`),OS.id?q(`idea_vote_list?select=idea_id&player_id=eq.${OS.id}`):[]]);
+    ID.rows=rows;ID.mine=new Set(mv.map(v=>v.idea_id));listIdeas()}
+  catch(e){const l=$('idList');if(l)l.innerHTML=`<p class="err">${errMsg(e)}</p>`}}
+function listIdeas(){const l=$('idList');if(!l)return;
+  l.innerHTML=ID.rows.length?ID.rows.map(r=>{const[cl,cc]=ICAT[r.cat]||ICAT.etc,on=ID.mine.has(r.id);
+    return`<article class="idc" data-id="${r.id}"><div class="meta"><em style="--c:${cc}">${cl}</em><b>${esc(r.name)}</b><span>${ago(r.created_at)}</span>${r.player_id===OS.id?'<button type="button" class="del" data-del>삭제</button>':''}</div>
+    <p>${esc(r.body)}</p><button type="button" class="lk" data-lk aria-pressed="${on}" aria-label="추천 ${r.likes}"><span>👍</span>${r.likes}</button>${r.reply?`<div class="rp"><b>⚓ 개발자 답변</b>${esc(r.reply)}</div>`:''}</article>`}).join('')
+   :'<p class="note">아직 올라온 아이디어가 없어요. 첫 번째 아이디어를 남겨주세요!</p>'}
+$('idBox').addEventListener('click',async e=>{const card=e.target.closest('.idc');if(!card)return;const id=+card.dataset.id,r=ID.rows.find(x=>x.id===id);if(!r)return;
+  if(e.target.closest('[data-lk]')){if(!OS.id){toast('추천하려면 프로필에서 이름을 등록해주세요.');return}
+    const had=ID.mine.has(id);had?ID.mine.delete(id):ID.mine.add(id);r.likes+=had?-1:1;listIdeas();
+    try{r.likes=await rpc('vote_idea',{p_id:OS.id,p_secret:OS.secret,p_idea:id});listIdeas()}catch(err){had?ID.mine.add(id):ID.mine.delete(id);r.likes+=had?1:-1;listIdeas();toast(errMsg(err))}return}
+  const d=e.target.closest('[data-del]');if(d){if(!d.classList.contains('sure')){d.classList.add('sure');d.textContent='정말 삭제할까요? 한 번 더 누르기';return}
+    try{await rpc('delete_idea',{p_id:OS.id,p_secret:OS.secret,p_idea:id});ID.rows=ID.rows.filter(x=>x.id!==id);listIdeas();toast('삭제했어요.')}catch(err){toast(errMsg(err))}}});
+async function postIdea(){if(ID.busy)return;const t=ID.draft.trim(),er=$('idErr');er.hidden=true;
+  if(t.length<5){er.textContent=ERR.bad_body;er.hidden=false;return}
+  ID.busy=true;$('idPost').disabled=true;
+  try{await rpc('post_idea',{p_id:OS.id,p_secret:OS.secret,p_cat:ID.cat,p_body:t});ID.draft='';ID.sort='new';toast('아이디어를 올렸어요. 고마워요!');drawIdeas()}
+  catch(e){er.textContent=errMsg(e);er.hidden=false;$('idPost').disabled=false}finally{ID.busy=false}}
 
 /* ================= profile & rank ================= */
 const RANKS=[['수습생도',0,'—'],['소위',150,'1'],['중위',400,'2'],['대위',900,'3'],['소령',1800,'◆'],['중령',3200,'◆◆'],['대령',5500,'◆◆◆'],['준장',9000,'★'],['소장',14000,'★★'],['중장',21000,'★★★'],['대장',32000,'★★★★'],['원수',50000,'★★★★★']];
@@ -1488,7 +1561,7 @@ function joyRest(){const j=$('joy');j.classList.remove('on');j.style.left=(inner
 const up=e=>{ptrs.delete(e.pointerId);pinch0=0;if(joy.on&&e.pointerId===joy.id){joy.on=false;joy.dx=joy.dy=0;joyRest()}};
 canvas.addEventListener('pointerup',up);canvas.addEventListener('pointercancel',up);
 canvas.addEventListener('wheel',e=>{e.preventDefault();if(mode==='port')orbit.r=Math.min(60,Math.max(6,orbit.r*(1+e.deltaY*.001)))},{passive:false});
-addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
+addEventListener('keydown',e=>{if(e.target.closest&&e.target.closest('input,textarea'))return;keys[e.key.toLowerCase()]=true});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
 function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<h?56:36;camera.updateProjectionMatrix();if(typeof viewOffset==='function')viewOffset()}
 addEventListener('resize',()=>{resize();if(mode==='sea'&&!joy.on)joyRest()});resize();
 
