@@ -157,6 +157,11 @@ body.titled #port{opacity:0;pointer-events:none}
 .lb .n{font:700 15px var(--num);color:var(--mute);text-align:right}.lb div:nth-child(-n+3) .n{color:var(--accent)}
 .lb .who small{display:block;font-size:11px;color:var(--mute)}
 .lb .v{font:700 16px var(--num)}
+.rk.nt{position:relative;color:var(--fg)}.rk.nt i{position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:#e2593f;box-shadow:0 0 0 2px var(--ink)}
+#ntList{display:flex;flex-direction:column;gap:12px}
+.ntc{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:rgba(16,34,44,.6)}.ntc.new{border-color:var(--accent)}
+.ntc h3{margin:0 0 6px;font-size:14px;display:flex;align-items:center;gap:8px}.ntc h3 time{font:700 11px var(--num);color:#0b1820;background:var(--accent);border-radius:4px;padding:1px 7px}.ntc h3 em{font-style:normal;font-size:10px;color:#fff;background:#e2593f;border-radius:4px;padding:1px 6px}
+.ntc ul{margin:0;padding-left:18px;font-size:13px;line-height:1.65;color:var(--fg)}.ntc li b{color:var(--accent)}
 .rk{pointer-events:auto;background:var(--chip);border:1px solid var(--line);border-radius:6px;color:var(--accent);font:700 12px var(--body);padding:0 12px;min-height:38px}
 
 /* ---- reference look: navy panels, light-blue hairlines, pixel type ---- */
@@ -289,6 +294,7 @@ body{background:var(--ink)}
     <div class="brand">NAVY<span>1945</span></div>
     <button type="button" class="pchip" id="pchip" aria-label="함장 프로필"></button>
     <button type="button" class="rk" id="rkBtn">랭킹</button>
+    <button type="button" class="rk nt" id="ntBtn" aria-label="공지사항">공지<i id="ntDot" hidden></i></button>
     <div class="seg" role="group" aria-label="국가" id="natSeg"></div>
     <div class="spacer"></div>
     <button type="button" class="pixbtn" aria-pressed="true">도트 ON</button>
@@ -339,6 +345,7 @@ body{background:var(--ink)}
   <div id="flash"></div>
 </div>
 <div id="result" hidden></div>
+<div class="modal" id="notice" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ntTitle"><header><h2 id="ntTitle" style="margin:0">📢 공지사항 · 업데이트 내역</h2><button type="button" class="x" id="ntX" aria-label="닫기">✕</button></header><div id="ntList"></div></div></div>
 <div class="modal" id="rank" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rkTitle" id="rkSheet"></div></div>
 <div class="modal" id="profile" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pfTitle" id="pfSheet"></div></div>
 
@@ -757,22 +764,53 @@ try{AU.muted=localStorage.getItem('navy1945_mute')==='1'}catch(e){}
 function auInit(){if(AU.ctx){if(AU.ctx.state==='suspended')AU.ctx.resume();return}const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
   const a=AU.ctx=new C(),comp=a.createDynamicsCompressor();AU.master=a.createGain();AU.master.gain.value=AU.muted?0:.75;AU.master.connect(comp);comp.connect(a.destination);
   const len=a.sampleRate*2,b=a.createBuffer(1,len,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;AU.noise=b;
+  {/* open-sea reverb: long, dark tail so big guns roll like thunder */const n=Math.floor(a.sampleRate*3.2),ir=a.createBuffer(2,n,a.sampleRate);
+    for(let c=0;c<2;c++){const x=ir.getChannelData(c);let lp=0;for(let i=0;i<n;i++){const t=i/a.sampleRate;lp+=((Math.random()*2-1)-lp)*.18;x[i]=lp*Math.pow(1-i/n,2.2)*(t<.02?t/.02:1)}}
+    AU.rev=a.createConvolver();AU.rev.buffer=ir;const rg=a.createGain();rg.gain.value=.55;AU.rev.connect(rg).connect(AU.master)}
   const src=a.createBufferSource();src.buffer=b;src.loop=true;const f=a.createBiquadFilter();f.type='lowpass';f.frequency.value=380;const g=a.createGain();g.gain.value=.08;src.connect(f).connect(g).connect(AU.master);src.start();
   const lfo=a.createOscillator();lfo.frequency.value=.12;const lg=a.createGain();lg.gain.value=170;lfo.connect(lg).connect(f.frequency);lfo.start();
   const o=a.createOscillator();o.type='sawtooth';o.frequency.value=36;const ef=a.createBiquadFilter();ef.type='lowpass';ef.frequency.value=110;const eg=a.createGain();eg.gain.value=0;o.connect(ef).connect(eg).connect(AU.master);o.start();AU.eng={o,eg}}
 addEventListener('pointerdown',auInit);addEventListener('keydown',auInit);
 const canPlay=(k,gap)=>{const t=performance.now();if(AU.last[k]&&t-AU.last[k]<gap)return false;AU.last[k]=t;return true};
-function nz(o){const a=AU.ctx;if(!a||AU.muted)return;const t=a.currentTime+(o.delay||0),s=a.createBufferSource();s.buffer=AU.noise;
+/* routes a voice to the mix: optional distance muffling (lp) and reverb send (rev) */
+function out(a,g,o,t){let n=g;if(o.lp){const f=a.createBiquadFilter();f.type='lowpass';f.frequency.value=o.lp;n.connect(f);n=f}n.connect(AU.master);
+  if(o.rev&&AU.rev){const s=a.createGain();s.gain.value=o.rev;n.connect(s);s.connect(AU.rev)}}
+function nz(o){const a=AU.ctx;if(!a||AU.muted)return;const t=a.currentTime+(o.delay||0),s=a.createBufferSource();s.buffer=AU.noise;if(o.rate)s.playbackRate.value=o.rate;
   const f=a.createBiquadFilter();f.type=o.type||'lowpass';f.frequency.setValueAtTime(o.f0,t);if(o.f1)f.frequency.exponentialRampToValueAtTime(o.f1,t+o.dur);f.Q.value=o.q||.7;
-  const g=a.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0002,o.vol),t+(o.att||.005));g.gain.exponentialRampToValueAtTime(.0001,t+o.dur);
-  s.connect(f).connect(g).connect(AU.master);s.start(t,Math.random()*1.4);s.stop(t+o.dur+.05)}
+  const g=a.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0002,o.vol),t+(o.att||.005));if(o.hold)g.gain.setValueAtTime(Math.max(.0002,o.vol),t+o.hold);g.gain.exponentialRampToValueAtTime(.0001,t+o.dur);
+  s.connect(f).connect(g);out(a,g,o,t);s.start(t,Math.random()*1.4);s.stop(t+o.dur+.05)}
 function tn(o){const a=AU.ctx;if(!a||AU.muted)return;const t=a.currentTime+(o.delay||0),os=a.createOscillator();os.type=o.wave||'sine';os.frequency.setValueAtTime(o.f0,t);if(o.f1)os.frequency.exponentialRampToValueAtTime(o.f1,t+o.dur);
-  const g=a.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0002,o.vol),t+(o.att||.005));g.gain.exponentialRampToValueAtTime(.0001,t+o.dur);os.connect(g).connect(AU.master);os.start(t);os.stop(t+o.dur+.05)}
+  if(o.vib){const l=a.createOscillator(),lg=a.createGain();l.frequency.value=o.vib;lg.gain.value=o.vibD||o.f0*.06;l.connect(lg).connect(os.frequency);l.start(t);l.stop(t+o.dur+.05)}
+  let src=os;if(o.flp){const f=a.createBiquadFilter();f.type='lowpass';f.frequency.value=o.flp;os.connect(f);src=f}
+  const g=a.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0002,o.vol),t+(o.att||.005));if(o.hold)g.gain.setValueAtTime(Math.max(.0002,o.vol),t+o.hold);g.gain.exponentialRampToValueAtTime(.0001,t+o.dur);src.connect(g);out(a,g,o,t);os.start(t);os.stop(t+o.dur+.05)}
+const rnd=(a,b)=>a+Math.random()*(b-a);
+function dist(p){if(!p||mode!=='sea'||!player)return 0;const pg=player.g.position;return Math.hypot(p.x-pg.x,p.z-pg.z)}
 function attn(p){if(!p||mode!=='sea'||!player)return 1;const pg=player.g.position;return Math.max(0,1-Math.hypot(p.x-pg.x,p.z-pg.z)/75)}
 const SFX={
-  gun(cal,p,foe){const v=attn(p)*(foe?.45:.85);if(v<.03||!canPlay(foe?'eg':'g',foe?60:45))return;const k=Math.min(1,cal/460);
-    nz({f0:1000-k*600,f1:110,dur:.35+k*.8,vol:v*(.45+k*.5)});tn({f0:95-k*45,f1:28,dur:.3+k*.6,vol:v*(.55+k*.45),att:.003})},
-  boom(r,p){const v=attn(p);if(v<.03||!canPlay('b',40))return;const k=Math.min(1,r/3);nz({f0:1500,f1:80,dur:.6+k*1.3,vol:v*(.35+k*.5)});tn({f0:72,f1:24,dur:.5+k*.9,vol:v*(.4+k*.5)})},
+  /* naval guns: small calibres crack, cruisers bark, battleship rifles thunder and roll across the water */
+  gun(cal,p,foe){const v=attn(p)*(foe?.42:.75);if(v<.03)return;const big=cal>=280,mid=cal>=140&&!big;if(!canPlay((foe?'e':'g')+(big?'B':mid?'M':'S'),big?110:mid?70:45))return;
+    const d=dist(p),lp=d>8?Math.max(500,7000-d*95):0,dl=Math.min(.18,d/450),pr=rnd(.9,1.1),rv=big?.75:mid?.4:.18;
+    if(big){nz({type:'highpass',f0:2400,dur:.05,vol:v*.55,lp,delay:dl});
+      nz({f0:1400*pr,f1:70,dur:1.7,vol:v*.95,att:.004,lp,rev:rv,delay:dl});
+      tn({f0:62*pr,f1:21,dur:1.4,vol:v*1.0,att:.003,lp,rev:rv*.6,delay:dl});tn({wave:'sawtooth',f0:48*pr,f1:24,dur:.9,vol:v*.35,flp:160,delay:dl});
+      for(let i=0;i<3;i++)nz({f0:420,f1:90,dur:.9,vol:v*(.22-i*.05),att:.06,delay:dl+.35+i*.38+rnd(0,.1),rev:.5,lp:lp||900})}
+    else if(mid){nz({type:'highpass',f0:3000,dur:.035,vol:v*.4,lp,delay:dl});nz({type:'bandpass',f0:1500*pr,f1:240,q:.8,dur:.55,vol:v*.75,lp,rev:rv,delay:dl});
+      tn({f0:110*pr,f1:42,dur:.45,vol:v*.65,att:.003,lp,delay:dl});nz({f0:500,f1:120,dur:.7,vol:v*.18,att:.05,delay:dl+.25,rev:.4,lp:lp||1200})}
+    else{nz({type:'highpass',f0:2600*pr,f1:900,dur:.12,vol:v*.6,lp,rev:rv,delay:dl});tn({wave:'triangle',f0:230*pr,f1:90,dur:.14,vol:v*.4,lp,delay:dl});nz({type:'bandpass',f0:1100,f1:400,q:1.2,dur:.25,vol:v*.2,delay:dl+.03,lp})}},
+  boom(r,p){const v=attn(p);if(v<.03||!canPlay('b',40))return;const k=Math.min(1,r/3),d=dist(p),lp=d>10?Math.max(500,6000-d*80):0,pr=rnd(.85,1.15);
+    nz({f0:1800*pr,f1:70,dur:.6+k*1.4,vol:v*(.4+k*.5),lp,rev:.35+k*.4});tn({f0:70*pr,f1:22,dur:.5+k*1,vol:v*(.45+k*.5),lp,rev:.3});
+    if(k>.5)for(let i=0;i<3;i++)nz({type:'bandpass',f0:rnd(600,1600),f1:200,q:2,dur:.12,vol:v*.2,delay:rnd(.08,.5),lp})},
+  /* shell striking armour: an inharmonic metallic clang */
+  clang(p,big){const v=attn(p)*(big?.55:.4);if(v<.03||!canPlay('cl',60))return;const b=rnd(380,520)*(big?.7:1),d=dist(p),lp=d>10?Math.max(800,6000-d*80):0;
+    for(const[m,vv,du]of[[1,1,.35],[2.76,.5,.22],[5.4,.3,.14],[8.9,.15,.09]])tn({wave:'triangle',f0:b*m,f1:b*m*.97,dur:du*(big?1.6:1),vol:v*vv*.35,lp,rev:.25});nz({type:'highpass',f0:3500,dur:.06,vol:v*.4,lp})},
+  /* a ship going down: detonations, groaning hull, rushing water and bubbles; bigger ships take longer and sound deeper */
+  sink(type,p,boss){const v=attn(p)*.85;if(v<.03||!canPlay('sk',120))return;const z={DD:0,CL:1,CA:2,BB:3}[type]+(boss?1:0),d=dist(p),lp=d>10?Math.max(600,6000-d*75):0,L=1.2+z*.9;
+    if(z>=3){nz({f0:900,f1:40,dur:3.2,vol:v*1.1,att:.01,lp,rev:.9});tn({f0:42,f1:18,dur:2.8,vol:v*1.1,lp,rev:.6});nz({type:'highpass',f0:2800,dur:.08,vol:v*.6,lp})}
+    for(let i=0;i<2+z;i++){const t=rnd(.15,.5)+i*rnd(.25,.45);nz({f0:rnd(900,1600),f1:90,dur:.4+z*.15,vol:v*(.35+z*.06),delay:t,lp,rev:.4});tn({f0:rnd(60,90),f1:28,dur:.35+z*.1,vol:v*.35,delay:t,lp})}
+    const gs=.6+z*.25;for(let i=0;i<1+Math.ceil(z/2);i++){const f=rnd(55,85)/(1+z*.18);tn({wave:'sawtooth',f0:f,f1:f*rnd(.55,.75),dur:L*rnd(.8,1.2),vol:v*.28,att:.25,flp:240+z*20,vib:rnd(3,7),vibD:f*.05,delay:gs+i*rnd(.4,.9),lp,rev:.6})}
+    nz({type:'highpass',f0:1800,f1:900,dur:L*1.4,vol:v*(.08+z*.04),att:.4,delay:.8,lp,rev:.3});
+    nz({type:'bandpass',f0:700,f1:180,q:.6,dur:L*1.8,vol:v*(.25+z*.06),att:.6,delay:.5+z*.2,lp,rev:.4});
+    for(let i=0;i<6+z*5;i++)tn({f0:rnd(250,900),f1:rnd(500,1400),dur:rnd(.04,.09),vol:v*.06,delay:1+rnd(0,L*1.6),lp})},
   splash(p,big){const v=attn(p)*(big?.5:.3);if(v<.03||!canPlay('s',35))return;nz({type:'bandpass',f0:1900,f1:450,q:.9,dur:.5,vol:v,att:.01})},
   torp(p){const v=attn(p)*.5;if(v<.03||!canPlay('t',200))return;nz({type:'highpass',f0:500,f1:2200,dur:.55,vol:v*.6,att:.05});tn({f0:170,f1:85,dur:.3,vol:v*.4})},
   aa(){if(!canPlay('aa',110))return;for(let i=0;i<3;i++)nz({type:'highpass',f0:1600,dur:.05,vol:.16,delay:i*.06})},
@@ -1074,6 +1112,18 @@ function ago(t){const m=(Date.now()-new Date(t))/60000;return m<1?'방금':m<60?
 $('rank').addEventListener('click',e=>{if(e.target.id==='rank')$('rank').hidden=true});
 addEventListener('keydown',e=>{if(e.key==='Escape')$('rank').hidden=true});
 $('rkBtn').onclick=openRank;
+/* in-game notices: newest first; the red dot shows until the latest one is opened */
+const NOTICES=[
+ ['2026-10-17','효과음 대개편 · 콤보 보너스 · 해역 저장',['<b>함포 소리</b>가 구경마다 달라요. 작은 포는 날카롭게, 전함 주포는 천둥처럼 길게 울려요. 먼 포성은 작고 먹먹하게 들려요.','<b>침몰 소리</b>가 함급마다 달라요. 큰 배일수록 길게 삐걱이고, 전함은 탄약고 폭발과 증기·물보라 소리까지 나요.','포탄이 장갑에 맞으면 <b>금속성 타격음</b>이 나요.','<b>콤보 보너스</b>: 3콤보 코인 ×1.2 → 5콤보 장전 ×1.5 → 8콤보 코인 ×2·화력 +15% → 12콤보 광란!','<b>해역 저장</b>: 귀항하면 그 해역부터, 침몰하면 3해역 전부터 다시 시작해요.','항구에 <b>공지 버튼</b>이 생겼어요.']],
+ ['2026-10-16','융단폭격 · 전투태세 · 업그레이드 대확장',['새 필살기 <b>융단폭격</b>: 적이 가장 많이 모인 곳을 중폭격기 편대가 쓸어버려요.','새 기술 <b>전투태세</b>: 잠깐 동안 화력이 오르고 장전이 빨라져요.','업그레이드 한계 확장(주포 Lv.9·장갑 Lv.12 등), <b>방뇌구획</b> 신설.','어뢰·전투기·정찰기·공습을 <b>최대 3회 저장</b>할 수 있어요.','공습 폭격기가 주황색으로 커지고 폭발이 더 커졌어요. 전투기가 뇌격기를 더 멀리서 잡아요.','처음 보는 적·기술마다 <b>그림 안내 카드</b>가 떠요. 드라이도크에 <b>도트 아이콘</b>이 생겼어요.']],
+ ['2026-10-15','네이비필드식 시점 · 전투기 · 공습',['전투 화면이 <b>비스듬히 옆에서 보는 시점</b>으로 바뀌었어요.','비스마르크에 <b>발트 위장</b>과 디테일을 더했어요.','뇌격기·구축함 어뢰 너프, 너무 가까이서 맞은 어뢰는 <b>불발</b>.','<b>전투기</b>와 <b>공습 요청</b>이 추가됐어요.']],
+ ['2026-10-14','드라이도크 · 겨울 항구 · 온라인 랭킹',['내 배를 보며 업그레이드하는 <b>드라이도크</b> 개장 화면.','눈 내리는 <b>겨울 항구</b>.','중순양함부터 <b>정찰기</b> 사용 가능.','온라인 <b>랭킹·프로필</b>, 미니맵, 조이스틱, 홈 화면 설치.']]];
+function noticeNew(){return (SV.noticeSeen||'')<NOTICES[0][0]}
+function openNotice(){const seen=SV.noticeSeen||'';$('ntList').innerHTML=NOTICES.map(([d,t,items])=>`<section class="ntc${d>seen?' new':''}"><h3><time datetime="${d}">${d.slice(5).replace('-','/')}</time>${t}${d>seen?'<em>NEW</em>':''}</h3><ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul></section>`).join('');
+  $('notice').hidden=false;SV.noticeSeen=NOTICES[0][0];save();$('ntDot').hidden=true;setTimeout(()=>$('ntX').focus(),50)}
+$('ntBtn').onclick=openNotice;$('ntX').onclick=()=>{$('notice').hidden=true};$('notice').addEventListener('click',e=>{if(e.target.id==='notice')$('notice').hidden=true});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('notice').hidden)$('notice').hidden=true});
+$('ntDot').hidden=!noticeNew();
 
 /* ================= profile & rank ================= */
 const RANKS=[['수습생도',0,'—'],['소위',150,'1'],['중위',400,'2'],['대위',900,'3'],['소령',1800,'◆'],['중령',3200,'◆◆'],['대령',5500,'◆◆◆'],['준장',9000,'★'],['소장',14000,'★★'],['중장',21000,'★★★'],['대장',32000,'★★★★'],['원수',50000,'★★★★★']];
@@ -1179,11 +1229,11 @@ function runMounts(ship,dt,targets,o){const hy=ship.g.rotation.y;
       fx('smoke',mz,{life:1.6,s0:fs*.4,s1:fs*1.6,a:.5,v:V(0,.5,0),drag:.5});SFX.gun(m.k.cal,mz,o.foe)}}}
 function hitShip(sh,p,pad){const dx=p.x-sh.g.position.x,dz=p.z-sh.g.position.z,h=sh.g.rotation.y,lx=dx*Math.cos(h)-dz*Math.sin(h),lz=dx*Math.sin(h)+dz*Math.cos(h);
   return Math.abs(lx)<sh.B+(pad||.15)&&Math.abs(lz)<sh.L/2}
-function damagePlayer(d,p,big){if(R.over)return;SFX.hit();const dd=d*(1-R.st.red);R.hp-=dd;R.lastHit=R.t;boom(V(p.x,.9,p.z),big?1.6:.9);R.shake=Math.max(R.shake,big?.5:.2);player.hullMat.emissiveIntensity=.5;
-  if(R.hp<=0){R.hp=0;boom(player.g.position.clone().setY(1),4);endRun(false)}}
+function damagePlayer(d,p,big){if(R.over)return;SFX.hit();SFX.clang(p,big);const dd=d*(1-R.st.red);R.hp-=dd;R.lastHit=R.t;boom(V(p.x,.9,p.z),big?1.6:.9);R.shake=Math.max(R.shake,big?.5:.2);player.hullMat.emissiveIntensity=.5;
+  if(R.hp<=0){R.hp=0;SFX.sink({FF:'DD',DD:'DD',CL:'CL',CA:'CA',BC:'BB',BB:'BB'}[SV.cls],player.g.position,SV.cls==='BB');boom(player.g.position.clone().setY(1),4);endRun(false)}}
 function killFoe(f){f.sink=.01;R.strike=Math.min(stMax(),(R.strike||0)+(f.boss?.35:{DD:.12,CL:.16,CA:.2,BB:.3}[f.type]));R.carpet=Math.min(1,(R.carpet||0)+(f.boss?.25:{DD:.06,CL:.08,CA:.1,BB:.14}[f.type]));comboHit();const p=f.g.position.clone();R.kills++;if(!f.boss)R.stageKills++;R.sunk[f.type]++;if(f.boss)R.bosses++;
   const val={DD:22,CL:50,CA:102,BB:264}[f.type]*(1+.22*(R.stage-1))*(f.boss?2:1);dropCoin(p,val);
-  boom(V(p.x,1,p.z),f.L*.14+1);for(let i=0;i<3;i++)setTimeout(()=>{if(mode==='sea')boom(V(p.x+(Math.random()-.5)*f.L*.5,1,p.z+(Math.random()-.5)*2),2)},200+i*260);
+  SFX.sink(f.type,p,f.boss);boom(V(p.x,1,p.z),f.L*.14+1);for(let i=0;i<3;i++)setTimeout(()=>{if(mode==='sea')boom(V(p.x+(Math.random()-.5)*f.L*.5,1,p.z+(Math.random()-.5)*2),2)},200+i*260);
   if(f.boss){R.bossDead=true;setTimeout(stageClear,1600)}}
 function stageClear(){if(mode!=='sea'||R.over)return;const bonus=Math.round(144*R.stage);R.earned+=bonus;R.coins+=bonus;R.hp=Math.min(R.st.maxHp,R.hp+R.st.maxHp*.3);
   banner(`해역 ${R.stage} 확보 · 보너스 ${fmt(bonus)}`);SFX.clear();R.stage++;R.stageKills=0;R.boss=null;R.bossDead=false;R.spawnT=3;R.planeT=10}
@@ -1493,7 +1543,7 @@ function seaStep(dt,t){const P=player,pg=P.g,st=R.st;R.t+=dt;
     if(s.glowT<=0){s.glowT=.03;fx(s.foe?'red':'glow',s.m.position.clone(),{life:.18,s0:s.big?.5:s.foe?.45:.35,s1:.2,a:.85})}
     if(s.m.position.y<=0){s.alive=false;s.m.visible=false;const p=s.m.position;let hit=false;
       if(s.foe){if(!R.over&&hitShip(P,p,.25)){damagePlayer(s.dmg,p,false);hit=true}}
-      else for(const f of foes){if(f.sink)continue;if(hitShip(f,p,.2)){f.hp-=s.dmg;f.hullMat.emissiveIntensity=.5;boom(V(p.x,.9,p.z),s.big?1.5:.9);if(f.hp<=0)killFoe(f);hit=true;break}}
+      else for(const f of foes){if(f.sink)continue;if(hitShip(f,p,.2)){f.hp-=s.dmg;f.hullMat.emissiveIntensity=.5;SFX.clang(p,s.big);boom(V(p.x,.9,p.z),s.big?1.5:.9);if(f.hp<=0)killFoe(f);hit=true;break}}
       if(!hit)splash(p,s.big)}}
   for(const c of coins){if(!c.alive)continue;c.t+=dt;const m=c.m;m.rotation.y+=dt*8;
     const dx=pg.position.x-m.position.x,dz=pg.position.z-m.position.z,d=Math.hypot(dx,dz);
@@ -1525,7 +1575,7 @@ function frame(now){const rdt=Math.min(.04,(now-last)/1000);if(R.slowT>0)R.slowT
   if(player.g.userData.flag)player.g.userData.flag.rotation.y=Math.PI/2+Math.sin(t*3.1)*.18;
   drawFrame();requestAnimationFrame(frame)}
 setWinter(true);rebuildPlayer();renderPort();renderChip();setMute(AU.muted);setPix(PIX);if(ON.ok&&OS.id)sync(null);requestAnimationFrame(frame);
-window.__dbg={get player(){return player},endRun,pic,TIPS,airStrike,foes,launchFighters,carpetBomb,bestCluster,spawnFoe,spawnPlanes,planes,allies,get mode(){return mode},camera,renderer,scene,AU,SV,R,startRun,joy,rebuildPlayer,renderPort};
+window.__dbg={get player(){return player},SFX,AU,killFoe,endRun,pic,TIPS,airStrike,foes,launchFighters,carpetBomb,bestCluster,spawnFoe,spawnPlanes,planes,allies,get mode(){return mode},camera,renderer,scene,AU,SV,R,startRun,joy,rebuildPlayer,renderPort};
 })();
 </script>
 
