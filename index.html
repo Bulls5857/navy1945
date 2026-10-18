@@ -285,6 +285,48 @@ body{background:var(--ink)}
 #pause h2{margin:0;font-size:24px;letter-spacing:.04em}#pause .go{width:100%;min-height:52px}#pause .mini{min-height:44px;width:100%}
 #pause .keys{display:grid;margin-left:auto;margin-right:auto;width:min(260px,100%);grid-template-columns:repeat(4,1fr);gap:5px;margin-top:4px;font-size:10.5px;color:var(--mute)}#pause .keys span{display:flex;flex-direction:column;align-items:center;gap:2px}#pause .keys kbd{font:700 12px var(--num);color:#0b1820;background:#c9d8e4;border-radius:4px;padding:1px 0;width:26px;box-shadow:0 2px 0 #6d8394}
 #pause .pc{display:none}@media (hover:hover) and (pointer:fine){#pause .pc{display:block}}
+.rail{position:fixed;right:10px;top:calc(58px + env(safe-area-inset-top,0px));display:flex;flex-direction:column;gap:6px;z-index:3}
+.rail button{pointer-events:auto;position:relative;width:62px;min-height:52px;background:var(--chip);border:1px solid var(--line);border-radius:8px;color:var(--fg);font:700 10.5px/1.15 var(--body);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 2px}
+.rail button b{font-size:18px;line-height:1}.rail button.hot{border-color:var(--accent);box-shadow:0 0 0 2px rgba(242,163,58,.25)}
+.rail i.dot{position:absolute;top:4px;right:4px;width:9px;height:9px;border-radius:50%;background:#e2593f;box-shadow:0 0 0 2px var(--ink)}
+@media (max-height:420px){.rail{gap:4px}.rail button{min-height:44px;width:58px;font-size:10px}.rail button b{font-size:15px}}
+#hub .sheet{width:min(680px,100%)}
+.hb{display:flex;flex-direction:column;gap:10px}
+.att{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:rgba(16,34,44,.6)}
+.att b{font-size:14px}.att .pips{display:flex;gap:5px;margin-left:auto}.att .pips i{width:22px;height:22px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font:700 10px var(--num);color:var(--mute);font-style:normal}
+.att .pips i.on{background:var(--accent);border-color:var(--accent);color:#1A1204}.att .pips i.big{border-color:#ffd84a}
+.ms{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center}
+.ms.done{border-color:var(--ok)}.ms.got{opacity:.6}
+.ms h4{margin:0;font-size:14px}.ms small{color:var(--mute);font:600 11px var(--num)}
+.ms .mbar{grid-column:1;height:6px;border-radius:3px;background:#10222c;overflow:hidden}.ms .mbar i{display:block;height:100%;background:var(--accent)}
+.ms.done .mbar i{background:var(--ok)}
+.ms .rw{grid-column:2;grid-row:1/span 2;display:flex;flex-direction:column;align-items:flex-end;gap:4px;font:700 12px var(--num);color:var(--accent)}
+.ms .rw .go{width:auto;min-height:38px;padding:0 14px;font-size:13px}.ms .rw .ok{color:var(--ok);font-size:12px}
+.dcc{border:1px solid #4b8fb8;border-radius:10px;padding:12px 14px;background:linear-gradient(135deg,rgba(30,70,96,.55),rgba(16,34,44,.6));display:flex;flex-direction:column;gap:6px}
+.dcc h3{margin:0;font-size:17px}.dcc .mod{display:inline-block;font-size:12px;font-weight:800;color:#0b1820;background:#7fb6e8;border-radius:4px;padding:1px 8px;margin-right:6px}
+.dcc ul{margin:0;padding-left:18px;font-size:13px;line-height:1.6}.dcc .go{min-height:50px;margin-top:4px}
+.dcb{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.dcb div{border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--mute)}.dcb b{display:block;font:700 16px var(--num);color:var(--fg)}
+.ttl{display:inline-block;font-size:10px;font-weight:800;color:#0b1820;background:#d98fe0;border-radius:4px;padding:0 5px;margin-left:5px;vertical-align:1px;white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:5px}.chips button{background:none;border:1px solid var(--line);border-radius:14px;color:var(--mute);font:700 12px var(--body);padding:0 12px;min-height:34px}
+.chips button.on{background:#d98fe0;border-color:#d98fe0;color:#0b1820}
+.camos{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.camos button{border:1px solid var(--line);border-radius:8px;background:rgba(16,34,44,.6);color:var(--fg);padding:8px;display:flex;flex-direction:column;gap:6px;text-align:left;font:700 12px var(--body)}
+.camos button.on{border-color:var(--accent);box-shadow:0 0 0 2px rgba(242,163,58,.3)}.camos button[disabled]{opacity:.55}
+.camos .sw{height:26px;border-radius:4px;border:1px solid rgba(255,255,255,.12)}.camos small{font-weight:500;color:var(--mute);font-size:10.5px;line-height:1.3}
+.achs{display:flex;flex-direction:column;gap:6px}
+.ach{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;border-bottom:1px solid var(--line);padding:6px 2px;font-size:13px}
+.ach .ic{font-size:18px;text-align:center;filter:grayscale(1);opacity:.5}.ach.on .ic{filter:none;opacity:1}
+.ach small{display:block;color:var(--mute);font-size:11px}.ach .pr{font:700 11px var(--num);color:var(--mute);text-align:right}.ach.on .pr{color:var(--ok)}
+.hsec{margin:4px 0 0;font-size:13px;color:var(--accent);letter-spacing:.04em}
+.lb .pod{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;border:0;padding:0 0 6px}.lb .pod div{display:block;border:1px solid var(--line);border-radius:8px;padding:8px 6px;text-align:center;font-size:12px;color:var(--mute);min-width:0}.lb .pod b{display:block;font-size:14px;color:var(--fg);margin:2px 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lb .pod div:first-child{border-color:#ffd84a;background:rgba(255,216,74,.08)}.lb .hsec,.lb>p.note{display:block;border:0}
+.res .ml{grid-column:1/-1;font-size:12px;color:var(--mute);display:flex;flex-wrap:wrap;gap:4px 10px;padding:4px 0}.res .ml span.ok{color:var(--ok);font-weight:700}
+.res .goal{grid-column:1/-1;font-size:13px;text-align:center;color:var(--fg);background:rgba(242,163,58,.1);border:1px dashed var(--accent);border-radius:6px;padding:6px 8px;margin-top:4px}
+.res .rb{grid-column:1/-1;display:flex;gap:8px;margin-top:8px}.res .rb .go{margin:0;flex:1.3}.res .rb .mini{flex:1;min-height:54px;font-size:13px}
+.res .shr{grid-column:1/-1;background:none;border:1px solid var(--line);border-radius:6px;color:var(--accent);font:700 13px var(--body);min-height:40px;margin-top:4px}
+.res .new{grid-column:1/-1;color:#d98fe0;font-weight:700;font-size:13px;text-align:center}
+#attM .sheet,#rivalM .sheet{width:min(380px,100%);text-align:center;align-items:stretch}
+#attM .big,#rivalM .big{font:800 30px var(--num);color:var(--accent);margin:2px 0}
+@media (max-width:900px){#pchip .ttl{display:none}}
 .act sup{position:absolute;top:9px;right:13px;font:700 11px var(--num);color:#fff;background:#e2593f;border-radius:8px;padding:0 4px;line-height:15px}
 #combo{position:fixed;right:22%;top:24%;pointer-events:none;display:flex;flex-direction:column;align-items:center;opacity:0;transform:scale(.6);transition:opacity .25s,transform .25s}
 #combo.on{opacity:1;transform:scale(1)}
@@ -326,6 +368,7 @@ body{background:var(--ink)}
     <button type="button" class="mute" aria-pressed="true">소리 켜짐</button>
     <div class="coin"><i></i><span id="coinP">0</span></div>
   </div>
+  <div class="rail" id="rail"><button type="button" data-hub="m" aria-label="일일 임무"><b>📋</b>임무<i class="dot" id="dotM" hidden></i></button><button type="button" data-hub="dc" aria-label="오늘의 해역"><b>🌊</b>오늘의<br>해역<i class="dot" id="dotDC" hidden></i></button><button type="button" id="railWeek" aria-label="주간 시즌 랭킹"><b>🏆</b>시즌</button><button type="button" data-hub="a" aria-label="업적과 위장"><b>🏅</b>업적<i class="dot" id="dotA" hidden></i></button></div>
   <div id="drawer"><button type="button" class="handle" id="handle" aria-label="개장 창 접기" aria-expanded="true"><b>▶</b>개장</button><div class="panel" id="panel"></div></div>
   <div class="card"><div class="info" id="info"></div><button type="button" class="dockgo" id="dockGo">개장<small>DRYDOCK</small></button><button type="button" class="go" id="sortie">출격<small id="sortieSub">해역 1부터</small></button></div>
 </div>
@@ -373,6 +416,9 @@ body{background:var(--ink)}
 <button type="button" class="go" id="pzGo">계속하기</button><button type="button" class="mini" id="pzHome">귀항하기 (이 해역 저장)</button>
 <div class="pc"><p class="note" style="margin-top:6px">키보드 · 방향키로 조함 · P / Esc 일시정지</p><div class="keys"><span><kbd>Q</kbd>전투기</span><span><kbd>W</kbd>전투태세</span><span><kbd>E</kbd>수리</span><span><kbd>R</kbd>정찰기</span><span><kbd>A</kbd>어뢰</span><span><kbd>S</kbd>공습</span><span><kbd>D</kbd>융단폭격</span><span><kbd>F</kbd>-</span></div></div></div></div>
 <div id="result" hidden></div>
+<div class="modal" id="hub" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="hubT"><header><h2 id="hubT" style="margin:0">⚓ 작전 본부</h2><button type="button" class="x" id="hubX" aria-label="닫기">✕</button></header><div class="tabs" role="tablist" id="hubTabs"><button type="button" role="tab" data-ht="m">📋 일일 임무</button><button type="button" role="tab" data-ht="dc">🌊 오늘의 해역</button><button type="button" role="tab" data-ht="a">🏅 업적 · 위장</button></div><div id="hubBody" class="hb"></div></div></div>
+<div class="modal" id="attM" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="attT"><h2 id="attT" style="margin:0">출석 체크</h2><div id="attB"></div><button type="button" class="go" id="attOk">받기</button></div></div>
+<div class="modal" id="rivalM" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rvT"><h2 id="rvT" style="margin:0">⚔ 도전장 도착!</h2><div id="rvB"></div><button type="button" class="go" id="rvGo">도전하러 출격</button><button type="button" class="mini" id="rvX">나중에</button></div></div>
 <div class="modal" id="notice" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ntTitle"><header><h2 id="ntTitle" style="margin:0">📢 공지사항</h2><button type="button" class="x" id="ntX" aria-label="닫기">✕</button></header><div class="tabs" role="tablist" id="ntTabs"><button type="button" role="tab" data-nt="news">공지 · 업데이트</button><button type="button" role="tab" data-nt="idea">💡 아이디어 게시판</button></div><div id="ntList"></div><div id="idBox" hidden></div></div></div>
 <div class="modal" id="rank" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rkTitle" id="rkSheet"></div></div>
 <div class="modal" id="profile" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pfTitle" id="pfSheet"></div></div>
@@ -548,11 +594,19 @@ function buildShip(nat,cls,up){const N=nat==='foe'?FOE:NAT[nat],c=N.c[cls],P=N.p
   const sheer=t=>H*(1+(t>.66?N.sheer*Math.pow((t-.66)/.34,2):0));
   const deckY=z=>sheer(Math.min(1,Math.max(0,(z+L/2)/L)));
   const hbAt=z=>halfB(Math.min(1,Math.max(0,(z+L/2)/L)));
-  const baltic=nat==='de'&&cls==='BB',N2=Math.round(baltic?L*10:40+L*2),sec=baltic?[[1,1],[1,.85],[1,.7],[1,.55],[1,.4],[.999,.36],[.998,.2],[.996,.17],[.985,.05],[.97,-.05],[.88,-.45],[.62,-.85],[.25,-1],[0,-1.02]]:[[1,1],[1,.4],[.999,.35],[.998,.2],[.996,.17],[.985,.05],[.97,-.05],[.88,-.45],[.62,-.85],[.25,-1],[0,-1.02]],ring=sec.length*2-1;
+  const baltic=nat==='de'&&cls==='BB',cm=up.camo&&up.camo!=='std'?up.camo:null,N2=Math.round(baltic||cm?L*10:40+L*2),sec=baltic?[[1,1],[1,.85],[1,.7],[1,.55],[1,.4],[.999,.36],[.998,.2],[.996,.17],[.985,.05],[.97,-.05],[.88,-.45],[.62,-.85],[.25,-1],[0,-1.02]]:[[1,1],[1,.4],[.999,.35],[.998,.2],[.996,.17],[.985,.05],[.97,-.05],[.88,-.45],[.62,-.85],[.25,-1],[0,-1.02]],ring=sec.length*2-1;
   const pos=[],col=[],idx=[],cG=new T.Color(P.hull),cB=new T.Color(0x18191b),cR=new T.Color(0x9a2a22).convertSRGBToLinear(),cW=new T.Color(0xe6eaea),cK=new T.Color(0x2a2e30),cD1=new T.Color(0x52636e),cD2=new T.Color(0xcfdce2);
   const cDk=new T.Color(0x1c1f21),cBk=new T.Color(0x060708),cWh=new T.Color(0xf4f6f6),cLt=new T.Color(0x7c8b97),bz=[(.625-.5)*L,(.405-.5)*L];
+  const cNv=new T.Color(0x2c3a4c),cHz=new T.Color(0x8e9aa6),cAw=new T.Color(0xe3e9ec),cAg=new T.Color(0x93a1a9),cAu=new T.Color(0xc9a24a),cAd=new T.Color(0x8a6a26);
   const paint=(x,y,z,t)=>{if(y<=H*.36)return cR;
-    if(baltic){/* Baltic scheme (1941): black/white bands fore and aft, dark bow and stern ends, false white bow wave */
+    if(cm&&cm!=='baltic'){if(y<=H*.37)return cR;
+      if(cm==='splinter'){const k=((Math.floor((z+y*1.3)*1.4)+Math.floor((z-y*.8)*.9))%3+3)%3;return k===0?cW:k===1?cK:cG}
+      if(cm==='dazzle'){const v=Math.sin(z*.9+y*3)+Math.sin(z*.37+1.7);return v>1.1?cD1:v<-1.1?cD2:cG}
+      if(cm==='m22')return y<H*.74?cNv:cHz;
+      if(cm==='arctic')return Math.sin(z*.7+y*2.2)+Math.sin(z*.23+.6)>1.15?cAg:cAw;
+      if(cm==='gold')return(Math.floor(z*1.1)%7+7)%7===0?cAd:cAu;
+      return cG}
+    if(baltic||cm==='baltic'){/* Baltic scheme (1941): black/white bands fore and aft, dark bow and stern ends, false white bow wave */
       if(y<=H*.37)return cR;if(t>.948||t<.04)return cDk;if(t>.912)return cWh;
       const zs=z;for(const c of bz){const d=Math.abs(zs-c);if(d<1.2)return d<.72?cBk:cWh}
       return cLt}
@@ -902,7 +956,8 @@ function setWinter(on){SKY.setHex(on?0x9aaebf:0x5d86a6);sun.color.setHex(on?0xe4
 const KEY='navy1945_v1';
 const defSave=()=>({nat:'jp',cls:'FF',coins:300,best:0,runs:0,up:{gun:0,sec:0,aa:0,torp:0,armor:0,eng:0}});
 let SV;try{SV=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!SV||!SV.up)SV=defSave();
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(SV))}catch(e){}};
+let DCS=null;const realSV=()=>DCS?Object.assign({},SV,DCS):SV;
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(realSV()))}catch(e){}};
 function bsD(l){return l?20+5*l:0}function bsR(l){return l?15+3*l:0}function bsDur(l){return l?7+l:0}function bsN(l){return l?1+(l>=3)+(l>=5):0}
 const UPG={
  gun:{name:'주포',max:9,base:140,eff:(l,cls)=>{const c=NAT[SV.nat].c[cls],n=(c.foreG||[c.gun])[0][1];return`${calTxt(LAD[cls][Math.min(4,l)])} ${NUM[n]}${l>4?` · 개량 ${l-4}`:''}`}},
@@ -930,7 +985,7 @@ function stats(){const u=SV.up,b=BASE[SV.cls],cal=LAD[SV.cls][Math.min(4,u.gun)]
 let mode='port',player=null,neighbor=null,moor=[];
 const foes=[],planes=[],shells=[],torps=[],coins=[];
 const orbit={th:-1.0,ph:1.08,r:18,tgt:V(0,1,0),idle:0};
-function rebuildPlayer(){if(player){scene.remove(player.g)}player=buildShip(SV.nat,SV.cls,{ladder:Math.min(4,SV.up.gun),sec:SV.up.sec,aa:Math.min(4,SV.up.aa),torp:Math.min(3,SV.up.torp)});scene.add(player.g);
+function rebuildPlayer(){if(player){scene.remove(player.g)}player=buildShip(SV.nat,SV.cls,{camo:SV.camo,ladder:Math.min(4,SV.up.gun),sec:SV.up.sec,aa:Math.min(4,SV.up.aa),torp:Math.min(3,SV.up.torp)});scene.add(player.g);
   if(neighbor)harbor.remove(neighbor.g);const nc=SV.cls==='DD'?'CL':'DD';neighbor=buildShip(SV.nat,nc,{});harbor.add(neighbor.g);placeDock();if(typeof PS!=='undefined'&&PS.dock)placeInDock()}
 function placeDock(){const x=PIER-player.B-.18;player.g.position.set(x,0,0);player.g.rotation.set(0,0,0);
   const nx=x-player.B-2.4-neighbor.B;neighbor.g.position.set(nx,0,4);neighbor.g.rotation.y=Math.PI;pier2.position.x=nx-neighbor.B-1.5;
@@ -1092,12 +1147,12 @@ async function q(path){const r=await fetch(`${CFG.url}/rest/v1/${path}`,{headers
 const genSecret=()=>{const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',b=crypto.getRandomValues(new Uint8Array(10));let s='';for(let i=0;i<10;i++){s+=A[b[i]%A.length];if(i===4)s+='-'}return s};
 const ERR={name_taken:'이미 쓰는 이름이에요. 다른 이름으로 해주세요.',bad_name:'이름은 1~12자로 해주세요.',auth:'이름이나 복구 코드가 맞지 않아요.'};
 const errMsg=e=>ERR[e&&e.message]||'서버에 연결하지 못했어요. 잠시 후 다시 해주세요.';
-function profPayload(){const pf=PF();return{nat:SV.nat,cls:SV.cls,xp:pf.xp,best:SV.best,runs:SV.runs,dd:pf.sunk.DD,cl:pf.sunk.CL,ca:pf.sunk.CA,bb:pf.sunk.BB,planes:pf.planes,bosses:pf.bosses,coins:pf.coinsTotal,sec:Math.round(pf.time)}}
+function profPayload(){const pf=PF(),rs=realSV();return{nat:rs.nat,cls:rs.cls,xp:pf.xp,best:SV.best,runs:SV.runs,dd:pf.sunk.DD,cl:pf.sunk.CL,ca:pf.sunk.CA,bb:pf.sunk.BB,planes:pf.planes,bosses:pf.bosses,coins:pf.coinsTotal,sec:Math.round(pf.time)}}
 let syncing=false;
 async function sync(run){if(run){OS.pending=(OS.pending||[]).concat([run]).slice(-30);osave()}
   if(!ON.ok||!OS.id||syncing)return;syncing=true;
-  try{const L=OS.pending||[];if(!L.length)await rpc('submit_run',{p_id:OS.id,p_secret:OS.secret,p_run:null,p_prof:profPayload(),p_save:SV});
-    while(L.length){try{await rpc('submit_run',{p_id:OS.id,p_secret:OS.secret,p_run:L[0],p_prof:profPayload(),p_save:SV})}catch(e){if(e instanceof TypeError||/^5\d\d$/.test(e.message)||e.message==='auth')throw e}L.shift();osave()}ON.status='ok'}
+  try{const L=OS.pending||[];if(!L.length)await rpc('submit_run',{p_id:OS.id,p_secret:OS.secret,p_run:null,p_prof:profPayload(),p_save:realSV()});
+    while(L.length){try{await rpc('submit_run',{p_id:OS.id,p_secret:OS.secret,p_run:L[0],p_prof:profPayload(),p_save:realSV()})}catch(e){if(e instanceof TypeError||/^5\d\d$/.test(e.message)||e.message==='auth')throw e}L.shift();osave()}ON.status='ok'}
   catch(e){ON.status='err'}finally{syncing=false}}
 async function registerOnline(name){const secret=genSecret(),id=await rpc('register',{p_name:name,p_secret:secret,p_nat:SV.nat});OS.id=id;OS.secret=secret;OS.pending=[];osave();await sync(null)}
 function exportCode(){const j=JSON.stringify(SV);return'N45-'+btoa(unescape(encodeURIComponent(j)))}
@@ -1105,7 +1160,7 @@ function importCode(c){c=c.trim();if(!c.startsWith('N45-'))throw 0;const o=JSON.
 function applySave(o){SV=o;save();location.reload()}
 
 /* ================= leaderboard ================= */
-const LBT=[['xp','공적·계급'],['best_stage','최고 해역'],['sunk','총 격침'],['recent','최근 전투']];let lbTab='xp';
+const LBT=[['week','🏆 주간 시즌'],['xp','공적·계급'],['best_stage','최고 해역'],['sunk','총 격침'],['recent','최근 전투']];let lbTab='week';
 function openRank(){$('rank').hidden=false;drawRank()}
 async function drawRank(){const sh=$('rkSheet');
   if(!ON.ok){const pf=PF(),ri=rankIdx(pf.xp),sk=pf.sunk;
@@ -1123,7 +1178,12 @@ async function drawRank(){const sh=$('rkSheet');
   sh.querySelector('.tabs').onclick=e=>{const b=e.target.closest('[data-tab]');if(b){lbTab=b.dataset.tab;drawRank()}};
   rankSummary();
   try{let h='';
-    if(lbTab==='recent'){const rows=await q('recent_runs?select=*&order=created_at.desc&limit=30');
+    if(lbTab==='week'){const[rows,top]=await Promise.all([q('weekly_board?select=*&order=xp.desc,last_at.asc&limit=100'),q('last_week_top?select=*').catch(()=>[])]);
+      const end=weekEnd(),left=end-Date.now(),dd=left/864e5|0,hh=left%864e5/36e5|0;
+      h=`<p class="note" style="padding:4px 2px">이번 주 출격에서 얻은 <b style="color:var(--accent)">공적 합계</b>로 겨뤄요 · 매주 월요일 0시 새 시즌 · <b style="color:var(--fg)">종료까지 ${dd}일 ${hh}시간</b></p>`+
+        (top.length?`<h4 class="hsec">지난 시즌 TOP 3</h4><div class="pod">${top.map((t,i)=>`<div>${['🥇','🥈','🥉'][i]}<b>${esc(t.name)}</b>${fmt(t.xp)} 공적</div>`).join('')}</div><h4 class="hsec">이번 시즌</h4>`:'')+
+        rows.map((r,k)=>`<div class="${r.id===OS.id?'me':''}"><span class="n">${k<3?['🥇','🥈','🥉'][k]:k+1}</span><span class="ins">${(NAT[r.nat]||NAT.jp).name.slice(0,1)}</span><span class="who">${esc(r.name)}${r.title&&TITLES[r.title]?`<span class="ttl">${TITLES[r.title]}</span>`:''}<small>${CLSNAME[r.cls]||r.cls} · 최고 해역 ${r.best} · 출격 ${r.runs}</small></span><span class="v">${fmt(r.xp)}</span></div>`).join('')}
+    else if(lbTab==='recent'){const rows=await q('recent_runs?select=*&order=created_at.desc&limit=30');
       h=rows.map(r=>`<div class="${r.player_id===OS.id?'me':''}"><span class="n">${r.win?'⚓':'✕'}</span><span class="ins">${(NAT[r.nat]||NAT.jp).name.slice(0,1)}</span><span class="who">${esc(r.name)}<small>${ago(r.created_at)} · ${CLSNAME[r.cls]||r.cls} · ${r.win?'귀항':'침몰'}</small></span><span class="v">해역 ${r.stage} · ${r.kills}격침</span></div>`).join('')}
     else{const rows=await q(`leaderboard?select=*&order=${lbTab}.desc,updated_at.asc&limit=100`);
       h=rows.map((r,k)=>{const ri=rankIdx(r.xp);return`<div class="${r.id===OS.id?'me':''}"><span class="n">${k+1}</span><span class="ins">${RANKS[ri][2]}</span><span class="who">${RANKS[ri][0]} ${esc(r.name)}<small>${(NAT[r.nat]||NAT.jp).name} · ${CLSNAME[r.cls]||r.cls} · 출항 ${fmt(r.runs)}</small></span><span class="v">${lbTab==='xp'?fmt(r.xp):lbTab==='best_stage'?'해역 '+r.best_stage:fmt(r.sunk)}</span></div>`}).join('')}
@@ -1131,17 +1191,18 @@ async function drawRank(){const sh=$('rkSheet');
   catch(e){$('lbList').innerHTML=`<p class="err">${errMsg(e)}</p>`}}
 async function qcount(path){const r=await fetch(`${CFG.url}/rest/v1/${path}`,{headers:{...hdr(),Prefer:'count=exact',Range:'0-0'}});if(!r.ok&&r.status!==206)throw new Error(String(r.status));
   const cr=r.headers.get('content-range')||'';const n=+cr.split('/')[1];return isNaN(n)?0:n}
-async function rankSummary(){const box=$('lbSum');if(!box)return;const col=lbTab==='recent'?'xp':lbTab,lab={xp:'공적',best_stage:'최고 해역',sunk:'총 격침'}[col];
-  try{const total=await qcount('leaderboard?select=id');let mine='미등록';
-    if(OS.id){const me=(await q(`leaderboard?select=${col}&id=eq.${OS.id}`))[0];if(me){const above=await qcount(`leaderboard?select=id&${col}=gt.${me[col]}`);mine=`${above+1}위 <small style="font-size:11px;color:var(--mute)">/ ${total}명 · ${lab} 기준</small>`}}
-    if($('lbSum')===box)box.innerHTML=`<div>등록 함장 수<b>${fmt(total)}명</b></div><div>내 순위<b>${mine}</b></div>`}
+async function rankSummary(){const box=$('lbSum');if(!box)return;const wk=lbTab==='week',src=wk?'weekly_board':'leaderboard',col=lbTab==='recent'||wk?'xp':lbTab,lab=wk?'이번 주 공적':{xp:'공적',best_stage:'최고 해역',sunk:'총 격침'}[col];
+  try{const total=await qcount(src+'?select=id');let mine='미등록';
+    if(OS.id){const me=(await q(`${src}?select=${col}&id=eq.${OS.id}`))[0];if(me){const above=await qcount(`${src}?select=id&${col}=gt.${me[col]}`);mine=`${above+1}위 <small style="font-size:11px;color:var(--mute)">/ ${total}명 · ${lab} 기준</small>`}}
+    if($('lbSum')===box)box.innerHTML=`<div>${wk?'이번 주 참가':'등록 함장 수'}<b>${fmt(total)}명</b></div><div>내 순위<b>${mine}</b></div>`}
   catch(e){if($('lbSum')===box)box.innerHTML=`<div>등록 함장 수<b>-</b></div><div>내 순위<b>-</b></div>`}}
 function ago(t){const m=(Date.now()-new Date(t))/60000;return m<1?'방금':m<60?`${m|0}분 전`:m<1440?`${m/60|0}시간 전`:`${m/1440|0}일 전`}
 $('rank').addEventListener('click',e=>{if(e.target.id==='rank')$('rank').hidden=true});
 addEventListener('keydown',e=>{if(e.key==='Escape')$('rank').hidden=true});
-$('rkBtn').onclick=openRank;
+$('rkBtn').onclick=openRank;$('railWeek').onclick=()=>{lbTab='week';openRank()};
 /* in-game notices: newest first; the red dot shows until the latest one is opened */
 const NOTICES=[
+ ['2026-10-18','일일 임무 · 오늘의 해역 · 주간 시즌 · 업적',['항구 오른쪽에 <b>📋 임무 · 🌊 오늘의 해역 · 🏆 시즌 · 🏅 업적</b> 버튼이 생겼어요.','<b>일일 임무</b> 3개와 <b>출석 보상</b>: 매일 자정에 새 임무가 나와요. 세 개 다 하면 보너스! 7일 연속 출석하면 보상 두 배.','<b>오늘의 해역</b>: 매일 바뀌는 같은 배·같은 개장으로 3분 승부. 강화 차이 없이 실력으로 오늘의 1등에 도전하세요.','<b>주간 시즌 랭킹</b>: 매주 월요일 0시에 새로 시작해요. 지난 시즌 TOP 3는 랭킹에 걸려요.','<b>업적 18개</b>: 달성하면 칭호와 <b>위장 도색</b>(스플린터·대즐·메저22·발트·북극·황금)을 받아요.','결과 화면에 <b>바로 재출격</b>, <b>다음 개장 목표</b>, 침몰 시 <b>위로 보급</b>이 생겼어요.','<b>"내 기록 깨봐"</b> 버튼으로 친구에게 도전장을 보내보세요. 친구가 링크로 들어오면 내 기록이 목표로 떠요.']],
  ['2026-10-17c','PC 단축키 · 일시정지',['<b>PC 단축키</b>: 화면 버튼 배치 그대로 <b>Q</b> 전투기 · <b>W</b> 전투태세 · <b>E</b> 수리 · <b>R</b> 정찰기 / <b>A</b> 어뢰 · <b>S</b> 공습 · <b>D</b> 융단폭격. 조함은 <b>방향키</b>로 해요.','<b>❚❚ 일시정지</b> 버튼이 생겼어요. <b>P</b>나 <b>Esc</b>로도 멈출 수 있고, 다른 앱이나 탭으로 넘어가면 자동으로 멈춰요.','한글 입력 상태에서도 단축키가 그대로 먹혀요.']],
  ['2026-10-17b','아이디어 게시판 · 설치 안내',['공지 안에 <b>💡 아이디어 게시판</b>이 생겼어요. 개선 아이디어나 버그를 올리고, 마음에 드는 글에 <b>추천</b>을 눌러주세요. 개발자 답변도 달려요.','공지 맨 위에 <b>홈 화면 설치 방법</b>을 고정해 뒀어요. 설치하면 전체 화면으로 더 넓게 즐길 수 있어요.']],
  ['2026-10-17','효과음 대개편 · 콤보 보너스 · 해역 저장',['<b>함포 소리</b>가 구경마다 달라요. 작은 포는 날카롭게, 전함 주포는 천둥처럼 길게 울려요. 먼 포성은 작고 먹먹하게 들려요.','<b>침몰 소리</b>가 함급마다 달라요. 큰 배일수록 길게 삐걱이고, 전함은 탄약고 폭발과 증기·물보라 소리까지 나요.','포탄이 장갑에 맞으면 <b>금속성 타격음</b>이 나요.','<b>콤보 보너스</b>: 3콤보 코인 ×1.2 → 5콤보 장전 ×1.5 → 8콤보 코인 ×2·화력 +15% → 12콤보 광란!','<b>해역 저장</b>: 귀항하면 그 해역부터, 침몰하면 3해역 전부터 다시 시작해요.','항구에 <b>공지 버튼</b>이 생겼어요.']],
@@ -1211,6 +1272,136 @@ async function postIdea(){if(ID.busy)return;const t=ID.draft.trim(),er=$('idErr'
   try{await rpc('post_idea',{p_id:OS.id,p_secret:OS.secret,p_cat:ID.cat,p_body:t});ID.draft='';ID.sort='new';toast('아이디어를 올렸어요. 고마워요!');drawIdeas()}
   catch(e){er.textContent=errMsg(e);er.hidden=false;$('idPost').disabled=false}finally{ID.busy=false}}
 
+
+/* ================= live ops: daily missions, attendance, 오늘의 해역, achievements, rival links ================= */
+const HOME='https://bulls5857.github.io/navy1945/';
+const kst=()=>new Date(Date.now()+9*36e5),today=()=>kst().toISOString().slice(0,10),dayAdd=(d,n)=>new Date(Date.parse(d)+n*864e5).toISOString().slice(0,10);
+function weekEnd(){const k=kst(),dow=(k.getUTCDay()+6)%7,m=Date.UTC(k.getUTCFullYear(),k.getUTCMonth(),k.getUTCDate()-dow+7);return m-9*36e5}
+function hashStr(t){let h=2166136261;for(let i=0;i<t.length;i++)h=Math.imul(h^t.charCodeAt(i),16777619);return h>>>0}
+function rng(seed){let a=seed>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const lvlMul=()=>1+.22*Math.max(0,(SV.best||0)-1),r10=v=>Math.round(v/10)*10;
+/* --- daily missions: the same three for everyone each day, targets scaled to how far you have come --- */
+const MPOOL=[['dd','구축함 {n}척 격침',[8,12,16]],['any','적 함선 {n}척 격침',[15,25,40]],['big','중순양함·전함 {n}척 격침',[2,4,7]],['boss','적 기함 {n}척 격침',[1,2,3]],
+ ['planes','적 항공기 {n}기 격추',[5,8,14]],['combo','콤보 {n} 달성',[5,6,8],1],['clear','해역 {n}곳 확보',[2,3,5]],['strike','공습 {n}회 요청',[1,2,3]],['ft','전투기 {n}회 발진',[2,3,4]],
+ ['runs','출격 {n}회',[2,3,3]],['coins','코인 {n}개 획득',[400,2500,9000]]];
+function dmState(){const d=today();if(!SV.dm||SV.dm.d!==d){const r=rng(hashStr('m'+d)),ids=[];while(ids.length<3){const i=r()*MPOOL.length|0;if(!ids.includes(i))ids.push(i)}
+  SV.dm={d,ids,t:(SV.best||0)<5?0:(SV.best||0)<12?1:2,p:[0,0,0],c:[0,0,0],all:0}}return SV.dm}
+const mDef=i=>{const m=MPOOL[dmState().ids[i]];return{k:m[0],n:m[2][dmState().t],txt:m[1].replace('{n}',fmt(m[2][dmState().t])),max:!!m[3]}};
+const mRew=()=>r10(150*lvlMul());
+function runVal(k){if(mode!=='sea'||!R.sunk)return 0;const S=R.sunk;return{dd:S.DD,any:S.DD+S.CL+S.CA+S.BB,big:S.CA+S.BB,boss:R.bosses,planes:R.planes,combo:R.bestCombo||0,clear:Math.max(0,R.stage-R.start),
+  strike:R.used?R.used.strike:0,ft:R.used?R.used.ft:0,runs:R.dc?0:1,coins:Math.round(R.coins||0)}[k]||0}
+function mLive(i){const m=mDef(i),b=dmState().p[i],v=runVal(m.k);return m.max?Math.max(b,v):b+v}
+function dmTick(){if(mode!=='sea'||!R.dmAnn)return;for(let i=0;i<3;i++){if(R.dmAnn[i]||dmState().c[i])continue;const m=mDef(i);if(dmState().p[i]<m.n&&mLive(i)>=m.n){R.dmAnn[i]=1;banner(`📋 임무 완료! ${m.txt}`);SFX.upg()}}}
+function dmCommit(){const st=dmState();for(let i=0;i<3;i++)st.p[i]=Math.min(mDef(i).n*10,mLive(i))}
+function dmLine(){const st=dmState();return`<div class="ml">📋 오늘의 임무 ${[0,1,2].map(i=>{const m=mDef(i),ok=st.p[i]>=m.n;return`<span class="${ok?'ok':''}">${ok?'✓':'·'} ${m.txt}${ok?'':` (${fmt(Math.min(st.p[i],m.n))}/${fmt(m.n)})`}</span>`}).join('')}${[0,1,2].some(i=>st.p[i]>=mDef(i).n&&!st.c[i])?'<span class="ok">→ 항구에서 보상 받기</span>':''}</div>`}
+function dmClaim(i){const st=dmState();if(st.c[i]||st.p[i]<mDef(i).n)return;st.c[i]=1;const v=mRew();SV.coins+=v;SV.dmDone=(SV.dmDone||0)+1;SFX.upg();toast(`임무 보상 +${fmt(v)} 코인`);
+  if(!st.all&&st.c.every(Boolean)){st.all=1;const b=mRew()*2;SV.coins+=b;setTimeout(()=>{toast(`오늘 임무 올클리어! 보너스 +${fmt(b)} 코인`);SFX.evolve()},900)}achCheck(true);save();renderPort();railUpdate();drawHub()}
+/* --- attendance --- */
+function attCheck(){const t=today(),a=SV.att||{d:'',s:0,max:0};if(a.d===t)return;const s=a.d===dayAdd(t,-1)?a.s+1:1,v=r10(80*Math.min(s,7)*lvlMul()*(s%7===0?2:1));
+  SV.att={d:t,s,max:Math.max(a.max||0,s)};SV.coins+=v;achCheck(true);save();renderPort();
+  $('attB').innerHTML=`<p class="note">${s===1?'오늘도 출항 준비 완료!':`${s}일 연속 출석 중이에요`}</p><div class="big">+${fmt(v)} 코인</div><div class="att" style="justify-content:center"><div class="pips" style="margin:0">${[1,2,3,4,5,6,7].map(k=>`<i class="${k<=((s-1)%7)+1?'on':''} ${k===7?'big':''}">${k===7?'★':k}</i>`).join('')}</div></div><p class="note">7일째에는 보상이 두 배예요. 하루라도 빠지면 1일부터 다시 시작해요.</p>`;
+  whenReady(()=>{$('attM').hidden=false})}
+/* opens a popup only once the title screen is gone and nothing else is on top */
+const popQ=[];let popOn=false;
+function whenReady(fn){popQ.push(fn);if(!popOn){popOn=true;setTimeout(popNext,400)}}
+function popNext(){const clear=titleEl.hidden&&mode==='port'&&!PS.dock&&$('tip').hidden&&$('attM').hidden&&$('rivalM').hidden&&$('notice').hidden&&$('hub').hidden&&$('rank').hidden&&$('profile').hidden;
+  if(!clear){setTimeout(popNext,400);return}const fn=popQ.shift();if(!fn){popOn=false;return}fn();setTimeout(popNext,700)}
+$('attOk').onclick=()=>{$('attM').hidden=true;SFX.upg()};
+/* --- 오늘의 해역: one fixed ship, loadout and twist per day, 3 minutes, one life, shared scoreboard --- */
+const DC_T=180,DMODS=[['swarm','구축함 떼','구축함이 쉴 새 없이 몰려와요'],['air','뇌격기 폭풍','뇌격기가 두 배로 자주 와요 · 격추 점수 ×2'],['heavy','거함 출몰','중순양함과 전함이 자주 나와요'],['combo','콤보 축제','콤보 유지 시간 +60% · 콤보 점수 보너스 두 배']];
+function dcCfg(d){d=d||today();const r=rng(hashStr('dc'+d)),nat=['jp','us','de','uk'][r()*4|0],cls=['CL','CA','BC'][r()*3|0],mod=DMODS[r()*4|0];
+  return{d,nat,cls,mod,up:{gun:5,sec:cls==='CL'?1:2,aa:4,torp:3,armor:5,eng:4,tdp:2,torpC:1,ftC:1,scC:1,stC:1,bs:2}}}
+const dcMod=()=>R.dc?R.dc.cfg.mod[0]:null;
+function dcAdd(v){R.dc.score+=v}
+function startDaily(){if(PS.dock)return;if(DCS)dcRestore();const c=dcCfg();DCS={nat:SV.nat,cls:SV.cls,up:SV.up,camo:SV.camo};SV.nat=c.nat;SV.cls=c.cls;SV.up=Object.assign({},c.up);SV.camo=undefined;rebuildPlayer();startRun(c)}
+function dcRestore(){if(!DCS)return;Object.assign(SV,DCS);DCS=null;rebuildPlayer()}
+function endDaily(win){R.over=true;R.hold=false;$('pause').hidden=true;const sc=Math.round(R.dc.score),d=R.dc.cfg.d,first=!(SV.dcLast===d);
+  const bonus=first?r10(300*lvlMul()):0;SV.dcLast=d;SV.dcN=(SV.dcN||0)+1;if(!SV.dcBest||SV.dcBest.d!==d)SV.dcBest={d,score:0};const pb=sc>SV.dcBest.score;if(pb)SV.dcBest.score=sc;
+  SV.coins+=Math.round(R.coins)+bonus;const pf=PF();pf.bestCombo=Math.max(pf.bestCombo||0,R.bestCombo||0);dmCommit();const newA=achCheck();save();
+  const r=$('result'),sh={dc:sc,d,stage:R.stage,kills:R.kills};
+  r.innerHTML=`<div class="res"><h2 class="win">${R.dc.tl<=0?'시간 종료':'작전 종료'} · 오늘의 해역</h2>
+    <div class="r">점수<b>${fmt(sc)}${pb?' 🔺':''}</b></div><div class="r">오늘 최고<b>${fmt(SV.dcBest.score)}</b></div><div class="r">격침·격추<b>${R.kills}</b></div><div class="r">도달 해역<b>${R.stage}</b></div>
+    <div class="r">획득 코인<b>+${fmt(R.coins)}</b></div>${bonus?`<div class="r">오늘 첫 도전 보상<b>+${fmt(bonus)}</b></div>`:''}<div class="r" id="dcRank">오늘 순위<b>${ON.ok&&OS.id?'…':'-'}</b></div><div class="r">보유 코인<b>${fmt(SV.coins)}</b></div>
+    ${newA.map(a=>`<div class="new">🏅 업적 달성: ${a}</div>`).join('')}${dmLine()}
+    ${ON.ok&&!OS.id?'<p class="note" style="text-align:center;grid-column:1/-1">프로필에서 이름을 등록하면 오늘의 해역 순위에 올라가요</p>':''}
+    <div class="rb"><button type="button" class="mini" id="reRun">⟳ 다시 도전</button><button type="button" class="go" id="toPort">항구로</button></div>
+    <button type="button" class="shr" id="shareRun">🔗 친구에게 "내 점수 깨봐" 보내기</button></div>`;
+  if(ON.ok&&OS.id)rpc('submit_daily',{p_id:OS.id,p_secret:OS.secret,p_day:d,p_score:sc,p_kills:R.kills,p_stage:R.stage}).then(rk=>{const e=$('dcRank');if(e)e.innerHTML=`오늘 순위<b>${rk}위</b>`}).catch(()=>{const e=$('dcRank');if(e)e.innerHTML='오늘 순위<b>전송 실패</b>'});
+  setTimeout(()=>{r.hidden=false;$('toPort').onclick=toPort;$('reRun').onclick=()=>{r.hidden=true;startDaily()};$('shareRun').onclick=()=>shareRun(sh)},400)}
+/* --- achievements, titles, camouflage --- */
+const TITLES={t_dd:'구축함 사냥꾼',t_bb:'전함 킬러',t_boss:'제독의 적',t_air:'하늘의 방패',t_combo:'광란의 함장',t_combo2:'폭풍의 눈',t_runs:'노련한 뱃사람',t_streak:'개근 함장',t_daily:'임무 완수자',t_dc:'오늘의 도전자',t_world:'세계의 바다',t_admiral:'원수'};
+const CAMO={std:['기본 도색','국가 기본 도색','linear-gradient(#7c878d,#7c878d)'],splinter:['스플린터 위장','기함 10척 격침','repeating-linear-gradient(60deg,#e6eaea 0 8px,#2a2e30 8px 14px,#7c878d 14px 22px)'],
+ dazzle:['대즐 위장','해역 10 도달','repeating-linear-gradient(110deg,#52636e 0 7px,#cfdce2 7px 12px,#7c878d 12px 20px)'],m22:['메저 22 위장','해역 20 도달','linear-gradient(#8e9aa6 0 40%,#2c3a4c 40%)'],
+ baltic:['발트 위장','전함으로 진화','repeating-linear-gradient(90deg,#7c8b97 0 14px,#f4f6f6 14px 18px,#060708 18px 26px,#f4f6f6 26px 30px)'],arctic:['북극 위장','해역 30 도달','radial-gradient(circle at 30% 50%,#93a1a9 0 22%,transparent 23%),#e3e9ec'],
+ gold:['황금 함대','4개국 기함 격침','repeating-linear-gradient(90deg,#c9a24a 0 18px,#8a6a26 18px 21px)']};
+const ACH=[['first','⚓','첫 격침','적 함선 1척 격침',pf=>sunkT(pf),1,{coin:100}],['dd50','🚤','구축함 사냥꾼','구축함 50척 격침',pf=>pf.sunk.DD,50,{title:'t_dd',coin:500}],
+ ['bb20','💥','전함 킬러','적 전함 20척 격침',pf=>pf.sunk.BB,20,{title:'t_bb',coin:1500}],['boss10','🎯','기함 사냥','적 기함 10척 격침',pf=>pf.bosses,10,{camo:'splinter'}],
+ ['boss50','👑','제독의 적','적 기함 50척 격침',pf=>pf.bosses,50,{title:'t_boss',coin:5000}],['air100','✈','하늘의 방패','항공기 100기 격추',pf=>pf.planes,100,{title:'t_air',coin:1000}],
+ ['st10','🌊','외해 진출','해역 10 도달',()=>SV.best||0,10,{camo:'dazzle'}],['st20','🌐','대양 함대','해역 20 도달',()=>SV.best||0,20,{camo:'m22'}],['st30','🧊','심해의 끝','해역 30 도달',()=>SV.best||0,30,{camo:'arctic'}],
+ ['bb','🛳','전함 함장','전함으로 진화',()=>clsIdx(realSV().cls),5,{camo:'baltic'}],['combo12','🔥','광란','콤보 12 달성',pf=>pf.bestCombo||0,12,{title:'t_combo'}],['combo20','🌪','폭풍의 눈','콤보 20 달성',pf=>pf.bestCombo||0,20,{title:'t_combo2',coin:3000}],
+ ['runs50','🧭','노련한 뱃사람','출항 50회',()=>SV.runs||0,50,{title:'t_runs'}],['streak7','📅','개근 함장','7일 연속 출석',()=>SV.att?SV.att.max||0:0,7,{title:'t_streak',coin:2000}],
+ ['daily30','📋','임무 완수자','일일 임무 30개 완료',()=>SV.dmDone||0,30,{title:'t_daily',coin:3000}],['dc10','🌊','오늘의 도전자','오늘의 해역 10회 도전',()=>SV.dcN||0,10,{title:'t_dc'}],
+ ['world','🗺','세계의 바다','4개국 깃발로 각각 기함 격침',pf=>['jp','us','de','uk'].filter(n=>(pf.natBoss||{})[n]>0).length,4,{camo:'gold',title:'t_world'}],
+ ['admiral','⭐','원수','계급 원수 달성',pf=>rankIdx(pf.xp),11,{title:'t_admiral',coin:10000}]];
+const sunkT=pf=>pf.sunk.DD+pf.sunk.CL+pf.sunk.CA+pf.sunk.BB;
+const rewTxt=w=>[w.title?`칭호 「${TITLES[w.title]}」`:'',w.camo?`${CAMO[w.camo][0]}`:'',w.coin?`${fmt(w.coin)} 코인`:''].filter(Boolean).join(' · ');
+function achCheck(quiet){const pf=PF(),got=SV.ach=SV.ach||{},out=[];for(const[id,ic,nm,,v,n,w]of ACH){if(got[id]||v(pf)<n)continue;got[id]=1;out.push(`${nm} — ${rewTxt(w)}`);
+    if(w.coin)SV.coins+=w.coin;if(w.title&&!SV.title)SV.title=w.title;SV.achNew=1}
+  if(out.length&&quiet&&mode==='port'){toast(`🏅 업적 달성: ${out[0].split(' — ')[0]}${out.length>1?` 외 ${out.length-1}개`:''}`);renderChip()}return out}
+const camoOK=k=>k==='std'||ACH.some(a=>a[6].camo===k&&(SV.ach||{})[a[0]]);
+/* --- next goal on the result screen --- */
+function nextGoal(){const rs=realSV();let best=null;for(const k in UPG){const u=UPG[k],lv=rs.up[k]||0;if(lv>=u.max||lockedK(k))continue;const c=upCost(k);if(!best||c<best.c)best={c,t:`${u.name} Lv.${lv+1}`}}
+  const nx=CLS[clsIdx(rs.cls)+1];if(nx&&EVOLVE[rs.cls]&&(!best||EVOLVE[rs.cls]<=best.c*3))best={c:EVOLVE[rs.cls],t:`${CLSNAME[nx]} 진화`};
+  if(!best)return'모든 개장 완료! 오늘의 해역과 주간 시즌에서 실력을 겨뤄보세요';
+  return SV.coins>=best.c?`🔧 지금 바로 <b>${best.t}</b> 가능! 항구에서 개장하세요`:`🎯 다음 목표: <b>${best.t}</b>까지 ${fmt(best.c-SV.coins)} 코인`}
+/* --- rival links: "내 기록 깨봐" --- */
+function shareRun(o){const n=pname(),u=new URL(HOME);u.searchParams.set('vs',n);if(o.dc!=null){u.searchParams.set('dc',o.dc);u.searchParams.set('d',o.d)}else{u.searchParams.set('st',o.stage);u.searchParams.set('k',o.kills)}
+  const text=o.dc!=null?`네이비1945 오늘의 해역에서 ${fmt(o.dc)}점 찍었어! 같은 배, 같은 조건이야. 이 점수 넘을 수 있어? ⚓`:`네이비1945에서 해역 ${o.stage}까지 가서 ${o.kills}척 격침했어! 이 기록 깰 수 있어? ⚓`;
+  (async()=>{try{if(navigator.share){await navigator.share({title:'네이비1945',text,url:u.href});return}throw 0}catch(e){if(e&&e.name==='AbortError')return;
+    try{await navigator.clipboard.writeText(`${text}\n${u.href}`);toast('링크를 복사했어요. 단톡방에 붙여넣어 보세요!')}catch(_){prompt('이 링크를 복사해서 보내세요',u.href)}}})()}
+function rivalTick(){const rv=SV.rival;if(!rv||rv.beat||R.dc||R.rivalBeat)return;if(R.stage>rv.st){R.rivalBeat=true;banner(`⚔ ${rv.n} 함장의 기록(해역 ${rv.st}) 돌파!`);SFX.evolve()}}
+function rivalResult(){const rv=SV.rival;if(!rv||rv.beat||!R.rivalBeat)return'';rv.beat=1;return`⚔ ${esc(rv.n)} 함장의 도전장 격파! 이제 내 기록을 보내보세요`}
+function readInvite(){try{const p=new URLSearchParams(location.search),vs=p.get('vs');if(!vs)return;const n=vs.slice(0,12);
+  if(n!==pname()){if(p.get('dc')!=null)SV.rivalDC={n,score:+p.get('dc')|0,d:p.get('d')};else SV.rival={n,st:Math.max(1,+p.get('st')|0),k:+p.get('k')|0,beat:0};save();SV._invite=p.get('dc')!=null?'dc':'run'}
+  history.replaceState(null,'',location.pathname)}catch(e){}}
+function showInvite(){const k=SV._invite;if(!k)return;delete SV._invite;const dcI=k==='dc'&&SV.rivalDC&&SV.rivalDC.d===today();
+  $('rvB').innerHTML=dcI?`<p class="note">${esc(SV.rivalDC.n)} 함장이 오늘의 해역 점수를 보냈어요</p><div class="big">${fmt(SV.rivalDC.score)}점</div><p class="note">같은 배, 같은 조건으로 3분 승부! 이 점수를 넘어보세요.</p>`
+    :k==='run'&&SV.rival?`<p class="note">${esc(SV.rival.n)} 함장의 기록</p><div class="big">해역 ${SV.rival.st}</div><p class="note">${SV.rival.k}척 격침 · 이 해역을 넘으면 도전 성공!</p>`:'';
+  if(!$('rvB').innerHTML)return;$('rvGo').onclick=()=>{$('rivalM').hidden=true;dcI?startDaily():startRun()};$('rvX').onclick=()=>$('rivalM').hidden=true;
+  whenReady(()=>{$('rivalM').hidden=false})}
+/* --- port rail + hub --- */
+let hubTab='m';
+function railUpdate(){const st=dmState();$('dotM').hidden=![0,1,2].some(i=>st.p[i]>=mDef(i).n&&!st.c[i]);$('dotDC').hidden=SV.dcLast===today();$('dotA').hidden=!SV.achNew;
+  document.querySelector('[data-hub="m"]').classList.toggle('hot',!$('dotM').hidden)}
+function openHub(t){hubTab=t||hubTab;$('hub').hidden=false;drawHub();if(hubTab==='a'){SV.achNew=0;save();railUpdate()}}
+function drawHub(){if($('hub').hidden)return;for(const b of $('hubTabs').children){const on=b.dataset.ht===hubTab;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)}
+  const B=$('hubBody'),st=dmState();
+  if(hubTab==='m'){const a=SV.att||{s:0},left=Date.parse(dayAdd(today(),1))-9*36e5-Date.now();
+    B.innerHTML=`<div class="att"><b>📅 출석 ${a.s||0}일째</b><div class="pips">${[1,2,3,4,5,6,7].map(k=>`<i class="${a.s&&k<=((a.s-1)%7)+1?'on':''} ${k===7?'big':''}">${k===7?'★':k}</i>`).join('')}</div></div>`+
+    [0,1,2].map(i=>{const m=mDef(i),p=Math.min(st.p[i],m.n),ok=st.p[i]>=m.n,got=st.c[i];return`<div class="ms ${ok?'done':''} ${got?'got':''}"><h4>${m.txt}</h4><div class="rw">${got?'<span class="ok">✓ 받음</span>':ok?`<button type="button" class="go" data-claim="${i}">받기 +${fmt(mRew())}</button>`:`+${fmt(mRew())}`}</div><div class="mbar"><i style="width:${p/m.n*100}%"></i></div><small>${fmt(p)} / ${fmt(m.n)}</small></div>`}).join('')+
+    `<div class="ms ${st.all?'got':''}"><h4>🎁 세 임무 모두 완료</h4><div class="rw">${st.all?'<span class="ok">✓ 받음</span>':`+${fmt(mRew()*2)}`}</div><small>새 임무까지 ${left/36e5|0}시간 ${left%36e5/6e4|0}분 · 모두에게 같은 임무가 나와요</small></div>
+    <p class="note">임무는 일반 출격과 오늘의 해역 모두에서 진행돼요. 완료하면 여기서 보상을 받아요.</p>`;
+    B.onclick=e=>{const b=e.target.closest('[data-claim]');if(b)dmClaim(+b.dataset.claim)}}
+  else if(hubTab==='dc'){const c=dcCfg(),sh=NAT[c.nat],best=SV.dcBest&&SV.dcBest.d===c.d?SV.dcBest.score:0,rv=SV.rivalDC&&SV.rivalDC.d===c.d?SV.rivalDC:null;
+    B.innerHTML=`<div class="dcc"><h3><span class="mod">${c.mod[1]}</span>${sh.c[c.cls].n} <small style="color:var(--mute);font-weight:500">${sh.name}</small></h3>
+      <ul><li>오늘은 <b>모두 같은 배와 같은 개장</b>으로 싸워요. 내 함선·코인 강화와 상관없는 순수 실력 승부!</li><li>해역 4부터 <b>3분</b> · 한 번 침몰하면 끝 · 격침·격추·해역 확보·콤보로 점수</li><li>${c.mod[2]}</li><li>오늘 첫 도전 보상 <b>+${fmt(r10(300*lvlMul()))} 코인</b> · 매일 자정 새 해역</li></ul>
+      <button type="button" class="go" id="dcGo">🌊 도전하기${SV.dcLast===c.d?' (다시)':''}</button></div>
+      <div class="dcb"><div>내 오늘 최고<b>${fmt(best)}</b></div><div>오늘 순위<b id="dcMy">${ON.ok&&OS.id?'…':'-'}</b></div><div>${rv?`${esc(rv.n)}의 도전`:'참가 함장'}<b id="dcN">${rv?fmt(rv.score):'…'}</b></div></div>
+      <h4 class="hsec">오늘의 순위</h4><div class="lb" id="dcList"><p class="note">${ON.ok?'불러오는 중…':'온라인 서버에 연결되면 순위가 보여요'}</p></div>${ON.ok&&!OS.id?'<p class="note">프로필에서 이름을 등록하면 순위에 올라가요.</p>':''}`;
+    $('dcGo').onclick=()=>{$('hub').hidden=true;startDaily()};
+    if(ON.ok)q(`daily_board?select=*&day=eq.${c.d}&order=score.desc,updated_at.asc&limit=50`).then(rows=>{const l=$('dcList');if(!l)return;
+      l.innerHTML=rows.length?rows.map((r,k)=>`<div class="${r.player_id===OS.id?'me':''}"><span class="n">${k<3?['🥇','🥈','🥉'][k]:k+1}</span><span class="ins">${(NAT[r.nat]||NAT.jp).name.slice(0,1)}</span><span class="who">${esc(r.name)}<small>${r.kills}격침 · 해역 ${r.stage} · ${r.tries}회 도전</small></span><span class="v">${fmt(r.score)}</span></div>`).join(''):'<p class="note">아직 아무도 도전하지 않았어요. 오늘의 1등이 되어보세요!</p>';
+      const mi=rows.findIndex(r=>r.player_id===OS.id);if($('dcMy'))$('dcMy').textContent=mi>=0?`${mi+1}위`:'-';if(!rv&&$('dcN'))$('dcN').textContent=`${rows.length}명`}).catch(e=>{const l=$('dcList');if(l)l.innerHTML=`<p class="err">${errMsg(e)}</p>`})}
+  else{const pf=PF(),got=SV.ach||{},ts=Object.keys(TITLES).filter(t=>ACH.some(a=>a[6].title===t&&got[a[0]]));
+    B.innerHTML=`<h4 class="hsec">칭호 <small style="color:var(--mute);font-weight:400">· 주간 시즌 랭킹에 이름 옆에 표시돼요</small></h4><div class="chips" id="ttlC"><button type="button" data-t="" class="${!SV.title?'on':''}">없음</button>${ts.map(t=>`<button type="button" data-t="${t}" class="${SV.title===t?'on':''}">${TITLES[t]}</button>`).join('')}${ts.length?'':'<span class="note" style="align-self:center">업적을 달성하면 칭호가 생겨요</span>'}</div>
+      <h4 class="hsec">위장 도색</h4><div class="camos" id="camoC">${Object.entries(CAMO).map(([k,[nm,how,bg]])=>{const ok=camoOK(k),on=(SV.camo||'std')===k;return`<button type="button" data-c="${k}" class="${on?'on':''}" ${ok?'':'disabled'} aria-pressed="${on}"><span class="sw" style="background:${bg}"></span>${ok?'':'🔒 '}${nm}<small>${ok?(on?'사용 중':'눌러서 적용'):how}</small></button>`}).join('')}</div>
+      <h4 class="hsec">업적 ${Object.keys(got).length} / ${ACH.length}</h4><div class="achs">${ACH.map(([id,ic,nm,ds,v,n,w])=>{const on=!!got[id],cur=Math.min(v(pf),n);return`<div class="ach ${on?'on':''}"><span class="ic">${ic}</span><span>${nm}<small>${ds} · 보상: ${rewTxt(w)}</small></span><span class="pr">${on?'✓ 달성':`${fmt(cur)} / ${fmt(n)}`}</span></div>`}).join('')}</div>`;
+    $('ttlC').onclick=e=>{const b=e.target.closest('[data-t]');if(!b)return;SV.title=b.dataset.t||undefined;save();renderChip();drawHub();if(ON.ok&&OS.id)sync(null)};
+    $('camoC').onclick=e=>{const b=e.target.closest('[data-c]');if(!b||b.disabled)return;SV.camo=b.dataset.c==='std'?undefined:b.dataset.c;save();rebuildPlayer();renderPort();flashT=.8;SFX.upg();drawHub()}}}
+$('rail').onclick=e=>{const b=e.target.closest('[data-hub]');if(b)openHub(b.dataset.hub)};
+$('hubTabs').onclick=e=>{const b=e.target.closest('[data-ht]');if(b){hubTab=b.dataset.ht;if(hubTab==='a'){SV.achNew=0;save();railUpdate()}drawHub()}};
+$('hubX').onclick=()=>$('hub').hidden=true;$('hub').addEventListener('click',e=>{if(e.target.id==='hub')$('hub').hidden=true});
+addEventListener('keydown',e=>{if(e.key==='Escape'){for(const id of['hub','attM','rivalM'])$(id).hidden=true}});
 /* ================= profile & rank ================= */
 const RANKS=[['수습생도',0,'—'],['소위',150,'1'],['중위',400,'2'],['대위',900,'3'],['소령',1800,'◆'],['중령',3200,'◆◆'],['대령',5500,'◆◆◆'],['준장',9000,'★'],['소장',14000,'★★'],['중장',21000,'★★★'],['대장',32000,'★★★★'],['원수',50000,'★★★★★']];
 const XPV={DD:6,CL:14,CA:28,BB:70};
@@ -1218,7 +1409,7 @@ function PF(){if(!SV.pf)SV.pf={name:'',xp:0,sunk:{DD:0,CL:0,CA:0,BB:0},planes:0,
 const rankIdx=xp=>{let i=0;for(let k=0;k<RANKS.length;k++)if(xp>=RANKS[k][1])i=k;return i};
 const rankBonus=i=>.03*i;
 const pname=()=>PF().name||'무명 함장';
-function renderChip(){const pf=PF(),i=rankIdx(pf.xp);$('pchip').innerHTML=`<span class="ins">${RANKS[i][2]}</span>${RANKS[i][0]} ${esc(pname())}`}
+function renderChip(){const pf=PF(),i=rankIdx(pf.xp);$('pchip').innerHTML=`<span class="ins">${RANKS[i][2]}</span>${RANKS[i][0]} ${esc(pname())}${SV.title&&TITLES[SV.title]?`<span class="ttl">${TITLES[SV.title]}</span>`:''}`}
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function openProfile(){const pf=PF(),i=rankIdx(pf.xp),nx=RANKS[i+1],cur=RANKS[i][1],pct=nx?Math.min(100,(pf.xp-cur)/(nx[1]-cur)*100):100,sk=pf.sunk,tot=sk.DD+sk.CL+sk.CA+sk.BB;
   $('pfSheet').innerHTML=`<header><span class="ins">${RANKS[i][2]}</span><h2 id="pfTitle">${RANKS[i][0]} ${esc(pname())}<small>${NAT[SV.nat].name} 해군 · ${NAT[SV.nat].c[SV.cls].n} · 계급 보너스 코인 +${Math.round(rankBonus(i)*100)}%</small></h2><button type="button" class="x" id="pfX" aria-label="닫기">✕</button></header>
@@ -1320,30 +1511,37 @@ function damagePlayer(d,p,big){if(R.over)return;SFX.hit();SFX.clang(p,big);const
 function killFoe(f){f.sink=.01;R.strike=Math.min(stMax(),(R.strike||0)+(f.boss?.35:{DD:.12,CL:.16,CA:.2,BB:.3}[f.type]));R.carpet=Math.min(1,(R.carpet||0)+(f.boss?.25:{DD:.06,CL:.08,CA:.1,BB:.14}[f.type]));comboHit();const p=f.g.position.clone();R.kills++;if(!f.boss)R.stageKills++;R.sunk[f.type]++;if(f.boss)R.bosses++;
   const val={DD:22,CL:50,CA:102,BB:264}[f.type]*(1+.22*(R.stage-1))*(f.boss?2:1);dropCoin(p,val);
   SFX.sink(f.type,p,f.boss);boom(V(p.x,1,p.z),f.L*.14+1);for(let i=0;i<3;i++)setTimeout(()=>{if(mode==='sea')boom(V(p.x+(Math.random()-.5)*f.L*.5,1,p.z+(Math.random()-.5)*2),2)},200+i*260);
+  if(R.dc)dcAdd(({DD:10,CL:20,CA:40,BB:80}[f.type]+(f.boss?120:0))*(1+Math.min(R.combo||0,20)*(dcMod()==='combo'?.1:.05)));dmTick();
   if(f.boss){R.bossDead=true;setTimeout(stageClear,1600)}}
 function stageClear(){if(mode!=='sea'||R.over)return;const bonus=Math.round(144*R.stage);R.earned+=bonus;R.coins+=bonus;R.hp=Math.min(R.st.maxHp,R.hp+R.st.maxHp*.3);
-  banner(`해역 ${R.stage} 확보 · 보너스 ${fmt(bonus)}`);SFX.clear();R.stage++;R.stageKills=0;R.boss=null;R.bossDead=false;R.spawnT=3;R.planeT=10}
+  banner(`해역 ${R.stage} 확보 · 보너스 ${fmt(bonus)}`);SFX.clear();if(R.dc)dcAdd(60);R.stage++;rivalTick();setTimeout(dmTick,2300);R.stageKills=0;R.boss=null;R.bossDead=false;R.spawnT=3;R.planeT=10}
 let bannerT=null;function banner(t){const b=$('banner');b.textContent=t;b.style.opacity=1;clearTimeout(bannerT);bannerT=setTimeout(()=>b.style.opacity=0,2200)}
 const quota=s=>5+2*s;
 function clearBattle(){for(const a of allies){a.alive=false;a.g.visible=false}for(const h of heavies){h.alive=false;h.g.visible=false}for(const w of waves){w.alive=false;w.m.visible=false}cbombs.length=0;R.carpetRun=null;bombs.length=0;$('combo').classList.remove('on');clearFX();for(const f of foes.slice())releaseFoe(f);for(const p of planes){p.alive=false;p.g.visible=false}for(const a of[shells,torps,coins])for(const q of a){q.alive=false;q.m.visible=false}}
 /* checkpoint: return to port keeps the current sea area, sinking sends you back three areas */
 function ckStage(){return Math.max(1,(SV.ck&&SV.ck.stage)||1)}
-function startRun(){if(PS.dock)return;mode='sea';setWinter(false);renderer.toneMappingExposure=.9;scene.fog.near=WU.uNear.value=95;scene.fog.far=WU.uFar.value=280;Object.assign(sun.shadow.camera,{left:-40,right:40,top:40,bottom:-40,far:150});sun.shadow.camera.updateProjectionMatrix();SV.runs++;save();$('port').hidden=true;$('hud').hidden=false;$('result').hidden=true;$('hint').hidden=true;harbor.visible=false;WU.uAmp.value=1;clearBattle();camera.clearViewOffset();
-  const st=stats(),s0=ckStage();Object.assign(R,{st,t:0,hp:st.maxHp,lastHit:-9,stage:s0,start:s0,tBase:s0>1?((SV.ck&&SV.ck.t)||0):0,stageKills:0,kills:0,coins:0,earned:0,spawnT:1.5,planeT:16,boss:null,bossDead:false,over:false,shake:0,
+function startRun(dc){if(PS.dock)return;dc=dc&&dc.mod?dc:null;if(!dc&&DCS)dcRestore();mode='sea';setWinter(false);renderer.toneMappingExposure=.9;scene.fog.near=WU.uNear.value=95;scene.fog.far=WU.uFar.value=280;Object.assign(sun.shadow.camera,{left:-40,right:40,top:40,bottom:-40,far:150});sun.shadow.camera.updateProjectionMatrix();if(!dc)SV.runs++;save();$('port').hidden=true;$('hub').hidden=true;$('hud').hidden=false;$('result').hidden=true;$('hint').hidden=true;harbor.visible=false;WU.uAmp.value=1;clearBattle();camera.clearViewOffset();
+  const st=stats(),s0=dc?4:ckStage();CW=dc&&dc.mod[0]==='combo'?7.2:4.5;Object.assign(R,{dc:dc?{cfg:dc,score:0,tl:DC_T}:null,used:{strike:0,ft:0,carpet:0},dmAnn:[],rivalBeat:false,st,t:0,hp:st.maxHp,lastHit:-9,stage:s0,start:s0,tBase:s0>1?((SV.ck&&SV.ck.t)||0):0,stageKills:0,kills:0,coins:0,earned:0,spawnT:1.5,planeT:16,boss:null,bossDead:false,over:false,shake:0,
     vx:0,vz:0,throttle:0,yawRate:0,aaT:0,torpT:0,repT:8,scoutT:0,scoutCd:0,zoom:1,ftCd:0,strike:0,carpet:0,combo:0,bestCombo:0,lastKill:-9,slowT:0,bsT:0,bsCd:0,ch:{torp:chMax('torp'),ft:chMax('ft'),sc:chMax('sc'),bs:chMax('bs')},paused:false,hold:false,wakeT:0,sunk:{DD:0,CL:0,CA:0,BB:0},planes:0,bosses:0});
   player.g.position.set(0,0,0);player.g.rotation.set(0,0,0);player.hullMat.emissive.setHex(0xff4a20);for(const m of player.mounts){m.obj.rotation.y=m.rest;m.cd=.5+Math.random()}
-  banner(R.stage>1?`해역 ${R.stage}부터 재출격 · 적 함대 접근`:'해역 1 · 적 함대 접근');setTimeout(()=>{if(mode!=='sea')return;tip('basics');if(SV.up.torp>0)tip('torp');tip('fighter');if(canScout())tip('scout');if(SV.up.bs>0)tip('stance')},600);$('joy').hidden=false;joyRest();hudUpdate()}
-function endRun(win){if(R.over)return;R.over=true;R.hold=false;$('pause').hidden=true;const pf=PF(),ri0=rankIdx(pf.xp),rb=Math.round(R.coins*rankBonus(ri0));R.coins+=rb;SV.coins+=R.coins;SV.best=Math.max(SV.best,R.stage-1+(R.bossDead?1:0));
+  banner(dc?`오늘의 해역 · ${dc.mod[1]} · 3분 승부`:SV.rival&&!SV.rival.beat?`목표: ${SV.rival.n} 함장의 해역 ${SV.rival.st} 돌파`:R.stage>1?`해역 ${R.stage}부터 재출격 · 적 함대 접근`:'해역 1 · 적 함대 접근');setTimeout(()=>{if(mode!=='sea')return;tip('basics');if(SV.up.torp>0)tip('torp');tip('fighter');if(canScout())tip('scout');if(SV.up.bs>0)tip('stance')},600);$('joy').hidden=false;joyRest();hudUpdate()}
+function endRun(win){if(R.over)return;if(R.dc)return endDaily(win);R.over=true;R.hold=false;$('pause').hidden=true;const pf=PF(),ri0=rankIdx(pf.xp),rb=Math.round(R.coins*rankBonus(ri0));R.coins+=rb;SV.coins+=R.coins;SV.best=Math.max(SV.best,R.stage-1+(R.bossDead?1:0));
   const reach=R.stage,ckS=win?reach:Math.max(1,reach-3),tAll=R.tBase+R.t;SV.ck={stage:ckS,t:Math.round(reach>1?tAll*(ckS-1)/(reach-1):0)};
-  let xp=R.planes*2+R.bosses*60+(R.stage-R.start)*35;for(const k in R.sunk){xp+=R.sunk[k]*XPV[k];pf.sunk[k]+=R.sunk[k]}xp=Math.round(xp);pf.xp+=xp;pf.planes+=R.planes;pf.bosses+=R.bosses;pf.coinsTotal+=R.coins;pf.bestKills=Math.max(pf.bestKills,R.kills);pf.time+=R.t;save();
+  let xp=R.planes*2+R.bosses*60+(R.stage-R.start)*35;for(const k in R.sunk){xp+=R.sunk[k]*XPV[k];pf.sunk[k]+=R.sunk[k]}xp=Math.round(xp);pf.xp+=xp;pf.planes+=R.planes;pf.bosses+=R.bosses;pf.coinsTotal+=R.coins;pf.bestKills=Math.max(pf.bestKills,R.kills);pf.time+=R.t;pf.bestCombo=Math.max(pf.bestCombo||0,R.bestCombo||0);if(R.bosses){pf.natBoss=pf.natBoss||{};pf.natBoss[SV.nat]=(pf.natBoss[SV.nat]||0)+R.bosses}
+  const cons=win?0:Math.max(10,Math.round(R.coins*.15));SV.coins+=cons;dmCommit();const newA=achCheck();const rvl=rivalResult();save();
   const ri1=rankIdx(pf.xp),promo=ri1>ri0;sync({stage:R.stage,kills:R.kills,coins:Math.round(R.coins),xp,nat:SV.nat,cls:SV.cls,sec:Math.round(tAll),win:!!win});if(promo)setTimeout(()=>SFX.evolve(),win?300:1600);renderChip();
   const r=$('result');r.innerHTML=`<div class="res"><h2 class="${win?'win':'lose'}">${win?'귀항 완료':'기함 침몰'}</h2>
-    <div class="r">도달 해역<b>${R.stage}</b></div><div class="r">격침·격추<b>${R.kills}</b></div><div class="r">획득 코인<b>+${fmt(R.coins)}</b></div>${rb?`<div class="r">계급 보너스<b>+${fmt(rb)}</b></div>`:''}<div class="r">공적<b>+${fmt(xp)}</b></div>${R.bestCombo>=2?`<div class="r">최대 콤보<b>${R.bestCombo}</b></div>`:''}${promo?`<div class="up">진급! ${RANKS[ri1][0]} ${esc(pname())}</div>`:''}${ON.ok&&!OS.id?'<p class="note" style="text-align:center">프로필에서 이름을 등록하면 랭킹에 올라가요</p>':''}<div class="r">보유 코인<b>${fmt(SV.coins)}</b></div><div class="r">다음 출격<b>해역 ${ckS}부터</b></div>${!win&&reach>ckS?`<p class="note" style="text-align:center">침몰해서 3해역 전부터 다시 시작해요. 귀항하면 지금 해역이 저장돼요.</p>`:''}
-    <button type="button" class="go" id="toPort">항구로 · 개장하기</button></div>`;
-  setTimeout(()=>{r.hidden=false;$('toPort').onclick=toPort},win?100:1400)}
-function toPort(){mode='port';setWinter(true);renderer.toneMappingExposure=1;if(AU.eng)AU.eng.eg.gain.value=0;scene.fog.near=WU.uNear.value=55;scene.fog.far=WU.uFar.value=180;Object.assign(sun.shadow.camera,{left:-24,right:24,top:24,bottom:-24,far:110});sun.shadow.camera.updateProjectionMatrix();$('result').hidden=true;$('hud').hidden=true;$('port').hidden=false;harbor.visible=true;WU.uAmp.value=.35;clearBattle();
-  joy.on=false;$('joy').hidden=true;$('torpBtn').blur();player.hullMat.emissiveIntensity=0;placeDock();renderPort();viewOffset()}
-$('sortie').onclick=startRun;$('home').onclick=()=>endRun(true);
+    <div class="r">도달 해역<b>${R.stage}</b></div><div class="r">격침·격추<b>${R.kills}</b></div><div class="r">획득 코인<b>+${fmt(R.coins)}</b></div>${rb?`<div class="r">계급 보너스<b>+${fmt(rb)}</b></div>`:''}${cons?`<div class="r">위로 보급<b>+${fmt(cons)}</b></div>`:''}<div class="r">공적<b>+${fmt(xp)}</b></div>${R.bestCombo>=2?`<div class="r">최대 콤보<b>${R.bestCombo}</b></div>`:''}<div class="r">보유 코인<b>${fmt(SV.coins)}</b></div><div class="r">다음 출격<b>해역 ${ckS}부터</b></div>
+    ${promo?`<div class="up">진급! ${RANKS[ri1][0]} ${esc(pname())}</div>`:''}${rvl?`<div class="up">${rvl}</div>`:''}${newA.map(a=>`<div class="new">🏅 업적 달성: ${a}</div>`).join('')}
+    ${dmLine()}<div class="goal">${nextGoal()}</div>
+    ${!win&&reach>ckS?`<p class="note" style="text-align:center;grid-column:1/-1">침몰해서 3해역 전부터 다시 시작해요. 귀항하면 지금 해역이 저장돼요.</p>`:''}${ON.ok&&!OS.id?'<p class="note" style="text-align:center;grid-column:1/-1">프로필에서 이름을 등록하면 랭킹에 올라가요</p>':''}
+    <div class="rb"><button type="button" class="mini" id="reRun">⟳ 바로 재출격</button><button type="button" class="go" id="toPort">항구로 · 개장하기</button></div>
+    <button type="button" class="shr" id="shareRun">🔗 친구에게 "내 기록 깨봐" 보내기</button></div>`;
+  const sh={stage:R.stage,kills:R.kills};
+  setTimeout(()=>{r.hidden=false;$('toPort').onclick=toPort;$('reRun').onclick=()=>{r.hidden=true;startRun()};$('shareRun').onclick=()=>shareRun(sh)},win?100:1400)}
+function toPort(){if(DCS)dcRestore();mode='port';setWinter(true);renderer.toneMappingExposure=1;if(AU.eng)AU.eng.eg.gain.value=0;scene.fog.near=WU.uNear.value=55;scene.fog.far=WU.uFar.value=180;Object.assign(sun.shadow.camera,{left:-24,right:24,top:24,bottom:-24,far:110});sun.shadow.camera.updateProjectionMatrix();$('result').hidden=true;$('hud').hidden=true;$('port').hidden=false;harbor.visible=true;WU.uAmp.value=.35;clearBattle();
+  joy.on=false;$('joy').hidden=true;$('torpBtn').blur();player.hullMat.emissiveIntensity=0;placeDock();renderPort();viewOffset();railUpdate()}
+$('sortie').onclick=()=>startRun();$('home').onclick=()=>endRun(true);
 const hc={};const setT=(id,v)=>{if(hc[id]!==v){hc[id]=v;$(id).textContent=v}};
 function fireTorps(){if(mode!=='sea'||R.over||SV.up.torp<=0||!useCh('torp'))return;const st=R.st,pg=player.g;let tg=null,bd=36*36;
   for(const f of foes){if(f.sink)continue;const d2=f.g.position.distanceToSquared(pg.position);if(d2<bd){bd=d2;tg=f}}
@@ -1381,10 +1579,10 @@ function buildFriendly(kind){const g=new T.Group(),m=new T.MeshBasicMaterial({co
   g.traverse(o=>{if(o.isMesh){o.castShadow=false;o.layers.set(1)}});g.visible=false;scene.add(g);return g}
 const allies=[];
 function ally(kind){let a=allies.find(q=>!q.alive&&q.kind===kind);if(!a){a={g:buildFriendly(kind),kind};allies.push(a)}a.alive=true;a.g.visible=true;a.tgt=null;a.t=0;a.state='in';a.fire=0;return a}
-function launchFighters(){if(mode!=='sea'||R.over||!useCh('ft'))return;const pg=player.g.position,a0=Math.random()*TAU;
+function launchFighters(){if(mode!=='sea'||R.over||!useCh('ft'))return;R.used.ft++;dmTick();const pg=player.g.position,a0=Math.random()*TAU;
   for(let i=0;i<2;i++){const a=ally('fight');a.life=FT_DUR;a.ang=a0+i*Math.PI;a.g.position.set(pg.x-14+i*3,5,pg.z-14);}
   banner('전투기 발진 · 뇌격기 요격');SFX.torp(pg);tip('fighter')}
-function airStrike(){if(mode!=='sea'||R.over||R.strike<1)return;const pg=player.g.position;
+function airStrike(){if(mode!=='sea'||R.over||R.strike<1)return;R.used.strike++;setTimeout(dmTick,0);const pg=player.g.position;
   const tg=foes.filter(f=>!f.sink&&f.g.position.distanceTo(pg)<70).sort((a,b)=>(b.boss?1:0)-(a.boss?1:0)||a.g.position.distanceTo(pg)-b.g.position.distanceTo(pg)).slice(0,4);
   if(!tg.length){banner('공습할 적 함선이 없어요');return}
   R.strike=Math.max(0,R.strike-1);const from=Math.random()*TAU;R.strikeRun={hits:0,k0:R.kills,n:tg.length,t:0};
@@ -1406,7 +1604,7 @@ function bestCluster(){const pg=player.g.position;let best=null,bn=0;
   for(const f of foes){if(f.sink)continue;const p=f.g.position;if(p.distanceTo(pg)>75)continue;let n=0;for(const o of foes)if(!o.sink&&o.g.position.distanceTo(p)<13)n++;if(n>bn){bn=n;best=p}}
   return best&&{c:best.clone(),n:bn}}
 function flash(a,dur){const f=$('flash');f.style.transition='none';f.style.opacity=a;requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.transition=`opacity ${dur}s`;f.style.opacity=0}))}
-function carpetBomb(){if(mode!=='sea'||R.over||R.carpet<1)return;const cl=bestCluster();if(!cl){banner('폭격할 적 함대가 없어요');return}
+function carpetBomb(){if(mode!=='sea'||R.over||R.carpet<1)return;const cl=bestCluster();if(!cl){banner('폭격할 적 함대가 없어요');return}R.used.carpet++;
   R.carpet=0;const dir=Math.random()<.5?1:-1,c=cl.c;
   for(let i=0;i<6;i++){const h=heavy(),row=i%3,col=Math.floor(i/3);h.c=c;h.dir=dir;h.off=(row-1)*4.6+(col?2.3:0);h.drop=col*.05;h.g.scale.setScalar(1.5);
     h.g.position.set(c.x-dir*(62+col*5+row*1.5),8,c.z+h.off);h.g.rotation.set(0,dir>0?Math.PI/2:-Math.PI/2,0)}
@@ -1431,10 +1629,10 @@ function shock(x,z,r){let w=waves.find(q=>!q.alive);if(!w){const m=new T.Mesh(ne
   w.alive=true;w.t=0;w.r=r;w.m.visible=true;w.m.position.set(x,.25,z);w.m.scale.setScalar(.3)}
 let comboTO=null;
 /* combo perks: keep sinking ships within the window to climb tiers */
-const CW=4.5,CTIER=[[3,'코인 ×1.2',1.2,1,1],[5,'코인 ×1.5 · 소모품 장전 ×1.5',1.5,1.5,1],[8,'코인 ×2 · 소모품 장전 ×2 · 화력 +15%',2,2,1.15],[12,'광란! 코인 ×2.5 · 소모품 장전 ×2 · 화력 +25%',2.5,2,1.25]];
+let CW=4.5;const CTIER=[[3,'코인 ×1.2',1.2,1,1],[5,'코인 ×1.5 · 소모품 장전 ×1.5',1.5,1.5,1],[8,'코인 ×2 · 소모품 장전 ×2 · 화력 +15%',2,2,1.15],[12,'광란! 코인 ×2.5 · 소모품 장전 ×2 · 화력 +25%',2.5,2,1.25]];
 function comboTier(){if(mode!=='sea'||!R.combo||R.t-R.lastKill>CW)return null;let t=null;for(const x of CTIER)if(R.combo>=x[0])t=x;return t}
 const cCoin=()=>{const t=comboTier();return t?t[2]:1},cRel=()=>{const t=comboTier();return t?t[3]:1},cDmg=()=>{const t=comboTier();return t?t[4]:1};
-function comboHit(){const prev=comboTier();R.combo=R.t-R.lastKill<CW?R.combo+1:1;R.lastKill=R.t;R.bestCombo=Math.max(R.bestCombo||0,R.combo);if(R.combo<2)return;const c=$('combo');$('comboN').textContent=R.combo;
+function comboHit(){const prev=comboTier();R.combo=R.t-R.lastKill<CW?R.combo+1:1;R.lastKill=R.t;R.bestCombo=Math.max(R.bestCombo||0,R.combo);if(R.combo>=5)dmTick();if(R.combo<2)return;const c=$('combo');$('comboN').textContent=R.combo;
   c.classList.add('on');c.classList.remove('pop');void c.offsetWidth;c.classList.add('pop');R.carpet=Math.min(1,R.carpet+.02*R.combo);
   const now=comboTier();if(now&&now!==prev){banner(`🔥 ${R.combo} COMBO · ${now[1]}`);SFX.clear&&SFX.clear();flash(.12,.3);tip('combo')}}
 function stepCombo(){const c=$('combo');if(!R.combo)return;const left=CW-(R.t-R.lastKill);
@@ -1463,7 +1661,7 @@ function stepAir(dt,t){const pg=player.g.position;
       fx('smoke',V(b.tx,2.5,b.tz),{life:3,s0:2,s1:7,a:.8,v:V(0,1.4,-.4),drag:.6});shock(b.tx,b.tz,9);R.shake=Math.max(R.shake,1.1);flash(.28,.45);
       if(b.run){b.run.hits++;if(b.run.hits===1)banner('💥 공습 명중!')}splash(V(b.tx,0,b.tz),true);const dmg=70*(1+.25*(R.stage-1));
       for(const f of foes){if(f.sink)continue;if(Math.hypot(f.g.position.x-b.tx,f.g.position.z-b.tz)<f.L*.55+1.2){f.hp-=f===b.f?dmg:dmg*.4;f.hullMat.emissiveIntensity=.8;if(f.hp<=0)killFoe(f)}}}}}
-function downPlane(p){if(!p||p.fall)return;p.fall=.01;R.kills++;R.planes++;R.strike=Math.min(stMax(),R.strike+.04);dropCoin(p.g.position,7.2*(1+.2*(R.stage-1)))}
+function downPlane(p){if(!p||p.fall)return;p.fall=.01;R.kills++;R.planes++;if(R.dc)dcAdd(dcMod()==='air'?10:5);dmTick();R.strike=Math.min(stMax(),R.strike+.04);dropCoin(p.g.position,7.2*(1+.2*(R.stage-1)))}
 /* first-time explanations */
 /* first-time explanation cards: a rendered picture + one or two lines */
 const TAG={threat:['위협','#ff7a5c'],how:['대처','#6fcb8e'],tip:['팁','#7fb6e8'],use:['사용','#f2a33a'],eff:['효과','#ffd84a'],note:['주의','#ff7a5c'],fill:['충전','#b39cff'],up:['강화','#d98fe0'],move:['이동','#7fb6e8'],fire:['사격','#ff7a5c'],skill:['기술','#f2a33a'],dud:['불발','#c9d3d9'],prize:['보상','#ffd84a']};
@@ -1559,7 +1757,8 @@ function hudUpdate(){actUpdate();const r=R.hp/R.st.maxHp,b=$('hpB');b.style.widt
   setT('hpT',`${Math.ceil(R.hp)} / ${Math.round(R.st.maxHp)}`);setT('coinB',fmt(R.coins));
   const bossOn=R.boss&&!R.bossDead;$('stageBox').classList.toggle('boss',!!bossOn);
   if(bossOn){setT('stageT',`해역 ${R.stage} · ${R.boss.c.n}`);setT('stageS','적 기함을 격침하세요');$('stageB').style.width=Math.max(0,R.boss.hp/R.boss.max*100)+'%'}
-  else{setT('stageT',`해역 ${R.stage}`);setT('stageS',`격침 ${Math.min(R.stageKills,quota(R.stage))} / ${quota(R.stage)}`);$('stageB').style.width=Math.min(100,R.stageKills/quota(R.stage)*100)+'%'}}
+  else{setT('stageT',`해역 ${R.stage}`);setT('stageS',`격침 ${Math.min(R.stageKills,quota(R.stage))} / ${quota(R.stage)}`);$('stageB').style.width=Math.min(100,R.stageKills/quota(R.stage)*100)+'%'}
+  if(R.dc){const tl=Math.ceil(R.dc.tl);setT('stageT',`오늘의 해역 · ${tl/60|0}:${String(tl%60).padStart(2,'0')}`);setT('stageS',`점수 ${fmt(Math.round(R.dc.score))} · 해역 ${R.stage}`);$('stageB').style.width=(R.dc.tl/DC_T*100)+'%'}}
 
 /* ================= input ================= */
 const ptrs=new Map();let pinch0=0;const joy={on:false,ox:0,oy:0,dx:0,dy:0,id:null};const keys={};
@@ -1589,7 +1788,7 @@ addEventListener('resize',()=>{resize();if(mode==='sea'&&!joy.on)joyRest()});res
 
 /* ================= loop ================= */
 let last=performance.now(),smokeT=0;
-function seaStep(dt,t){const P=player,pg=P.g,st=R.st;R.t+=dt;
+function seaStep(dt,t){const P=player,pg=P.g,st=R.st;R.t+=dt;if(R.dc&&!R.over){R.dc.tl-=dt;if(R.dc.tl<=0){R.dc.tl=0;banner('시간 종료!');endRun(true)}}
   let ix=joy.dx,iy=joy.dy;if(keys.arrowleft)ix=-1;if(keys.arrowright)ix=1;if(keys.arrowup)iy=-1;if(keys.arrowdown)iy=1;
   const mag=Math.min(1,Math.hypot(ix,iy));let thr=0;
   if(mag>.15&&!R.over){const want=Math.atan2(-ix,-iy),d=wrap(want-pg.rotation.y),stp=st.turn*dt;const ny=pg.rotation.y+Math.max(-stp,Math.min(stp,d));R.yawRate=(ny-pg.rotation.y)/dt;pg.rotation.y=ny;thr=mag*(1-Math.min(.6,Math.abs(d)/2.5))}
@@ -1607,9 +1806,9 @@ function seaStep(dt,t){const P=player,pg=P.g,st=R.st;R.t+=dt;
     const cdt=dt*cRel();R.torpT=Math.max(0,R.torpT-cdt);R.repT=Math.max(0,R.repT-cdt);R.scoutCd=Math.max(0,R.scoutCd-cdt);R.ftCd=Math.max(0,R.ftCd-cdt);R.bsCd=Math.max(0,R.bsCd-cdt);stepCombo();R.bsT=Math.max(0,R.bsT-dt);chStep();if(keys.w){keys.w=false;battleStance()}stepAir(dt,t);stepCarpet(dt);if(R.strike>=1)tip('strike');if(R.carpet>=1)tip('carpet');if(keys.d){keys.d=false;carpetBomb()}if(keys.q){keys.q=false;launchFighters()}if(keys.s){keys.s=false;airStrike()}R.scoutT=Math.max(0,R.scoutT-dt);stepScout(dt);if(keys.r){keys.r=false;launchScout()}if(keys.a||keys[' ']){keys.a=keys[' ']=false;fireTorps()}if(keys.e){keys.e=false;doRepair()}}
   if(!R.over){const alive=foes.filter(f=>!f.sink).length;
     if(R.stageKills>=quota(R.stage)&&!R.boss){const bt=R.stage<=1?'CL':R.stage<=3?'CA':'BB';R.boss=spawnFoe(bt,true);banner(`적 기함 출현 · ${R.boss.c.n}`);SFX.alarm()}
-    else if(!R.boss){R.spawnT-=dt;if(R.spawnT<=0&&alive<Math.min(2+R.stage,7)){R.spawnT=Math.max(1.6,4.2-R.stage*.3);const r=Math.random(),s=R.stage;
-      spawnFoe(s>=4&&r<.15?'CA':s>=2&&r<.45?'CL':'DD',false)}}
-    if(R.stage>=2){R.planeT-=dt;if(R.planeT<=0){R.planeT=Math.max(9,18-R.stage);tip('planes');spawnPlanes(Math.min(5,2+Math.floor(R.stage/2)))}}}
+    else if(!R.boss){R.spawnT-=dt;if(R.spawnT<=0&&alive<Math.min(2+R.stage,7)+(dcMod()==='swarm'?3:0)){R.spawnT=Math.max(1.6,4.2-R.stage*.3)*(dcMod()==='swarm'?.55:1);const r=Math.random(),s=R.stage;
+      spawnFoe(dcMod()==='heavy'?(r<.14?'BB':r<.45?'CA':r<.72?'CL':'DD'):dcMod()==='swarm'?(r<.12?'CL':'DD'):(s>=4&&r<.15?'CA':s>=2&&r<.45?'CL':'DD'),false)}}
+    if(R.stage>=2){R.planeT-=dt;if(R.planeT<=0){R.planeT=Math.max(9,18-R.stage)*(dcMod()==='air'?.5:1);tip('planes');spawnPlanes(Math.min(5,2+Math.floor(R.stage/2)))}}}
   for(const f of foes.slice()){if(f.sink){f.sink+=dt;f.g.position.y-=dt*.4;f.g.rotation.z+=dt*.2;if(f.sink>4.5)releaseFoe(f);continue}
     const fp=f.g.position,ox=fp.x,oz=fp.z;f.orb+=f.orbDir*dt*(f.spd/f.range)*.6;
     const tx=pg.position.x+Math.cos(f.orb)*f.range,tz=pg.position.z+Math.sin(f.orb)*f.range,want=Math.atan2(tx-fp.x,tz-fp.z),d=wrap(want-f.g.rotation.y);
@@ -1669,7 +1868,7 @@ function frame(now){const rdt=Math.min(.04,(now-last)/1000);if(R.slowT>0)R.slowT
   sun.position.copy(focus).addScaledVector(mode==='sea'?SUNSEA:SUNDIR,mode==='sea'?80:55);sun.target.position.copy(focus);
   if(player.g.userData.flag)player.g.userData.flag.rotation.y=Math.PI/2+Math.sin(t*3.1)*.18;
   drawFrame();requestAnimationFrame(frame)}
-setWinter(true);rebuildPlayer();renderPort();renderChip();setMute(AU.muted);setPix(PIX);if(ON.ok&&OS.id)sync(null);requestAnimationFrame(frame);
+setWinter(true);rebuildPlayer();renderPort();renderChip();setMute(AU.muted);setPix(PIX);dmState();achCheck();save();railUpdate();attCheck();readInvite();showInvite();if(ON.ok&&OS.id)sync(null);requestAnimationFrame(frame);
 window.__dbg={get player(){return player},SFX,AU,killFoe,endRun,pic,TIPS,airStrike,foes,launchFighters,carpetBomb,bestCluster,spawnFoe,spawnPlanes,planes,allies,get mode(){return mode},camera,renderer,scene,AU,SV,R,startRun,joy,rebuildPlayer,renderPort};
 })();
 </script>
